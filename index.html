@@ -1244,6 +1244,22 @@
     .group-head::after { content: ''; flex: 1; height: 1px; background: var(--category-color); opacity: .28; }
     .group-head i { order: 3; font-style: normal; color: var(--category-color); }
     .category-head + .group-head { margin-top: 26px; }
+    .grid + .group-head { margin-top: 34px; }
+    .grid-split { grid-template-columns: 1fr auto 1fr 1fr; }
+    .split { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--category-color); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .split::before, .split::after { content: ''; width: 2px; flex: 1; background: var(--category-color); opacity: .5; }
+    .split::after { display: none; }
+    .split-text { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+    .split-arrow { font-size: 20px; line-height: 1; }
+    @media (max-width: 980px) {
+      .grid-split { grid-template-columns: repeat(2,1fr); }
+      .split { grid-column: 1 / -1; flex-direction: row; }
+      .split::before, .split::after { width: auto; height: 2px; }
+      .split::after { display: block; }
+      .split-text { writing-mode: horizontal-tb; transform: none; }
+      .split-arrow { transform: rotate(90deg); }
+    }
+    @media (max-width: 640px) { .grid-split { grid-template-columns: 1fr; } }
 
     /* карточка = панель манги */
     .grid { gap: 26px; perspective: none; }
@@ -1847,8 +1863,8 @@
       { title: 'Фреймворки и API', keys: ['laravel', 'nestjs', 'graphql'] }
     ] },
     { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
-      { title: 'Контейнеры', keys: ['docker'] },
-      { title: 'Прокси и оркестрация', keys: ['traefik', 'kubernetes'] }
+      { title: '', keys: ['docker'] },
+      { split: 'Прокси и оркестрация', keys: ['traefik', 'kubernetes'] }
     ] }
   ];
 
@@ -2039,11 +2055,32 @@
     var used = {};
     var groups = (cat.groups || []).map(function (g) {
       var gi = g.keys.map(function (k) { used[k] = 1; return items.filter(function (p) { return p.key === k; })[0]; }).filter(Boolean);
-      return { title: g.title, items: gi };
+      return { title: g.title, split: g.split, items: gi };
     }).filter(function (g) { return g.items.length; });
     var rest = items.filter(function (p) { return !used[p.key]; });
     if (rest.length) groups.push({ title: 'Ещё', items: rest });
     return groups;
+  }
+
+  // группа с split продолжает ряд предыдущей: между ними вертикальный разделитель с подписью и стрелкой
+  function groupsHtml(groups, card) {
+    return groups.map(function (g, gi) {
+      var head = g.title ? `<div class="group-head mono"><span>${escapeHtml(g.title)}</span><i>${g.items.length}</i></div>` : '';
+      if (g.split && gi > 0) return '';
+      var next = groups[gi + 1];
+      if (next && next.split) {
+        return head + `
+          <div class="grid grid-split">
+            ${g.items.map(card).join('')}
+            <div class="split mono" aria-hidden="true"><span class="split-text">${escapeHtml(next.split)}</span><span class="split-arrow">→</span></div>
+            ${next.items.map(card).join('')}
+          </div>`;
+      }
+      return head + `
+          <div class="grid">
+            ${g.items.map(card).join('')}
+          </div>`;
+    }).join('');
   }
 
   function render() {
@@ -2059,13 +2096,7 @@
             <h3 class="category-title">${escapeHtml(cat.title)}</h3>
             <span class="category-count mono">${items.length} ${plural(items.length, 'лаба', 'лабы', 'лаб')}</span>
           </div>
-          ${groupsOf(cat, items).map(function (g) {
-            return `
-          <div class="group-head mono"><span>${escapeHtml(g.title)}</span><i>${g.items.length}</i></div>
-          <div class="grid">
-            ${g.items.map(function (p) { n += 1; return cardHtml(p, n - 1); }).join('')}
-          </div>`;
-          }).join('')}
+          ${groupsHtml(groupsOf(cat, items), function (p) { n += 1; return cardHtml(p, n - 1); })}
         </div>
       `;
     }).join('');
