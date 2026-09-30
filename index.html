@@ -1235,6 +1235,15 @@
     .category-dot { display: none; }
     .category-title { font-size: clamp(26px,3.2vw,42px); font-weight: 400; }
     .category-count { color: var(--category-color); }
+    .group-head {
+      display: flex; align-items: center; gap: 12px;
+      margin: 34px 0 16px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-dim, var(--text));
+    }
+    .group-head::before { content: ''; width: 22px; height: 2px; background: var(--category-color); flex: none; }
+    .group-head::after { content: ''; flex: 1; height: 1px; background: var(--category-color); opacity: .28; }
+    .group-head i { order: 3; font-style: normal; color: var(--category-color); }
+    .category-head + .group-head { margin-top: 26px; }
 
     /* карточка = панель манги */
     .grid { gap: 26px; perspective: none; }
@@ -1827,9 +1836,20 @@
   }
 
   var categories = [
-    { key: 'frontend', label: 'Направление 1', title: 'Фронтенд', color: '#7df9ff' },
-    { key: 'backend', label: 'Направление 2', title: 'Бэкенд', color: '#ff2e88' },
-    { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392' }
+    { key: 'frontend', label: 'Направление 1', title: 'Фронтенд', color: '#7df9ff', groups: [
+      { title: 'Основы: стили и вёрстка', keys: ['css', 'tailwind'] },
+      { title: 'Язык', keys: ['js', 'typescript'] },
+      { title: 'Фреймворки', keys: ['vue', 'nuxt', 'angular'] }
+    ] },
+    { key: 'backend', label: 'Направление 2', title: 'Бэкенд', color: '#ff2e88', groups: [
+      { title: 'Основы: PHP и ООП', keys: ['php', 'php-coffee'] },
+      { title: 'Данные, кэш и очереди', keys: ['postgresql', 'redis', 'rabbitmq'] },
+      { title: 'Фреймворки и API', keys: ['laravel', 'nestjs', 'graphql'] }
+    ] },
+    { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
+      { title: 'Контейнеры', keys: ['docker'] },
+      { title: 'Прокси и оркестрация', keys: ['traefik', 'kubernetes'] }
+    ] }
   ];
 
   var categoryDescriptions = {
@@ -2014,6 +2034,18 @@
     return many;
   }
 
+  // подгруппы внутри направления; лабы, не попавшие ни в одну, идут в конец без заголовка-дубля
+  function groupsOf(cat, items) {
+    var used = {};
+    var groups = (cat.groups || []).map(function (g) {
+      var gi = g.keys.map(function (k) { used[k] = 1; return items.filter(function (p) { return p.key === k; })[0]; }).filter(Boolean);
+      return { title: g.title, items: gi };
+    }).filter(function (g) { return g.items.length; });
+    var rest = items.filter(function (p) { return !used[p.key]; });
+    if (rest.length) groups.push({ title: 'Ещё', items: rest });
+    return groups;
+  }
+
   function render() {
     var n = 0;
     grid.innerHTML = categories.map(function (cat) {
@@ -2027,9 +2059,13 @@
             <h3 class="category-title">${escapeHtml(cat.title)}</h3>
             <span class="category-count mono">${items.length} ${plural(items.length, 'лаба', 'лабы', 'лаб')}</span>
           </div>
+          ${groupsOf(cat, items).map(function (g) {
+            return `
+          <div class="group-head mono"><span>${escapeHtml(g.title)}</span><i>${g.items.length}</i></div>
           <div class="grid">
-            ${items.map(function (p) { n += 1; return cardHtml(p, n - 1); }).join('')}
-          </div>
+            ${g.items.map(function (p) { n += 1; return cardHtml(p, n - 1); }).join('')}
+          </div>`;
+          }).join('')}
         </div>
       `;
     }).join('');
