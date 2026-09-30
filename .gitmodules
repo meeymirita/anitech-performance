@@ -52,3 +52,9 @@
 [submodule "angular"]
 	path = angular
 	url = https://github.com/meeymirita/angular-lab.git
+[submodule "css"]
+	path = css
+	url = https://github.com/meeymirita/css-lab.git
+[submodule "tailwind"]
+	path = tailwind
+	url = https://github.com/meeymirita/tailwind-lab.git

@@ -1,4 +1,4 @@
-# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Kubernetes, PHP, OOP, RabbitMQ, Redis, Laravel, JS, Vue, TypeScript, Nuxt, Angular, NestJS, GraphQL, PostgreSQL
+# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Kubernetes, PHP, OOP, RabbitMQ, Redis, Laravel, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL
 
 ![ANITECH PERFORMANCE](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/banner.png)
 
@@ -40,6 +40,8 @@
 | 14 | [`postgresql`](postgresql) | PostgreSQL — Coffee Shop изнутри (EXPLAIN, индексы, изоляция, блокировки, MVCC) | Средняя–высокая | [postgresql-lab](https://github.com/meeymirita/postgresql-lab) |
 | 15 | [`nuxt`](nuxt) | Nuxt 4 — Help Center (SSR/SSG/SWR/SPA, Nitro, Drizzle, Nuxt Content) | Высокая | [nuxt-lab](https://github.com/meeymirita/nuxt-lab) |
 | 16 | [`angular`](angular) | Angular 22 — RoomBook (сигналы, DI, httpResource, Signal Forms, RxJS) | Высокая | [angular-lab](https://github.com/meeymirita/angular-lab) |
+| 17 | [`css`](css) | CSS с нуля — FrontFest (каскад, @layer, Flexbox, Grid, container queries, :has, темы) | Базовая | [css-lab](https://github.com/meeymirita/css-lab) |
+| 18 | [`tailwind`](tailwind) | Tailwind CSS v4 — Pulse (`@theme`, варианты, container queries, dark mode) | Базовая | [tailwind-lab](https://github.com/meeymirita/tailwind-lab) |
 
 > Личный прогресс (моя пометка, не часть плана репозитория): ✅ пройдено — RabbitMQ. 🔵 сейчас прохожу — OOP (`php-coffee`).
 
@@ -387,6 +389,34 @@
 - **Сессия 6** (~3,5 ч) — качество и продакшн: pipe и `@defer`, тесты (компонент, стор, guard) на Vitest, сборка, runtime-конфиг и nginx, финальная карта и сравнение с Vue/Nuxt
 
 Разделы 1–9 методички — теория (зачем Angular после Vue и Nuxt, азбука, реактивность на сигналах, DI под капотом, RxJS в 2026 году, роутер, формы, HTTP, стек и структура проекта), раздел 10 — шесть сессий заданий, разделы 11–14 — чек-лист, глоссарий, вопросы для собеседования, что дальше.
+
+---
+
+## 17. CSS Lab — FrontFest (`css/`)
+
+> **Сложность: базовая.** Проект самостоятельный, кода из других лаб не берёт. Нужны только HTML и умение открыть страницу в браузере. Во фронтенд-треке идёт первой — до Tailwind и JavaScript.
+
+**О чём:** современный CSS с нуля на сайте фронтенд-конференции: главная, программа-таймлайн, регистрация. Разметка выдаётся готовой, пишутся только стили. Каскад и слои → токены, цвет и темы → Flexbox → Grid и subgrid → адаптив, container queries, `:has()` и формы → позиционирование, анимации, view transitions и сборка.
+
+**Стек:** чистый CSS, без фреймворков и препроцессоров.
+
+**Формат:** методичка [`CSS_Lab_FrontFest.html`](css/CSS_Lab_FrontFest.html) — методичка готова, прохождение впереди.
+
+**Что внутри (6 сессий, ~20 часов):** основы и каскад; токены, цвет, темы, текст; Flexbox; Grid; адаптив, container queries, `:has()`, формы; позиционирование, движение, view transitions, сборка. Разделы 1–9 — теория, раздел 10 — сессии, разделы 11–14 — чек-лист, глоссарий, вопросы, что дальше.
+
+---
+
+## 18. Tailwind Lab — Pulse (`tailwind/`)
+
+> **Сложность: базовая.** Проект самостоятельный, кода из других лаб не берёт. Нужно уверенное знание CSS — удобнее после CSS Lab: Tailwind не заменяет каскад, flex, grid и `:has()`, а записывает их классами. Во фронтенд-треке идёт второй, до JS.
+
+**О чём:** Tailwind CSS v4 с нуля на сервисе аналитики «Pulse»: маркетинговый лендинг, дашборд и страница настроек. Азбука утилит → тема через `@theme` → варианты и состояния → адаптив и container queries → тёмная тема, формы и переиспользование → продакшн. Разметку пишете сами; почти в каждой сессии шаг «сломать → починить» (динамический класс, которого нет в сборке, `peer`, который «не видит» чекбокс, `@apply` с «unknown utility»).
+
+**Стек:** Tailwind CSS 4.3, Vite + `@tailwindcss/vite`, чистый HTML и немного JS; Docker (dev на Vite, prod на nginx).
+
+**Формат:** методичка [`Tailwind_Lab_Pulse.html`](tailwind/Tailwind_Lab_Pulse.html) — методичка готова, прохождение впереди.
+
+**Что внутри (6 сессий, ~20 ч):** стенд и азбука; тема `@theme`; варианты и состояния; адаптив и container queries; тёмная тема, формы, `@layer components`, typography; продакшн и таблица «CSS-лаба ↔ Tailwind-лаба». Разделы 1–9 — теория, раздел 10 — сессии, 11–14 — чек-лист, глоссарий, вопросы, что дальше.
 
 ---
 
