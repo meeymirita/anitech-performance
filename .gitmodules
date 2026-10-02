@@ -58,3 +58,6 @@
 [submodule "tailwind"]
 	path = tailwind
 	url = https://github.com/meeymirita/tailwind-lab.git
+[submodule "inertia"]
+	path = inertia
+	url = https://github.com/meeymirita/inertia-lab.git
