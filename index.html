@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ANITECH PERFORMANCE — лабораторные работы</title>
-  <meta name="description" content="Сборный репозиторий лабораторных работ: PHP, Laravel, PostgreSQL, RabbitMQ, Redis, JavaScript, TypeScript, Vue, Nuxt, Angular, NestJS, GraphQL, Docker, Traefik, Kubernetes.">
+  <meta name="description" content="Сборный репозиторий лабораторных работ: PHP, Laravel, Inertia, PostgreSQL, RabbitMQ, Redis, JavaScript, TypeScript, Vue, Nuxt, Angular, NestJS, GraphQL, Docker, Traefik, Kubernetes.">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1391,7 +1391,7 @@
   <div class="op-slab op-slab-b" aria-hidden="true"></div>
 
   <div class="wrap op-inner">
-    <div class="op-season mono"><span class="op-live"></span>Обучающая платформа · 18 лабораторных</div>
+    <div class="op-season mono"><span class="op-live"></span>Обучающая платформа · 19 лабораторных</div>
 
     <h1 class="op-title display" aria-label="ANITECH PERFORMANCE">
       <span class="op-title-main" data-text="ANITECH" aria-hidden="true">ANITECH</span>
@@ -1400,7 +1400,7 @@
 
     <div class="op-cols">
       <div>
-        <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: восемнадцать лабораторных от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
+        <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: девятнадцать лабораторных от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
         <p class="op-note">Каждую лабу веду и прохожу сам, методички к ним написаны вместе с Claude. Проходить всё подряд не обязательно — выбери маршрут и иди по своему направлению.</p>
         <div class="op-actions">
           <a href="#works" class="op-btn op-btn-main">Все лабораторные ↓</a>
@@ -1410,7 +1410,7 @@
       </div>
 
       <div class="op-meta">
-        <div class="op-stat"><b>18</b><span>лабораторных с методичками</span></div>
+        <div class="op-stat"><b>19</b><span>лабораторных с методичками</span></div>
         <div class="op-stat"><b>3</b><span>направления: фронтенд, бэкенд, инфраструктура</span></div>
         <div class="op-stat"><b>15</b><span>технологий: от PHP и Vue до Kubernetes</span></div>
       </div>
@@ -1497,8 +1497,8 @@
 <div class="tapes" aria-hidden="true">
   <div class="marquee tape-a">
     <div class="marquee-track display">
-      <span>18 лабораторных · 3 направления · методичка к каждой лабе ·</span>
-      <span>18 лабораторных · 3 направления · методичка к каждой лабе ·</span>
+      <span>19 лабораторных · 3 направления · методичка к каждой лабе ·</span>
+      <span>19 лабораторных · 3 направления · методичка к каждой лабе ·</span>
     </div>
   </div>
   <div class="marquee tape-b">
@@ -1519,7 +1519,7 @@
           <p class="mono">Нажми на карточку, чтобы открыть страницу лабы</p>
         </div>
         <div class="works-count-box">
-          <div class="works-count">18</div>
+          <div class="works-count">19</div>
         </div>
       </div>
     </div>
@@ -1537,7 +1537,7 @@
   <span>ANITECH · обучающая платформа</span>
   <span class="footer-git">
     <span class="spinner"></span>
-    18 лабораторных · 18 репозиториев
+    19 лабораторных · 19 репозиториев
   </span>
 </footer>
 
@@ -1706,6 +1706,19 @@
       accent: '#FF2D20', accentSoft: '#FF2D2022', accentShadow: 'rgba(255,45,32,.28)'
     },
     {
+      key: 'inertia',
+      category: 'backend',
+      title: 'Inertia Lab',
+      subtitle: 'Inkwell — блог-платформа',
+      image: 'inertia/inertia.png',
+      desc: 'Laravel 13 + Inertia 3 + Vue 3 без starter kit: протокол на проводе (объект страницы, XHR-визиты, 303-редиректы), props как публичный API через ресурсы, формы и валидация без 422, SSR и его типичные поломки (hydration mismatch, утечка Pinia между посетителями), роли и Policies без дублирования прав на фронте.',
+      stack: ['Laravel 13', 'Inertia 3', 'Vue 3', 'TypeScript', 'Pinia'],
+      difficulty: 'Средняя',
+      open: 'inertia/Inertia_Lab_Inkwell.html',
+      repo: 'https://github.com/meeymirita/inertia-lab',
+      accent: '#8B5CF6', accentSoft: '#8B5CF622', accentShadow: 'rgba(139,92,246,.28)'
+    },
+    {
       key: 'redis',
       category: 'backend',
       title: 'Redis Lab',
@@ -1860,7 +1873,7 @@
     { key: 'backend', label: 'Направление 2', title: 'Бэкенд', color: '#ff2e88', groups: [
       { title: 'Основы: PHP и ООП', keys: ['php', 'php-coffee'] },
       { title: 'Данные, кэш и очереди', keys: ['postgresql', 'redis', 'rabbitmq'] },
-      { title: 'Фреймворки и API', keys: ['laravel', 'nestjs', 'graphql'] }
+      { title: 'Фреймворки и API', keys: ['laravel', 'inertia', 'nestjs', 'graphql'] }
     ] },
     { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
       { title: '', keys: ['docker'] },

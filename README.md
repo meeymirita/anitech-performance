@@ -1,4 +1,4 @@
-# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Kubernetes, PHP, OOP, RabbitMQ, Redis, Laravel, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL
+# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Kubernetes, PHP, OOP, RabbitMQ, Redis, Laravel, Inertia, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL
 
 ![ANITECH PERFORMANCE](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/banner.png)
 
@@ -18,7 +18,7 @@
 
 ## Работы
 
-Порядок — от простого к сложному, с учётом того, что лабы переиспользуют друг друга: OOP-лаба даёт фундамент для RabbitMQ и Laravel; «Чистый PHP» встал рядом с OOP, потому что тоже про язык, но без фреймворка (её ссылки на Laravel-лабу — в будущем времени, так как та ещё не пройдена). Kubernetes использует код `api/` из Traefik-лабы (в самой Kubernetes-лабе он тоже приведён целиком) — без пройденной Traefik-лабы не имеет смысла. RabbitMQ стоит пройти до Redis (методичка постоянно сравнивает Streams с брокером) и до Laravel-лабы (она ссылается на обе). «Чистый JS» — общий фундамент для Vue и TypeScript; Vue — до TypeScript (сессия 5 использует Vue). NestJS и GraphQL — самостоятельные проекты, каждый со своим доменом: NestJS не собирает бэкенд Vue-лабы (это отдельное изучение технологии с нуля, домен Helpdesk похож на Vue Lab только по смыслу), а GraphQL не требует прохождения NestJS. Nuxt — после Vue и TypeScript: код из них не берёт, но объясняет только то, что Nuxt добавляет поверх Vue (SSR, Nitro, состояние на сервере, режимы рендеринга). PostgreSQL — тоже самостоятельная: разбирает то, что во всех остальных лабах пряталось за ORM, поэтому её можно проходить в любой момент, но полезнее всего — после одной-двух лаб с Laravel, когда Eloquent уже знаком. Docker и Traefik самодостаточны и не завязаны на остальные.
+Порядок — от простого к сложному, с учётом того, что лабы переиспользуют друг друга: OOP-лаба даёт фундамент для RabbitMQ и Laravel; «Чистый PHP» встал рядом с OOP, потому что тоже про язык, но без фреймворка (её ссылки на Laravel-лабу — в будущем времени, так как та ещё не пройдена). Kubernetes использует код `api/` из Traefik-лабы (в самой Kubernetes-лабе он тоже приведён целиком) — без пройденной Traefik-лабы не имеет смысла. RabbitMQ стоит пройти до Redis (методичка постоянно сравнивает Streams с брокером) и до Laravel-лабы (она ссылается на обе). «Чистый JS» — общий фундамент для Vue и TypeScript; Vue — до TypeScript (сессия 5 использует Vue). NestJS и GraphQL — самостоятельные проекты, каждый со своим доменом: NestJS не собирает бэкенд Vue-лабы (это отдельное изучение технологии с нуля, домен Helpdesk похож на Vue Lab только по смыслу), а GraphQL не требует прохождения NestJS. Nuxt — после Vue и TypeScript: код из них не берёт, но объясняет только то, что Nuxt добавляет поверх Vue (SSR, Nitro, состояние на сервере, режимы рендеринга). PostgreSQL — тоже самостоятельная: разбирает то, что во всех остальных лабах пряталось за ORM, поэтому её можно проходить в любой момент, но полезнее всего — после одной-двух лаб с Laravel, когда Eloquent уже знаком. Inertia — самостоятельный проект на Laravel + Vue, кода из других лаб не берёт, но предполагает знакомство с обоими (Laravel Lab, Vue Lab); логичнее всего идёт после Laravel-лабы. Docker и Traefik самодостаточны и не завязаны на остальные.
 
 > **Аудит и вычитка (24.09–30.09.2026).** Все 15 методичек вычитаны построчно и исправлены, проверены стыки между лабами (DevOps, фронтенд, бэкенд). PostgreSQL Lab (добавлена 25.09) и Nuxt Lab (добавлена 26.09) вычитаны следом, 26.09; RabbitMQ Lab (пройдена пользователем без замеченных ошибок) вычитана дополнительно (26.09) — тоже нашлось что поправить. CSS Lab и Tailwind Lab (добавлены 30.09) вычитаны в тот же день: 24 и 20 находок соответственно, все исправлены. Находки, принятые решения и инструкция для повторной вычитки — в [`fixes/`](https://github.com/meeymirita/lab-fixes) (отдельный репозиторий, подключён сабмодулем), хронология — в [«Хронологии»](changelog.html).
 
@@ -42,6 +42,7 @@
 | 16 | [`angular`](angular) | Angular 22 — RoomBook (сигналы, DI, httpResource, Signal Forms, RxJS) | Высокая | [angular-lab](https://github.com/meeymirita/angular-lab) |
 | 17 | [`css`](css) | CSS с нуля — FrontFest (каскад, @layer, Flexbox, Grid, container queries, :has, темы) | Базовая | [css-lab](https://github.com/meeymirita/css-lab) |
 | 18 | [`tailwind`](tailwind) | Tailwind CSS v4 — Pulse (`@theme`, варианты, container queries, dark mode) | Базовая | [tailwind-lab](https://github.com/meeymirita/tailwind-lab) |
+| 19 | [`inertia`](inertia) | Inertia 3 + Laravel + Vue — Inkwell, блог-платформа | Средняя | [inertia-lab](https://github.com/meeymirita/inertia-lab) |
 
 > Личный прогресс (моя пометка, не часть плана репозитория): ✅ пройдено — RabbitMQ. 🔵 сейчас прохожу — OOP (`php-coffee`).
 
@@ -417,6 +418,20 @@
 **Формат:** методичка [`Tailwind_Lab_Pulse.html`](tailwind/Tailwind_Lab_Pulse.html) — методичка готова и вычитана (30.09), прохождение впереди.
 
 **Что внутри (6 сессий, ~20 ч):** стенд и азбука; тема `@theme`; варианты и состояния; адаптив и container queries; тёмная тема, формы, `@layer components`, typography; продакшн и таблица «CSS-лаба ↔ Tailwind-лаба». Разделы 1–9 — теория, раздел 10 — сессии, 11–14 — чек-лист, глоссарий, вопросы, что дальше.
+
+---
+
+## 19. Inertia Lab — Inkwell (`inertia/`)
+
+> **Сложность: средняя.** Проект самостоятельный (свой репозиторий `inertia-lab`), кода из других лаб не берёт. Предполагается знакомство с Laravel (контроллеры, Eloquent, FormRequest, Policies — уровень Laravel Lab) и с Vue 3 (Composition API — уровень Vue Lab); сам мост Inertia объясняется с нуля. Логичнее всего идёт после Laravel-лабы.
+
+**О чём:** блог-платформа Inkwell на Laravel 13 + Inertia 3 + Vue 3 + TypeScript, собранная без starter kit. Протокол Inertia (объект страницы, XHR-визиты, конфликт версий, 303-редиректы) → props как публичный API (API Resources, `optional`/`defer`/`merge`/`once`) → путь формы и валидации без 422 → SSR и его типичные поломки (hydration mismatch, Pinia-утечка между посетителями). Три роли — reader, author, editor — на `Policies`, без дублирования прав на фронте.
+
+**Стек:** Laravel 13 (PHP 8.4), `inertiajs/inertia-laravel` + `@inertiajs/vue3` 3, Vue 3 (`<script setup lang="ts">`), TypeScript strict, Pinia, Laravel Wayfinder, Tailwind CSS 4, SQLite.
+
+**Формат:** методичка [`Inertia_Lab_Inkwell.html`](inertia/Inertia_Lab_Inkwell.html) — методичка готова, прохождение и вычитка впереди.
+
+**Что внутри (5 сессий, ~16,5 ч):** протокол и фундамент (Inertia руками, лента, layout, Wayfinder); страница поста (SEO, SSR — включаем, ломаем, чиним); пользователи и формы (сессии, flash, Pinia, Policies, редактор); данные и производительность (фильтры, бесконечная лента, deferred props, polling); тесты, сборка, SSR в проде, Production Hell. Разделы 1–8 — теория, раздел 9 — сессии, 10–13 — чек-лист, глоссарий, вопросы, что дальше.
 
 ---
 
