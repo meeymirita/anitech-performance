@@ -23,7 +23,7 @@
 | `nestjs` / `graphql` | nestjs-lab / graphql-lab | бэкенд на Node |
 | `laravel` | laravel-lab | Laravel 13 изнутри |
 | `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC |
-| `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/lab.js`) |
+| `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`) |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
 
 В каждой лабе: методичка HTML (например `php-coffee/docs/OOP_Lab_CoffeeShop.html`), README со строкой «Статус:», код прохождения пользователя.
@@ -54,12 +54,12 @@
    - `routeTracks[].path` — во всех треках, где лаба уместна (обычно «Весь путь» + свой тематический трек), и в `.text` трека — короткая фраза про место лабы;
    - если после вставки лане стало больше шагов, чем влезало раньше — поднять `.route-map { min-width; grid-template-columns: 92px repeat(N, …) }` (N = макс. число шагов по всем лейнам);
    - счётчик лаб хардкожен текстом в ~7 местах (`18` → `19`): `.op-season`, `.op-tagline` (числом словами), `.op-stat b`, 2× `.marquee-track`, `.works-count`, `.site-footer`; плюс `<meta name="description">`.
-3. **`works/lab.js`**:
+3. **`works/js/lab.js`**:
    - запись в `LABS`: `stackInfo`, `learn` (код — реальные блоки из методички, не выдумывать), `sessions`, `arch` (схема + `live.nodes/edges/flow`), `faq`, `accent`;
    - **`desc` обязан содержать `:` и после него — список через запятую** («Интро: тема, тема, тема.») — `parseTopics()` режет по первому `:`, без него счётчик «тем внутри» покажет `0`.
 4. **`works/images/thumbs/<key>.webp`** — это и есть `<img src>` на карточке и на странице лабы (PNG из сабмодуля идёт только в `data-full` для лайтбокса). Генерировать из PNG тем же размером, качество ~75 (ориентир — соседние файлы, ~300 КБ). Без него картинка просто не грузится — и на `index.html`, и на `works/`.
 5. **`works/<key>.html`** — скопировать у ближайшей лабы, поменять только `renderLabPage('<key>')`/`animeEnhance('<key>')` и `<title>`/description.
-6. **`works/lab-anime.js`** — отдельные от `LABS` хардкоды, их два: `ORDER` (порядок и общее число — без ключа здесь шапка лабы покажет «лаба 00 из <старое число>») и `TRACKS[].keys` (бейдж направления).
+6. **`works/js/lab-anime.js`** — отдельные от `LABS` хардкоды, их два: `ORDER` (порядок и общее число — без ключа здесь шапка лабы покажет «лаба 00 из <старое число>») и `TRACKS[].keys` (бейдж направления).
 7. **Корневой `README.md`** — список технологий в заголовке `# ANITECH PERFORMANCE — …`, абзац про порядок/зависимости, строка в таблице, нумерованный раздел.
 8. **`changelog.html`** — **легко забыть, уже было дважды**: запись в `var LABS` (цвет) и новый блок в `DAYS` (дата, заголовок дня, события `added`/`changed`, честно — включая то, что было криво в первом проходе).
 9. **`fixes/common/_order.md`** — строка в сводной таблице порядка/зависимостей (от чего реально зависит лаба — смотреть на ссылки в тексте методички, не только на README).
@@ -67,7 +67,7 @@
 11. **`fixes/common/_tools/prep.py`** — запись в словаре `LABS` (путь к HTML методички), иначе вычитку потом нечем будет готовить.
 
 **Проверка перед коммитом — не на словах:**
-- `node --check works/lab.js works/lab-anime.js` и для инлайн-скриптов в `.html` — `node -e "new Function(fs.readFileSync(f).toString().match(/<script>([\s\S]*?)<\/script>/)[1])"` (ловит синтаксис, не ловит логику);
+- `node --check works/js/lab.js works/js/lab-anime.js` и для инлайн-скриптов в `.html` — `node -e "new Function(fs.readFileSync(f).toString().match(/<script>([\s\S]*?)<\/script>/)[1])"` (ловит синтаксис, не ловит логику);
 - поднять статику (`python3 -m http.server` из корня) и реально отрисовать страницы headless-браузером, а не только прочитать код:
   `chromium --headless --disable-gpu --no-sandbox --host-resolver-rules="MAP cdnjs.cloudflare.com 0.0.0.0" --dump-dom <url>` — флаг с CDN **обязателен**: без интернета до cdnjs (или просто при обычном `--screenshot` без доп. времени) страница на `works/*.html` зависает на заставке-загрузчике (GSAP не грузится → `page-loader.js` должен «отойти в сторону», но скриншот снимается раньше) и скриншот снимает именно заставку, а не контент — это НЕ баг лабы, а артефакт теста, проверено на заведомо рабочей `tailwind.html`;
   затем `--screenshot=...png` в домашнюю директорию (снэп chromium не пишет в `/tmp`) и `grep`/просмотр `--dump-dom` на текст вроде «00 из 18», «тем внутри 0» — оба бага уже случались именно так;
