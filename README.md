@@ -20,7 +20,7 @@
 
 Порядок — от простого к сложному, с учётом того, что лабы переиспользуют друг друга: OOP-лаба даёт фундамент для RabbitMQ и Laravel; «Чистый PHP» встал рядом с OOP, потому что тоже про язык, но без фреймворка (её ссылки на Laravel-лабу — в будущем времени, так как та ещё не пройдена). Kubernetes использует код `api/` из Traefik-лабы (в самой Kubernetes-лабе он тоже приведён целиком) — без пройденной Traefik-лабы не имеет смысла. RabbitMQ стоит пройти до Redis (методичка постоянно сравнивает Streams с брокером) и до Laravel-лабы (она ссылается на обе). «Чистый JS» — общий фундамент для Vue и TypeScript; Vue — до TypeScript (сессия 5 использует Vue). NestJS и GraphQL — самостоятельные проекты, каждый со своим доменом: NestJS не собирает бэкенд Vue-лабы (это отдельное изучение технологии с нуля, домен Helpdesk похож на Vue Lab только по смыслу), а GraphQL не требует прохождения NestJS. Nuxt — после Vue и TypeScript: код из них не берёт, но объясняет только то, что Nuxt добавляет поверх Vue (SSR, Nitro, состояние на сервере, режимы рендеринга). PostgreSQL — тоже самостоятельная: разбирает то, что во всех остальных лабах пряталось за ORM, поэтому её можно проходить в любой момент, но полезнее всего — после одной-двух лаб с Laravel, когда Eloquent уже знаком. Inertia — самостоятельный проект на Laravel + Vue, кода из других лаб не берёт, но предполагает знакомство с обоими (Laravel Lab, Vue Lab); логичнее всего идёт после Laravel-лабы. Docker и Traefik самодостаточны и не завязаны на остальные.
 
-> **Аудит и вычитка (24.09–30.09.2026).** Все 15 методичек вычитаны построчно и исправлены, проверены стыки между лабами (DevOps, фронтенд, бэкенд). PostgreSQL Lab (добавлена 25.09) и Nuxt Lab (добавлена 26.09) вычитаны следом, 26.09; RabbitMQ Lab (пройдена пользователем без замеченных ошибок) вычитана дополнительно (26.09) — тоже нашлось что поправить. CSS Lab и Tailwind Lab (добавлены 30.09) вычитаны в тот же день: 24 и 20 находок соответственно, все исправлены. Находки, принятые решения и инструкция для повторной вычитки — в [`fixes/`](https://github.com/meeymirita/lab-fixes) (отдельный репозиторий, подключён сабмодулем), хронология — в [«Хронологии»](changelog.html).
+> **Аудит и вычитка (24.09–30.09.2026).** Все методички, кроме Inertia Lab (вычитка впереди), вычитаны построчно и исправлены, проверены стыки между лабами (DevOps, фронтенд, бэкенд). PostgreSQL Lab (добавлена 25.09) и Nuxt Lab (добавлена 26.09) вычитаны следом, 26.09; RabbitMQ Lab (пройдена пользователем без замеченных ошибок) вычитана дополнительно (26.09) — тоже нашлось что поправить. CSS Lab и Tailwind Lab (добавлены 30.09) вычитаны в тот же день: 24 и 20 находок соответственно, все исправлены. Находки, принятые решения и инструкция для повторной вычитки — в [`fixes/`](https://github.com/meeymirita/lab-fixes) (отдельный репозиторий, подключён сабмодулем), хронология — в [«Хронологии»](changelog.html).
 
 | № | Папка | Лаба | Сложность | Репозиторий |
 |---|---|---|---|---|
@@ -68,7 +68,7 @@
 
 **О чём:** объектно-ориентированное программирование на PHP 8.4 с нуля — не абстрактно, а на маленьком API кофейни. Отдельный, ни от чего не зависящий проект (в отличие от Redis/RabbitMQ-лаб не растёт из общей системы заказов).
 
-**Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 17 + RabbitMQ + Mailpit — брокер появляется только в последней сессии.
+**Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер появляется только в последней сессии.
 
 **Формат:** методичка `OOP_Lab_CoffeeShop.html` (вычитана и исправлена 24.09) — ниже план по оглавлению. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
 
@@ -132,7 +132,7 @@
 
 **О чём:** миграция уже знакомого стека из `docker-compose.yml` в Kubernetes, шаг за шагом — видно именно то, что меняется при переходе от одной машины к оркестрации, а не тонет в шуме нового кода. Кластер — [kind](https://kind.sigs.k8s.io/) (Kubernetes IN Docker): настоящий control plane и worker-узлы в контейнерах, тот же `kubectl` и те же объекты, что и в проде.
 
-**Стек:** Kubernetes (kind) + kubectl + Traefik как Ingress-контроллер (IngressRoute CRD) — тот же стек приложения, что в Traefik Lab: Node.js API + статический frontend + PostgreSQL 17 + Adminer. Проверено на kind v0.24.0 / Kubernetes v1.31.0.
+**Стек:** Kubernetes (kind) + kubectl + Traefik как Ingress-контроллер (IngressRoute CRD) — тот же стек приложения, что в Traefik Lab: Node.js API + статический frontend + PostgreSQL 18 + Adminer. Проверено на kind v0.24.0 / Kubernetes v1.31.0.
 
 **Формат:** методичка [`Kubernetes_Lab_Plan.html`](kubernetes/Kubernetes_Lab_Plan.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
 
@@ -181,7 +181,7 @@
 
 **О чём:** Redis как кэш, хранилище сессий, примитив синхронизации и брокер событий — одновременно, на кусочке той же системы заказов. Лаба специально показывает, где каждая из этих ролей "подводит" (что будет при рестарте без AOF, при отвале Pub/Sub-подписчика, при гонке за один и тот же лок).
 
-**Стек:** Laravel 13 + PostgreSQL 17 + Redis 7.
+**Стек:** Laravel 13 + PostgreSQL 18 + Redis 8.
 
 **Формат:** методичка `Redis_Lab_Plan.html` (открывается в браузере, прогресс по чекбоксам сохраняется локально) — ещё не пройдена, ниже план по оглавлению.
 
@@ -200,7 +200,7 @@
 
 **О чём:** JavaScript с нуля, без единого фреймворка и без бандлера — то, что Vue и другие фреймворки обычно прячут: как на самом деле работают `var`/`let`/`const` и hoisting, `this` и замыкания, прототипы под капотом `class`, event loop, DOM и модули. Домен практики (тикеты) намеренно совпадает с Vue Lab — Helpdesk, чтобы в финале явно сравнить «vanilla vs Vue»; код при этом полностью свой, без единой связи с тем репозиторием.
 
-**Стек:** JavaScript (ES2022+, без TypeScript и без сборки) + Node 22+ (24 LTS тоже подходит) для сессий-песочниц; в браузере — нативные ES-модули без бандлера; `json-server` как мок-API (только `db.json`, ноль кода); собственный ~15-строчный сервер на `node:http`; тесты — встроенный `node --test`; Docker (compose-файл создаётся в сессии 1).
+**Стек:** JavaScript (ES2022+, без TypeScript и без сборки) + Node 24+ (LTS) для сессий-песочниц; в браузере — нативные ES-модули без бандлера; `json-server` как мок-API (только `db.json`, ноль кода); собственный ~15-строчный сервер на `node:http`; тесты — встроенный `node --test`; Docker (compose-файл создаётся в сессии 1).
 
 **Формат:** методичка `JS_Lab_VanillaHelpdesk.html` — готова, прохождение впереди.
 
@@ -245,7 +245,7 @@
 
 **О чём:** типизация домена складского учёта (Warehouse) с нуля — без фреймворков до последней сессии, чтобы увидеть TypeScript в чистом виде и потом узнавать его в Nest/Vue. Что типы реально ловят (перепутанные аргументы, `NaN` от строки вместо числа, `undefined` в рантайме), а что — нет.
 
-**Стек:** TypeScript 5.x (≥ 5.6) + Node 22+ (24 LTS тоже подходит) + `tsx` + Vitest + Zod, в финале — Express и Vue 3 + TS. Отдельный репозиторий на npm workspaces: `packages/core`, `cli`, `api`, `web`. Всё в Docker.
+**Стек:** TypeScript 5.x (≥ 5.6) + Node 24+ (LTS) + `tsx` + Vitest + Zod, в финале — Express и Vue 3 + TS. Отдельный репозиторий на npm workspaces: `packages/core`, `cli`, `api`, `web`. Всё в Docker.
 
 **Формат:** методичка `TypeScript_Lab_Warehouse.html` — не пройдена, ниже план по оглавлению. Каждый шаг заканчивается зелёным `npm run typecheck` — это главный критерий готовности.
 
@@ -264,7 +264,7 @@
 
 **О чём:** Helpdesk API собирается с нуля слой за слоем, и на каждом шаге видно, что скрывает декоратор `@Injectable()`, когда его пишут не глядя: свой мини-DI контейнер и метаданные декораторов, границы модулей и provider scopes, DTO и `ValidationPipe`, Prisma и транзакции, JWT-ротация refresh-токенов с reuse-detection, RBAC и владение через `TicketPolicy`, доменные события, WebSocket-шлюз с комнатами и своей авторизацией на handshake, свой динамический модуль, unit- и e2e-тесты.
 
-**Стек:** NestJS 11 + TypeScript (strict), Node 22+ (24 LTS тоже подходит), Prisma 6 + PostgreSQL 17, class-validator/class-transformer, `@nestjs/passport` + `passport-jwt` + `@nestjs/jwt` + argon2, `@nestjs/event-emitter`, `@nestjs/websockets` (Socket.IO), `@nestjs/swagger`, helmet + `@nestjs/throttler`, `@nestjs/terminus`, Jest + supertest. Всё в Docker.
+**Стек:** NestJS 11 + TypeScript (strict), Node 24+ (LTS), Prisma 6 + PostgreSQL 18, class-validator/class-transformer, `@nestjs/passport` + `passport-jwt` + `@nestjs/jwt` + argon2, `@nestjs/event-emitter`, `@nestjs/websockets` (Socket.IO), `@nestjs/swagger`, helmet + `@nestjs/throttler`, `@nestjs/terminus`, Jest + supertest. Всё в Docker.
 
 > Prisma 6 в NestJS-лабе и Prisma 7 в GraphQL-лабе — намеренно: NestJS зафиксирована на 6, GraphQL показывает 7.
 
@@ -287,7 +287,7 @@
 
 **О чём:** CineGraph — каталог фильмов, режиссёров и рецензий, спроектированный так, чтобы естественно упереться во все ключевые темы GraphQL: язык запросов и жизненный цикл запроса, N+1 в резолверах и `DataLoader`, JWT и права на уровне полей, интерфейсы и юнионы (фильмография, поиск), курсорная пагинация рецензий (Relay Connection), подписки на живую ленту через Redis, защита от тяжёлых запросов (depth limit + query complexity).
 
-**Стек:** NestJS + `@nestjs/graphql` + Apollo Server (code-first: `@ObjectType`/`@Field`/`@Resolver`), Prisma 7 + PostgreSQL 17, `dataloader` для батчинга, `@nestjs/jwt` + bcryptjs, `graphql-subscriptions`/`graphql-redis-subscriptions` + Redis, `graphql-query-complexity`. Всё в Docker.
+**Стек:** NestJS + `@nestjs/graphql` + Apollo Server (code-first: `@ObjectType`/`@Field`/`@Resolver`), Prisma 7 + PostgreSQL 18, `dataloader` для батчинга, `@nestjs/jwt` + bcryptjs, `graphql-subscriptions`/`graphql-redis-subscriptions` + Redis, `graphql-query-complexity`. Всё в Docker.
 
 **Формат:** методичка [`GraphQL_Lab_Plan.html`](graphql/GraphQL_Lab_Plan.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
 
@@ -306,7 +306,7 @@
 
 **О чём:** Laravel 13 "изнутри" — не "как вызвать", а что происходит на каждом слое фреймворка (~30 компонентов `illuminate/*`, связанных через контейнер), на сквозном таск-трекере **TaskFlow** с воркспейсами, ролями и приглашениями.
 
-**Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 17 + Redis 7 + RabbitMQ 4 + Mailpit + Laravel Reverb; фронт — Vue 3 + Vite (JavaScript, только API-клиент). Всё в Docker.
+**Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 18 + Redis 8 + RabbitMQ 4 + Mailpit + Laravel Reverb; фронт — Vue 3 + Vite (JavaScript, только API-клиент). Всё в Docker.
 
 **Формат:** методичка `Laravel_Lab_TaskFlow.html` — не пройдена, ниже план по оглавлению.
 
@@ -377,7 +377,7 @@
 
 **О чём:** внутренний сервис бронирования переговорных — каталог комнат, расписание дня, форма брони с проверкой пересечений, «мои брони», живые обновления, админка. Современный Angular — это сигналы + DI: реактивность без zone.js, сервисы и провайдеры, `httpResource`, Signal Forms, guards по ролям и RxJS там, где он правда нужен. Почти в каждой сессии — шаг «сломать → починить»: мутация массива, которую OnPush не видит, гонка ответов поиска, провайдер не на том уровне DI, 409 после проверки «свободно», утечка броней при смене пользователя, накопление SSE-соединений.
 
-**Стек:** Angular 22 (standalone, zoneless, OnPush по умолчанию), Angular CLI + `@angular/build`, `HttpClient` + интерцепторы + `httpResource`, Signal Forms и Reactive Forms, RxJS 7 + rxjs-interop, Vitest через `ng test`; готовый API — `api/server.mjs` на Node 22 без зависимостей; Docker Compose, в проде nginx.
+**Стек:** Angular 22 (standalone, zoneless, OnPush по умолчанию), Angular CLI + `@angular/build`, `HttpClient` + интерцепторы + `httpResource`, Signal Forms и Reactive Forms, RxJS 7 + rxjs-interop, Vitest через `ng test`; готовый API — `api/server.mjs` на Node 24 без зависимостей; Docker Compose, в проде nginx.
 
 **Формат:** методичка [`Angular_Lab_RoomBook.html`](angular/Angular_Lab_RoomBook.html) — методичка готова, прохождение впереди. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя».
 

@@ -20,11 +20,17 @@
 | `js` | js-lab | Чистый JS (это лаба, а не скрипты сайта) |
 | `vue` / `typescript` / `nuxt` | vue-lab / typescript-lab / nuxt-lab | фронтенд |
 | `angular` | angular-lab | Angular 22 — RoomBook (методичка с 26.09, вычитана и исправлена 26.09) |
+| `css` / `tailwind` | css-lab / tailwind-lab | вёрстка: современный CSS, Tailwind v4 |
+| `inertia` | inertia-lab | Inertia 3 — Laravel + Vue без отдельного API (Inkwell) |
 | `nestjs` / `graphql` | nestjs-lab / graphql-lab | бэкенд на Node |
 | `laravel` | laravel-lab | Laravel 13 изнутри |
 | `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`) |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
+
+**Формат методичек (с 02.10.2026):** HTML-«бандл» — текст лежит в сжатом JSON внутри файла (`window.LAB`), обычный grep/sed по нему не работает. Читать и править через `fixes/common/_tools/bundle.py` (`dump` / `grep` / `sub`, из Python — `rewrite`); `prep.py` умеет оба формата.
+
+**Версии-стандарт (03.10.2026):** Node 24 LTS, Redis 8, PostgreSQL 18 (образ монтируется в `/var/lib/postgresql`, **не** в `/data`), Traefik v3.7. Исключения: `postgresql` (остаётся на 17 — вывод EXPLAIN снят под 17), `rabbitmq` (пройдена, заморожена на 16), kind/Kubernetes 1.31 и nginx 1.27 — не обновлялись (нужен прогон). PHP 8.4 и TypeScript 5.x пока без изменений.
 
 В каждой лабе: методичка HTML (например `php-coffee/docs/OOP_Lab_CoffeeShop.html`), README со строкой «Статус:», код прохождения пользователя.
 

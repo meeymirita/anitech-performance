@@ -517,7 +517,13 @@ function renderStats() {
     { num: totalCommits, label: 'событий в хронологии' },
     { num: repoCount, label: 'лаб в работе' },
     { num: DAYS.length, label: 'дней с изменениями' },
-  ];
+  {date:'2026-10-03', title:'Порядок в репозитории и единые версии', items:[
+  {lab:'site', type:'changed', text:'<b>Папка <code>fixes/</code> разложена по направлениям</b>: <code>backend/</code>, <code>devops/</code>, <code>frontend/</code> и <code>common/</code> (порядок, статусы вычитки, вопросы по сайту, скрипты); ссылки в README лаб обновлены, README папки короткий — что значит каждая папка и файл.'},
+  {lab:'site', type:'changed', text:'<b>Страницы <code>works/</code>:</b> скрипты переехали в <code>works/js/</code>, стили — в <code>works/css/</code>; HTML-страницы остались в корне, чтобы не сломать ссылки <code>works/&lt;ключ&gt;.html</code>.'},
+  {lab:'site', type:'changed', text:'<b>Единые версии во всех методичках, README и на сайте:</b> Node 24 LTS (в Docker/Traefik/Kubernetes оставался снятый с поддержки Node 20), Redis 8, PostgreSQL 18 (том монтируется в <code>/var/lib/postgresql</code>, а не в <code>/data</code> — в образах 18+ каталог данных переехал), Traefik v3.7. Проверено запуском: Traefik 3.7 маршрутизирует по меткам, данные Postgres 18 переживают пересоздание контейнера, Redis 8.10. Лаба PostgreSQL остаётся на 17 (вывод EXPLAIN снят под 17), RabbitMQ заморожена на 16, kind и nginx не обновлялись.'},
+  {lab:'site', type:'added', text:'<b>Инструмент <code>fixes/common/_tools/bundle.py</code></b>: после редизайна методичек текст лежит в сжатом JSON внутри HTML, и обычный поиск и замена по нему не работали; теперь можно читать, искать и править пакетно. <code>prep.py</code> снова умеет нарезать методички на части для вычитки.'}
+]},
+];
   document.getElementById('cl-stats').innerHTML = stats.map(function (s) {
     return '<div class="cl-stat"><div class="cl-stat-num display">' + s.num + '</div><div class="cl-stat-label mono">' + s.label + '</div></div>';
   }).join('');
