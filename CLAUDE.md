@@ -5,6 +5,7 @@
 ## Устройство репозитория
 
 - Родитель: `meeymirita/anitech-performance` (раньше назывался `submodule-group-lab`). Сайт — GitHub Pages на `anitech.meeymirita.ru` (`CNAME`).
+- Служебное в корне: `tools/check-site.py` (автопроверка целостности), `docs/screenshots/` (скриншоты модалки), `IDEAS_AND_QUESTIONS.md` и `screenshots-check/` — локальные, в git не идут (чеклист и скриншоты проверок).
 - Файлы самого сайта в корне: `index.html` (главная, карточки лаб, маршруты), `changelog.html`, `favicon.svg`, `docs/screenshots/` (скриншоты для модалки «О проекте»).
 - Каждая папка ниже — **git-подмодуль** со своим репозиторием `meeymirita/<тема>-lab`:
 
