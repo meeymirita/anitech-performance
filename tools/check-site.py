@@ -11,12 +11,12 @@ def bad(msg): problems.append(msg)
 def read(p): return open(p, encoding='utf-8').read()
 
 # эталон: страницы works/<key>.html
-keys = sorted(os.path.basename(p)[:-5] for p in glob.glob('works/*.html'))
+keys = sorted(os.path.basename(p)[:-5] for p in glob.glob('works/*.html') if os.path.basename(p) not in ('changelog.html', 'progress.html'))
 N = len(keys)
 notes.append(f'лаб (works/*.html): {N}')
 
 idx, lab_js, anim_js = read('index.html'), read('works/js/lab.js'), read('works/js/lab-anime.js')
-change, readme, prep = read('changelog.html'), read('README.md'), read('fixes/common/_tools/prep.py')
+change, readme, prep = read('works/changelog.html'), read('README.md'), read('fixes/common/_tools/prep.py')
 order, proof = read('fixes/common/_order.md'), read('fixes/common/_proofread.md')
 
 # 1. реестры
@@ -27,7 +27,7 @@ for k in keys:
         bad(f'works/js/lab.js: нет записи {k!r}')
     if not has_key(anim_js, k): bad(f'works/js/lab-anime.js: нет {k!r} (ORDER/TRACKS)')
     if not os.path.exists(f'works/images/thumbs/{k}.webp'): bad(f'нет works/images/thumbs/{k}.webp')
-    if not re.search(r"['\"]?%s['\"]?\s*:\s*\{\s*label" % re.escape(k), change): bad(f'changelog.html: нет {k!r} в карте LABS')
+    if not re.search(r"['\"]?%s['\"]?\s*:\s*\{\s*label" % re.escape(k), change): bad(f'works/changelog.html: нет {k!r} в карте LABS')
     if not os.path.isdir(k): bad(f'нет папки подмодуля {k}/')
     if f"'{k}'" not in prep: bad(f'prep.py: нет {k!r} в LABS')
     if k not in proof: bad(f'_proofread.md: нет строки для {k}')
@@ -66,7 +66,7 @@ for md in ['README.md'] + [f'{k}/README.md' for k in keys]:
 for f in glob.glob('works/js/*.js'):
     r = subprocess.run(['node', '--check', f], capture_output=True, text=True)
     if r.returncode: bad(f'{f}: {r.stderr.splitlines()[0] if r.stderr else "ошибка синтаксиса"}')
-for f in ['index.html', 'changelog.html']:
+for f in ['index.html', 'works/changelog.html']:
     r = subprocess.run(['node', '-e', "const fs=require('fs');const h=fs.readFileSync(process.argv[1],'utf8');[...h.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].forEach(m=>new Function(m[1]))", f], capture_output=True, text=True)
     if r.returncode: bad(f'{f}: инлайн-скрипт не компилируется')
 
@@ -83,6 +83,22 @@ try:
             bad(f'{p}: методичка: невалидный JSON ({str(e)[:60]})')
 except ImportError:
     bad('fixes/common/_tools/bundle.py не найден')
+
+# 5c. страница прогресса и правки шаблона методичек (tools/build-progress.py, tools/patch-manuals.py)
+if not os.path.exists('works/progress.html'):
+    bad('нет works/progress.html (python3 tools/build-progress.py)')
+else:
+    prog = read('works/progress.html')
+    for k in keys:
+        if f'"key":"{k}"' not in prog: bad(f'works/progress.html: нет лабы {k!r} (python3 tools/build-progress.py)')
+try:
+    import re as _re, json as _json
+    for p in sorted(set(_re.findall(r"open: '\.\./([^']+)'", lab_js))):
+        raw = _re.search(r'<script type="__bundler/template">(.*?)</script>', read(p), _re.S).group(1)
+        if 'data-all-labs-nav' not in raw or 'data-all-labs-link' in raw or 'x-dc{display:none' not in raw or 'goHash' not in raw:
+            bad(f'{p}: нет ссылки «все работы» или правки x-dc (python3 tools/patch-manuals.py)')
+except Exception as e:
+    bad(f'проверка шаблонов методичек: {e}')
 
 # 6. подмодули не опережают origin
 r = subprocess.run(['git', 'submodule', 'foreach', '--quiet', 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'], capture_output=True, text=True)
