@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ANITECH PERFORMANCE — лабораторные работы</title>
-  <meta name="description" content="Сборный репозиторий лабораторных работ: PHP, Laravel, Inertia, PostgreSQL, RabbitMQ, Redis, JavaScript, TypeScript, Vue, Nuxt, Angular, NestJS, GraphQL, Docker, Traefik, Kubernetes.">
+  <meta name="description" content="Сборный репозиторий лабораторных работ: PHP, алгоритмы, Laravel, Laravel Performance, Inertia, PostgreSQL, RabbitMQ, Redis, JavaScript, TypeScript, Vue, Nuxt, Angular, NestJS, GraphQL, Docker, Traefik, Kubernetes.">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -912,8 +912,8 @@
     /* the map: 3 lanes x 6 steps, arrows drawn in an svg layer on top */
     .route-map-scroll { overflow-x: auto; margin: 0 -4px; padding: 0 4px 6px; }
     .route-map {
-      position: relative; min-width: 1082px;
-      display: grid; grid-template-columns: 92px repeat(7, minmax(0,1fr));
+      position: relative; min-width: 1361px;
+      display: grid; grid-template-columns: 92px repeat(9, minmax(0,1fr));
       grid-auto-rows: minmax(92px, auto);
       column-gap: 34px; row-gap: 40px; padding: 34px 0 10px;
     }
@@ -1391,7 +1391,7 @@
   <div class="op-slab op-slab-b" aria-hidden="true"></div>
 
   <div class="wrap op-inner">
-    <div class="op-season mono"><span class="op-live"></span>Обучающая платформа · 19 лабораторных</div>
+    <div class="op-season mono"><span class="op-live"></span>Обучающая платформа · 21 лабораторная</div>
 
     <h1 class="op-title display" aria-label="ANITECH PERFORMANCE">
       <span class="op-title-main" data-text="ANITECH" aria-hidden="true">ANITECH</span>
@@ -1400,7 +1400,7 @@
 
     <div class="op-cols">
       <div>
-        <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: девятнадцать лабораторных от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
+        <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: двадцать одна лабораторная от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
         <p class="op-note">Каждую лабу веду и прохожу сам, методички к ним написаны вместе с Claude. Проходить всё подряд не обязательно — выбери маршрут и иди по своему направлению.</p>
         <div class="op-actions">
           <a href="#works" class="op-btn op-btn-main">Все лабораторные ↓</a>
@@ -1410,7 +1410,7 @@
       </div>
 
       <div class="op-meta">
-        <div class="op-stat"><b>19</b><span>лабораторных с методичками</span></div>
+        <div class="op-stat"><b>21</b><span>лабораторных с методичками</span></div>
         <div class="op-stat"><b>3</b><span>направления: фронтенд, бэкенд, инфраструктура</span></div>
         <div class="op-stat"><b>15</b><span>технологий: от PHP и Vue до Kubernetes</span></div>
       </div>
@@ -1497,8 +1497,8 @@
 <div class="tapes" aria-hidden="true">
   <div class="marquee tape-a">
     <div class="marquee-track display">
-      <span>19 лабораторных · 3 направления · методичка к каждой лабе ·</span>
-      <span>19 лабораторных · 3 направления · методичка к каждой лабе ·</span>
+      <span>21 лабораторная · 3 направления · методичка к каждой лабе ·</span>
+      <span>21 лабораторная · 3 направления · методичка к каждой лабе ·</span>
     </div>
   </div>
   <div class="marquee tape-b">
@@ -1519,7 +1519,7 @@
           <p class="mono">Нажми на карточку, чтобы открыть страницу лабы</p>
         </div>
         <div class="works-count-box">
-          <div class="works-count">19</div>
+          <div class="works-count">21</div>
         </div>
       </div>
     </div>
@@ -1537,7 +1537,7 @@
   <span>ANITECH · обучающая платформа</span>
   <span class="footer-git">
     <span class="spinner"></span>
-    19 лабораторных · 19 репозиториев
+    21 лабораторная · 21 репозиторий
   </span>
 </footer>
 
@@ -1667,6 +1667,19 @@
       accent: '#777BB4', accentSoft: '#777BB422', accentShadow: 'rgba(119,123,180,.28)'
     },
     {
+      key: 'algorithms-php',
+      category: 'backend',
+      title: 'Algorithms PHP Lab',
+      subtitle: 'CoffeeAlgo — алгоритмы и структуры данных',
+      image: 'algorithms-php/algorithms-php.png',
+      desc: 'Алгоритмы на задачах кофейни, каждое утверждение — замером: сложность без формул, хеш-таблицы, стек и очередь, списки, рекурсия, бинарный поиск и сортировки, деревья, кучи, графы, динамическое программирование, разбор собеседований.',
+      stack: ['PHP 8.4', 'SPL', 'PHPUnit', 'Docker'],
+      difficulty: 'Базовая',
+      open: 'algorithms-php/Algo_Lab_CoffeeAlgo.html',
+      repo: 'https://github.com/meeymirita/algorithms-php-lab',
+      accent: '#b45f06', accentSoft: '#b45f0622', accentShadow: 'rgba(180,95,6,.28)'
+    },
+    {
       key: 'nestjs',
       category: 'backend',
       title: 'NestJS Lab',
@@ -1704,6 +1717,19 @@
       open: 'laravel/Laravel_Lab_TaskFlow.html',
       repo: 'https://github.com/meeymirita/laravel-lab',
       accent: '#FF2D20', accentSoft: '#FF2D2022', accentShadow: 'rgba(255,45,32,.28)'
+    },
+    {
+      key: 'laravel-performance',
+      category: 'backend',
+      title: 'Laravel Performance Lab',
+      subtitle: 'CoffeePerf — замеры и оптимизация',
+      image: 'laravel-performance/laravel-performance.png',
+      desc: 'Измерять, а не гадать: Coffee Shop с 1 млн заказов, перцентили и k6, Debugbar и Telescope, профилирование SPX и Blackfire, OPcache и JIT, кеш с тегами и блокировками, Octane + FrankenPHP, бюджет p95 в CI.',
+      stack: ['Laravel 13', 'k6', 'SPX', 'OPcache', 'Octane'],
+      difficulty: 'Базовая',
+      open: 'laravel-performance/Perf_Lab_LaravelCoffeePerf.html',
+      repo: 'https://github.com/meeymirita/laravel-performance-lab',
+      accent: '#0e7490', accentSoft: '#0e749022', accentShadow: 'rgba(14,116,144,.28)'
     },
     {
       key: 'inertia',
@@ -1871,9 +1897,9 @@
       { title: 'Фреймворки', keys: ['vue', 'nuxt', 'angular'] }
     ] },
     { key: 'backend', label: 'Направление 2', title: 'Бэкенд', color: '#ff2e88', groups: [
-      { title: 'Основы: PHP и ООП', keys: ['php', 'php-coffee'] },
+      { title: 'Основы: PHP и ООП', keys: ['php', 'php-coffee', 'algorithms-php'] },
       { title: 'Данные, кэш и очереди', keys: ['postgresql', 'redis', 'rabbitmq'] },
-      { title: 'Фреймворки и API', keys: ['laravel', 'inertia', 'nestjs', 'graphql'] }
+      { title: 'Фреймворки и API', keys: ['laravel', 'laravel-performance', 'inertia', 'nestjs', 'graphql'] }
     ] },
     { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
       { title: '', keys: ['docker'] },
@@ -1938,7 +1964,7 @@
 
   // Слайдер скриншотов ------------------------------------------------------
   var aboutScreenshots = [
-    { src: 'docs/screenshots/1-cards.jpg', alt: 'Карточки лаб на главной странице', caption: 'Главная страница: 19 лаб карточками, сгруппированы по фронтенду, бэкенду и инфраструктуре.' },
+    { src: 'docs/screenshots/1-cards.jpg', alt: 'Карточки лаб на главной странице', caption: 'Главная страница: 21 лаба карточками, сгруппированы по фронтенду, бэкенду и инфраструктуре.' },
     { src: 'docs/screenshots/2-lab-page.jpg', alt: 'Страница лабы', caption: 'Страница лабы — стек, README, ссылка на репозиторий и открытие методички.' },
     { src: 'docs/screenshots/3-toc.jpg', alt: 'Оглавление методички', caption: 'Оглавление методички: сессии и шаги, прогресс сохраняется прямо в браузере.' },
     { src: 'docs/screenshots/4-manual.jpg', alt: 'Методичка', caption: 'Сама методичка — код, «Под капотом», тренировки с ответами под спойлером.' }
@@ -2396,7 +2422,7 @@
     { label: 'CSS', sub: 'стили', nodes: ['css', 'tailwind'] },
     { label: 'JS / TS', sub: 'фронт и Node', nodes: ['js', 'vue', 'typescript', 'nestjs', 'graphql'] },
     { label: 'NUXT · NG', sub: 'Nuxt и Angular', nodes: [null, null, null, 'nuxt', 'angular'] },
-    { label: 'PHP', sub: 'бэкенд', nodes: ['php', 'php-coffee', 'postgresql', 'laravel', 'inertia', 'rabbitmq', 'redis'] },
+    { label: 'PHP', sub: 'бэкенд', nodes: ['php', 'php-coffee', 'algorithms-php', 'postgresql', 'laravel', 'laravel-performance', 'inertia', 'rabbitmq', 'redis'] },
     { label: 'ИНФРА', sub: 'инфраструктура', nodes: ['docker', 'traefik', 'kubernetes'] }
   ];
 
@@ -2405,7 +2431,7 @@
     ['css', 'tailwind'], ['tailwind', 'js'],
     ['js', 'vue'], ['vue', 'typescript'], ['typescript', 'nestjs'], ['nestjs', 'graphql'], ['typescript', 'nuxt'], ['nuxt', 'angular'],
     ['js', 'typescript', { skip: true, tracks: ['node'] }],
-    ['php', 'php-coffee'], ['php-coffee', 'postgresql'], ['postgresql', 'laravel'], ['laravel', 'inertia'], ['inertia', 'rabbitmq'], ['rabbitmq', 'redis'],
+    ['php', 'php-coffee'], ['php-coffee', 'algorithms-php'], ['algorithms-php', 'postgresql'], ['postgresql', 'laravel'], ['laravel', 'laravel-performance'], ['laravel-performance', 'inertia'], ['inertia', 'rabbitmq'], ['rabbitmq', 'redis'],
     ['docker', 'traefik'], ['traefik', 'kubernetes']
   ];
 
@@ -2414,7 +2440,7 @@
       key: 'all', label: 'Весь путь', color: '#f8c8dc',
       title: 'Хочу пройти всё',
       text: 'Docker первым — контейнеры понадобятся почти в каждой следующей лабе. Дальше PHP-ветка целиком, потом JavaScript-ветка, а в конце оркестрация: Traefik и Kubernetes, когда уже есть что деплоить.',
-      path: ['docker', 'php', 'php-coffee', 'postgresql', 'laravel', 'inertia', 'rabbitmq', 'redis', 'css', 'tailwind', 'js', 'vue', 'typescript', 'nuxt', 'angular', 'nestjs', 'graphql', 'traefik', 'kubernetes']
+      path: ['docker', 'php', 'php-coffee', 'algorithms-php', 'postgresql', 'laravel', 'laravel-performance', 'inertia', 'rabbitmq', 'redis', 'css', 'tailwind', 'js', 'vue', 'typescript', 'nuxt', 'angular', 'nestjs', 'graphql', 'traefik', 'kubernetes']
     },
     {
       key: 'front', label: 'Фронтенд', color: '#7df9ff',
@@ -2431,8 +2457,8 @@
     {
       key: 'php', label: 'Бэкенд на PHP', color: '#ff2e88',
       title: 'Хочу бэкенд на PHP / Laravel',
-      text: 'Сначала чистый PHP — чтобы видеть, что Laravel делает под капотом. Потом ООП и паттерны на домене кофейни, PostgreSQL без ORM, и только потом Laravel. Сразу за ним — Inertia: тот же Laravel, но с мостом к Vue вместо API. RabbitMQ и Redis — в конце: outbox, воркеры, кэш и локи опираются на всё предыдущее.',
-      path: ['php', 'php-coffee', 'postgresql', 'laravel', 'inertia', 'rabbitmq', 'redis']
+      text: 'Сначала чистый PHP — чтобы видеть, что Laravel делает под капотом. Потом ООП и паттерны на домене кофейни и алгоритмы с замерами на PHP, PostgreSQL без ORM, и только потом Laravel. Сразу за ним — Laravel Performance: как измерять и ускорять приложение, от k6 и профилировщиков до Octane. Затем Inertia: тот же Laravel, но с мостом к Vue вместо API. RabbitMQ и Redis — в конце: outbox, воркеры, кэш и локи опираются на всё предыдущее.',
+      path: ['php', 'php-coffee', 'algorithms-php', 'postgresql', 'laravel', 'laravel-performance', 'inertia', 'rabbitmq', 'redis']
     },
     {
       key: 'devops', label: 'Инфраструктура', color: '#42d392',

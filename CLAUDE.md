@@ -14,6 +14,7 @@
 | `docker` | docker-lab | Docker + Bash |
 | `php-coffee` | **oop-lab** (имя не совпадает!) | ООП на PHP — Coffee Shop API |
 | `php` | php-lab | Чистый PHP: роутер, DI, PDO, CSRF |
+| `algorithms-php` | algorithms-php-lab | Алгоритмы и структуры данных на PHP — CoffeeAlgo (13 сессий, Базовая; вычитана 04.10) |
 | `traefik` | traefik-lab | reverse proxy, TLS |
 | `kubernetes` | kubernetes-lab | от Compose к k8s |
 | `rabbitmq` | rabbitmq-lab | Outbox, воркеры, DLQ |
@@ -25,6 +26,7 @@
 | `inertia` | inertia-lab | Inertia 3 — Laravel + Vue без отдельного API (Inkwell) |
 | `nestjs` / `graphql` | nestjs-lab / graphql-lab | бэкенд на Node |
 | `laravel` | laravel-lab | Laravel 13 изнутри |
+| `laravel-performance` | laravel-performance-lab | Производительность Laravel — CoffeePerf: k6, SPX, OPcache, кеш, Octane (9 сессий, Базовая; вычитана 04.10) |
 | `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`) |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
@@ -68,7 +70,7 @@
 5. **`works/<key>.html`** — скопировать у ближайшей лабы, поменять только `renderLabPage('<key>')`/`animeEnhance('<key>')` и `<title>`/description.
 6. **`works/js/lab-anime.js`** — отдельные от `LABS` хардкоды, их два: `ORDER` (порядок и общее число — без ключа здесь шапка лабы покажет «лаба 00 из <старое число>») и `TRACKS[].keys` (бейдж направления).
 7. **Корневой `README.md`** — список технологий в заголовке `# ANITECH PERFORMANCE — …`, абзац про порядок/зависимости, строка в таблице, нумерованный раздел.
-8. **`changelog.html`** — **легко забыть, уже было дважды**: запись в `var LABS` (цвет) и новый блок в `DAYS` (дата, заголовок дня, события `added`/`changed`, честно — включая то, что было криво в первом проходе).
+8. **`changelog.html`** — **легко забыть, уже было дважды**: запись в `var LABS` (цвет) и новый блок в `DAYS` (дата, заголовок дня, события `added`/`changed`, честно — включая то, что было криво в первом проходе). Блок `DAYS` вставлять **в конец массива `DAYS`, перед `];` и комментарием `// ── рендер`** — 04.10 нашли блок за 03.10, оказавшийся внутри `stats` в `renderStats()` (пустая плитка и пропавшее событие); `node -e` на синтаксис такое не ловит.
 9. **`fixes/common/_order.md`** — строка в сводной таблице порядка/зависимостей (от чего реально зависит лаба — смотреть на ссылки в тексте методички, не только на README).
 10. **`fixes/common/_proofread.md`** — строка в таблице статусов со статусом `⬜ не начато` (саму методичку не вычитывать и `fixes/<направление>/<лаба>.md` не создавать — это отдельная задача, см. «Вычитка» ниже).
 11. **`fixes/common/_tools/prep.py`** — запись в словаре `LABS` (путь к HTML методички), иначе вычитку потом нечем будет готовить.
