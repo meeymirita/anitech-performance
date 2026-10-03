@@ -61,3 +61,9 @@
 [submodule "inertia"]
 	path = inertia
 	url = https://github.com/meeymirita/inertia-lab.git
+[submodule "laravel-performance"]
+	path = laravel-performance
+	url = https://github.com/meeymirita/laravel-performance-lab.git
+[submodule "algorithms-php"]
+	path = algorithms-php
+	url = https://github.com/meeymirita/algorithms-php-lab.git
