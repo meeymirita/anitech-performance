@@ -30,7 +30,7 @@
 
 **Формат методичек (с 02.10.2026):** HTML-«бандл» — текст лежит в сжатом JSON внутри файла (`window.LAB`), обычный grep/sed по нему не работает. Читать и править через `fixes/common/_tools/bundle.py` (`dump` / `grep` / `sub`, из Python — `rewrite`); `prep.py` умеет оба формата.
 
-**Версии-стандарт (03.10.2026):** Node 24 LTS, Redis 8, PostgreSQL 18 (образ монтируется в `/var/lib/postgresql`, **не** в `/data`), Traefik v3.7. Исключения: `postgresql` (остаётся на 17 — вывод EXPLAIN снят под 17), `rabbitmq` (пройдена, заморожена на 16), kind/Kubernetes 1.31 и nginx 1.27 — не обновлялись (нужен прогон). PHP 8.4 и TypeScript 5.x пока без изменений.
+**Версии-стандарт (03.10.2026):** Node 24 LTS, Redis 8, PostgreSQL 18 (образ монтируется в `/var/lib/postgresql`, **не** в `/data`), Traefik v3.7, nginx 1.30, kind v0.33 / Kubernetes 1.37, TypeScript 6.0, Vite 8, PHP 8.5 (только `php` и `php-coffee`; Laravel, Inertia, RabbitMQ пока на 8.4). Исключения: `postgresql` остаётся на 17 (вывод EXPLAIN снят под 17; на 18 формат другой), `rabbitmq` заморожена на 16. Подробности и основания — `fixes/common/site.md`, раздел «Единые версии».
 
 В каждой лабе: методичка HTML (например `php-coffee/docs/OOP_Lab_CoffeeShop.html`), README со строкой «Статус:», код прохождения пользователя.
 
@@ -73,6 +73,7 @@
 11. **`fixes/common/_tools/prep.py`** — запись в словаре `LABS` (путь к HTML методички), иначе вычитку потом нечем будет готовить.
 
 **Проверка перед коммитом — не на словах:**
+- `python3 tools/check-site.py` — сверяет ключи лаб по всем реестрам (index, lab.js, lab-anime.js, thumbs, changelog, README, `fixes/common/*`, `prep.py`), счётчики, ссылки в README, синтаксис JS и что подмодули не опережают origin. Ловит то, что раньше забывали вручную;
 - `node --check works/js/lab.js works/js/lab-anime.js` и для инлайн-скриптов в `.html` — `node -e "new Function(fs.readFileSync(f).toString().match(/<script>([\s\S]*?)<\/script>/)[1])"` (ловит синтаксис, не ловит логику);
 - поднять статику (`python3 -m http.server` из корня) и реально отрисовать страницы headless-браузером, а не только прочитать код:
   `chromium --headless --disable-gpu --no-sandbox --host-resolver-rules="MAP cdnjs.cloudflare.com 0.0.0.0" --dump-dom <url>` — флаг с CDN **обязателен**: без интернета до cdnjs (или просто при обычном `--screenshot` без доп. времени) страница на `works/*.html` зависает на заставке-загрузчике (GSAP не грузится → `page-loader.js` должен «отойти в сторону», но скриншот снимается раньше) и скриншот снимает именно заставку, а не контент — это НЕ баг лабы, а артефакт теста, проверено на заведомо рабочей `tailwind.html`;
