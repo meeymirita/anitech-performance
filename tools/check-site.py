@@ -70,6 +70,20 @@ for f in ['index.html', 'changelog.html']:
     r = subprocess.run(['node', '-e', "const fs=require('fs');const h=fs.readFileSync(process.argv[1],'utf8');[...h.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].forEach(m=>new Function(m[1]))", f], capture_output=True, text=True)
     if r.returncode: bad(f'{f}: инлайн-скрипт не компилируется')
 
+# 5b. методички-«бандлы»: текст читается и это валидный JSON (иначе страница не откроется)
+sys.path.insert(0, 'fixes/common/_tools')
+try:
+    import bundle
+    for p in sorted(glob.glob('*/*.html') + glob.glob('*/docs/*.html')):
+        if p.startswith(('works/', 'fixes/')):
+            continue
+        try:
+            bundle._check_json(bundle.load(p))
+        except Exception as e:
+            bad(f'{p}: методичка: невалидный JSON ({str(e)[:60]})')
+except ImportError:
+    bad('fixes/common/_tools/bundle.py не найден')
+
 # 6. подмодули не опережают origin
 r = subprocess.run(['git', 'submodule', 'foreach', '--quiet', 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'], capture_output=True, text=True)
 for line in r.stdout.splitlines(): bad(f'подмодуль опережает origin: {line}')
