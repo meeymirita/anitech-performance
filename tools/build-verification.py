@@ -54,6 +54,7 @@ h = hashlib.sha256(md.encode()).hexdigest()[:16]
 page = f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
+<script>if(location.protocol==='http:'&&location.hostname==='anitech.meeymirita.ru')location.replace('https://'+location.host+location.pathname+location.search+location.hash);</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Что чем проверено — ANITECH</title>
