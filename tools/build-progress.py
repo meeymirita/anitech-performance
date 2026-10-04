@@ -32,11 +32,16 @@ by_key = {l['key']: l for l in labs}
 # «полностью вычитана и проверена»: в fixes/common/_verification.md уровень ✅ и пустая колонка «Что не проверено» (начинается с «—»);
 # ключ лабы — имя файла из колонки «Где подробности» (fixes/<направление>/<лаба>.md)
 verified = set()
+vstatus = {}      # ключ -> ('full' | 'mostly' | 'partial', что не проверено)
 for row in open('fixes/common/_verification.md', encoding='utf-8'):
     c = [x.strip() for x in row.strip().strip('|').split('|')]
-    if len(c) == 6 and c[1].startswith('✅') and c[4].startswith('—'):
+    if len(c) == 6 and (c[1].startswith('✅') or c[1].startswith('🟡')):
         m = re.search(r'fixes/[^/]+/([\w-]+)\.md', c[5])
-        if m and m.group(1) in by_key: verified.add(m.group(1))
+        if not (m and m.group(1) in by_key): continue
+        key, left = m.group(1), re.sub(r'`', '', c[4])
+        if c[1].startswith('🟡'): vstatus[key] = ('partial', left)
+        elif left.startswith('—'): vstatus[key] = ('full', left[1:].strip(' ()')); verified.add(key)
+        else: vstatus[key] = ('mostly', left)
 
 # 3. из методичек: slug и ключи разделов
 for l in labs:
@@ -51,7 +56,7 @@ for title, keys in tracks:
     data.append({'title': title, 'labs': [{
         'key': k, 'title': by_key[k]['title'], 'subtitle': by_key[k]['subtitle'], 'difficulty': by_key[k]['difficulty'],
         'accent': by_key[k]['accent'], 'open': '../' + by_key[k]['href'], 'page': f'{k}.html',
-        'thumb': f'images/thumbs/{k}.webp', 'verified': k in verified, 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
+        'thumb': f'images/thumbs/{k}.webp', 'verified': k in verified, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
     } for k in keys]})
 missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
@@ -105,6 +110,11 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
 .ok { display:inline-flex; align-items:center; gap:6px; color:#1f8a47; font-weight:700; }
 .ok i { width:16px; height:16px; border-radius:50%; background:#1f8a47; color:#fff; font:700 11px/16px sans-serif; text-align:center; font-style:normal; }
 .name .ok { margin-left:10px; vertical-align:1px; font-size:12px; }
+.part { display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-weight:700; }
+.part i { width:16px; height:16px; border-radius:50%; background:#c98a00; color:#fff; font:700 11px/16px sans-serif; text-align:center; font-style:normal; }
+.name .part { margin-left:10px; font-size:12px; }
+.note { font-size:12px; color:var(--muted); }
+.legend { margin:0 0 10px; font-size:13px; color:var(--muted); }
 .tools { display:flex; gap:8px; margin:0 0 8px; }
 .tools button { font:inherit; font-size:13px; padding:4px 10px; border:1px solid var(--hair); background:var(--card); color:var(--ink); cursor:pointer; }
 @media (prefers-color-scheme: dark) { .ok { color:#4cc87a; } .ok i { background:#2f9e5a; } }
@@ -123,6 +133,7 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <h1>Все работы и прогресс</h1>
   <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
   <div class="total" id="total"></div>
+  <p class="legend">✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении.</p>
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
@@ -151,6 +162,13 @@ function fmtTime(s) {
 var FOLD_KEY = 'anitech-progress-folded';
 function folded() { try { return JSON.parse(localStorage.getItem(FOLD_KEY) || '{}'); } catch (e) { return {}; } }
 function setFolded(m) { try { localStorage.setItem(FOLD_KEY, JSON.stringify(m)); } catch (e) {} }
+function statusBadge(lab, short) {
+  if (lab.vstatus === 'full') return okBadge(short);
+  var t = esc(lab.vnote || '');
+  if (lab.vstatus === 'mostly') return '<span class="part" title="Не проверено: ' + t + '"><i>~</i>' + (short ? 'в основном' : 'Вычитана, проверена в основном') + '</span>';
+  if (lab.vstatus === 'partial') return '<span class="part" title="Не проверено: ' + t + '"><i>½</i>' + (short ? 'частично' : 'Вычитана, проверена частично') + '</span>';
+  return '';
+}
 function okBadge(short) { return '<span class="ok"><i>✓</i>' + (short ? 'проверена' : 'Полностью вычитана и проверена') + '</span>'; }
 
 function render() {
@@ -167,11 +185,11 @@ function render() {
         + '<button type="button" class="fold" title="Свернуть / развернуть" aria-label="Свернуть или развернуть"></button>'
         + '<span class="num">' + String(n).padStart(2, '0') + '</span>'
         + '<img class="thumb" src="' + esc(lab.thumb) + '" alt="" width="64" height="64" loading="lazy">'
-        + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + (lab.verified ? okBadge(true) : '') + '</a>'
+        + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + (lab.vstatus !== 'none' ? statusBadge(lab, true) : '') + '</a>'
         + ''        + '<span class="pct">' + pct + '% · ' + p.done + '/' + p.total + '</span>'
         + '<span class="meta">' + esc(lab.subtitle) + ' · ' + esc(lab.difficulty)
         + (p.secs ? ' · ' + fmtTime(p.secs) : '') + '<br>'
-        + (lab.verified ? okBadge(false) + ' · ' : '')
+        + (lab.vstatus !== 'none' ? statusBadge(lab, false) + (lab.vnote ? ' <span class="note">' + (lab.vstatus === 'full' ? '· * ' : '· не проверено: ') + esc(lab.vnote) + '</span>' : '') + '<br>' : '')
         + '<a href="' + esc(lab.open) + '">Методичка ↗</a><a href="' + esc(lab.page) + '">Страница лабы</a></span>'
         + '<div class="bar"><i style="width:' + pct + '%"></i></div>'
         + '</div>';
