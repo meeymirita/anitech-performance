@@ -29,6 +29,15 @@ for m in re.finditer(r"\{\s*n:\s*\d+,\s*title:\s*'([^']+)',\s*keys:\s*\[(.*?)\]\
     tracks.append((m.group(1), re.findall(r"'([^']+)'", m.group(2))))
 by_key = {l['key']: l for l in labs}
 
+# «полностью вычитана и проверена»: в fixes/common/_verification.md уровень ✅ и пустая колонка «Что не проверено» (начинается с «—»);
+# ключ лабы — имя файла из колонки «Где подробности» (fixes/<направление>/<лаба>.md)
+verified = set()
+for row in open('fixes/common/_verification.md', encoding='utf-8'):
+    c = [x.strip() for x in row.strip().strip('|').split('|')]
+    if len(c) == 6 and c[1].startswith('✅') and c[4].startswith('—'):
+        m = re.search(r'fixes/[^/]+/([\w-]+)\.md', c[5])
+        if m and m.group(1) in by_key: verified.add(m.group(1))
+
 # 3. из методичек: slug и ключи разделов
 for l in labs:
     L, _ = json.JSONDecoder().raw_decode(bundle.load(l['open'])[len('window.LAB='):])
@@ -42,7 +51,7 @@ for title, keys in tracks:
     data.append({'title': title, 'labs': [{
         'key': k, 'title': by_key[k]['title'], 'subtitle': by_key[k]['subtitle'], 'difficulty': by_key[k]['difficulty'],
         'accent': by_key[k]['accent'], 'open': '../' + by_key[k]['href'], 'page': f'{k}.html',
-        'thumb': f'images/thumbs/{k}.webp', 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
+        'thumb': f'images/thumbs/{k}.webp', 'verified': k in verified, 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
     } for k in keys]})
 missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
@@ -85,6 +94,20 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
 .pct { text-align:right; font:700 13px ui-monospace,Menlo,monospace; }
 .lab .bar { grid-column:4; grid-row:2; margin-top:0; }
 .lab .pct { grid-column:4; grid-row:1; }
+.fold { grid-column:1; grid-row:1; width:28px; height:28px; padding:0; border:1px solid var(--hair); background:var(--card); color:var(--muted); font:700 14px ui-monospace,Menlo,monospace; cursor:pointer; }
+.fold:hover { color:var(--ink); border-color:var(--ink); }
+.fold::before { content:'−'; } .lab.collapsed .fold::before { content:'+'; }
+.lab.collapsed { padding:7px 0; }
+.lab.collapsed .thumb, .lab.collapsed .meta, .lab.collapsed .bar { display:none; }
+.lab.collapsed .name, .lab.collapsed .pct { grid-row:1; }
+.lab.collapsed .name { grid-column:2 / 4; }
+.lab .num { display:none; }
+.ok { display:inline-flex; align-items:center; gap:6px; color:#1f8a47; font-weight:700; }
+.ok i { width:16px; height:16px; border-radius:50%; background:#1f8a47; color:#fff; font:700 11px/16px sans-serif; text-align:center; font-style:normal; }
+.name .ok { margin-left:10px; vertical-align:1px; font-size:12px; }
+.tools { display:flex; gap:8px; margin:0 0 8px; }
+.tools button { font:inherit; font-size:13px; padding:4px 10px; border:1px solid var(--hair); background:var(--card); color:var(--ink); cursor:pointer; }
+@media (prefers-color-scheme: dark) { .ok { color:#4cc87a; } .ok i { background:#2f9e5a; } }
 .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--c); margin-right:8px; }
 @media (max-width:620px) {
   .lab { grid-template-columns:26px 52px minmax(0,1fr); }
@@ -96,9 +119,11 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
 <body>
 <div class="wrap">
   <a class="back" href="../index.html">← ANITECH PERFORMANCE</a>
+  <a class="back" style="float:right" href="verification.html">Что чем проверено →</a>
   <h1>Все работы и прогресс</h1>
   <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
   <div class="total" id="total"></div>
+  <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
 <script>
@@ -123,7 +148,13 @@ function fmtTime(s) {
   return h ? h + ' ч ' + m + ' мин' : m + ' мин';
 }
 
+var FOLD_KEY = 'anitech-progress-folded';
+function folded() { try { return JSON.parse(localStorage.getItem(FOLD_KEY) || '{}'); } catch (e) { return {}; } }
+function setFolded(m) { try { localStorage.setItem(FOLD_KEY, JSON.stringify(m)); } catch (e) {} }
+function okBadge(short) { return '<span class="ok"><i>✓</i>' + (short ? 'проверена' : 'Полностью вычитана и проверена') + '</span>'; }
+
 function render() {
+  var fold = folded();
   var allDone = 0, allTotal = 0, started = 0, finished = 0, secs = 0, html = '', n = 0;
   GROUPS.forEach(function (g) {
     html += '<h2>' + esc(g.title) + '</h2>';
@@ -132,13 +163,15 @@ function render() {
       var p = readProgress(lab), pct = p.total ? Math.round(p.done / p.total * 100) : 0;
       allDone += p.done; allTotal += p.total; secs += p.secs;
       if (p.done) started++; if (p.total && p.done === p.total) finished++;
-      html += '<div class="lab" style="--c:' + lab.accent + '">'
+      html += '<div class="lab' + (fold[lab.key] ? ' collapsed' : '') + '" data-key="' + lab.key + '" style="--c:' + lab.accent + '">'
+        + '<button type="button" class="fold" title="Свернуть / развернуть" aria-label="Свернуть или развернуть"></button>'
         + '<span class="num">' + String(n).padStart(2, '0') + '</span>'
         + '<img class="thumb" src="' + esc(lab.thumb) + '" alt="" width="64" height="64" loading="lazy">'
-        + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + '</a>'
-        + '<span class="pct">' + pct + '% · ' + p.done + '/' + p.total + '</span>'
+        + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + (lab.verified ? okBadge(true) : '') + '</a>'
+        + ''        + '<span class="pct">' + pct + '% · ' + p.done + '/' + p.total + '</span>'
         + '<span class="meta">' + esc(lab.subtitle) + ' · ' + esc(lab.difficulty)
         + (p.secs ? ' · ' + fmtTime(p.secs) : '') + '<br>'
+        + (lab.verified ? okBadge(false) + ' · ' : '')
         + '<a href="' + esc(lab.open) + '">Методичка ↗</a><a href="' + esc(lab.page) + '">Страница лабы</a></span>'
         + '<div class="bar"><i style="width:' + pct + '%"></i></div>'
         + '</div>';
@@ -152,6 +185,13 @@ function render() {
     + '<div class="total-note">отмечено ' + allDone + ' из ' + allTotal + ' разделов и шагов · начато лаб: ' + started + ' из ' + n
     + ' · пройдено целиком: ' + finished + (secs ? ' · времени в методичках: ' + fmtTime(secs) : '') + '</div>';
 }
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('.fold');
+  if (b) { var row = b.parentNode, m = folded(); row.classList.toggle('collapsed'); m[row.getAttribute('data-key')] = row.classList.contains('collapsed') ? 1 : 0; setFolded(m); }
+});
+function foldAll(on) { var m = {}; GROUPS.forEach(function (g) { g.labs.forEach(function (l) { m[l.key] = on ? 1 : 0; }); }); setFolded(m); render(); }
+document.getElementById('foldAll').onclick = function () { foldAll(true); };
+document.getElementById('unfoldAll').onclick = function () { foldAll(false); };
 render();
 window.addEventListener('focus', render);          // вернулись из методички — обновить цифры
 window.addEventListener('storage', render);
