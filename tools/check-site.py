@@ -84,6 +84,11 @@ try:
 except ImportError:
     bad('fixes/common/_tools/bundle.py не найден')
 
+# 5a. у каждой карточки на главной есть сноска `note:` (что требуется: Docker, аккаунт, домен, ключи)
+_idx = read('index.html'); _pr = _idx[_idx.index('var projects = ['):_idx.index('\n  ];', _idx.index('var projects = ['))]
+if _pr.count("      note: '") != _pr.count("      key: '"):
+    bad('index.html: у части карточек нет note: (сноска «что требуется»)')
+
 # 5b. works/verification.html — пара к fixes/common/_verification.md (tools/build-verification.py)
 import hashlib as _hl
 _md = open('fixes/common/_verification.md', 'rb').read().decode('utf-8')

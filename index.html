@@ -586,6 +586,8 @@
     .card-subtitle { font-family: 'JetBrains Mono',monospace; font-size: 10px; letter-spacing: .08em; margin: 6px 0 0; color: var(--accent); }
     .card-desc { font-size: 13px; color: var(--text-dim); margin: 14px 0 0; line-height: 1.65; }
 
+    .card-note { font-size: 11px; line-height: 1.5; color: var(--text-dim); opacity: .85; margin: 12px 0 0; }
+
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
 
     .chip {
@@ -1558,6 +1560,7 @@
       image: 'js/JavaScript.png',
       desc: 'Чистый JavaScript с нуля — общий фундамент для Vue и TypeScript: var/let/const и hoisting, this и замыкания, прототипы и class, event loop и async/await, DOM без фреймворка, ESM-модули, своя реактивность на Proxy, финальное мини-SPA с явным сравнением с Vue.',
       stack: ['JavaScript ES2022', 'Node.js 24+', 'json-server', 'node:test', 'Docker'],
+      note: 'Нужен Docker или Node 24; аккаунтов и ключей нет.',
       difficulty: 'Средняя',
       open: 'js/JS_Lab_VanillaHelpdesk.html',
       repo: 'https://github.com/meeymirita/js-lab',
@@ -1571,6 +1574,7 @@
       image: 'works/images/typescript.png',
       desc: 'Типизация домена складского учёта с нуля: generics, размеченные объединения, mapped/conditional types, CLI на Zod, сквозная типизация API + Vue.',
       stack: ['TypeScript 6', 'Node 24+', 'Zod', 'Vitest'],
+      note: 'Нужен Docker (Node 24); аккаунтов и ключей нет.',
       difficulty: 'Высокая',
       open: 'typescript/TypeScript_Lab_Warehouse.html',
       repo: 'https://github.com/meeymirita/typescript-lab',
@@ -1584,6 +1588,7 @@
       image: 'works/images/vue.png',
       desc: 'Система тикетов на Vue 3 с нуля: реактивность, компоненты, слоты, Pinia, Vue Router с guard-ами, WebSocket, канбан-доска, тесты на Vitest.',
       stack: ['Vue 3.5', 'Vite 7', 'Pinia 2+', 'Vue Router', 'Node'],
+      note: 'Нужен Docker (Node 24); бэкенд на NestJS собирается в самой лабе.',
       difficulty: 'Высокая',
       open: 'vue/Vue_Lab_Helpdesk.html',
       repo: 'https://github.com/meeymirita/vue-lab',
@@ -1597,6 +1602,7 @@
       image: 'nuxt/Nuxt.png',
       desc: 'Публичный центр поддержки на Nuxt 4 и TypeScript: файловый роутинг, useFetch и гидрация, Nitro server routes, Drizzle + SQLite, общие Zod-схемы в shared/, сессии и защита страниц, Nuxt Content, routeRules (SSG, SWR, SPA), SEO, тесты и сборка в Docker.',
       stack: ['Nuxt 4', 'TypeScript', 'Nitro', 'Drizzle', 'Nuxt Content'],
+      note: 'Нужен Docker (Node 24); образ из 6.4 собирается на полном node:24.',
       difficulty: 'Высокая',
       open: 'nuxt/Nuxt_Lab_HelpCenter.html',
       repo: 'https://github.com/meeymirita/nuxt-lab',
@@ -1610,6 +1616,7 @@
       image: 'angular/Angular.png',
       desc: 'Внутренний сервис бронирования переговорных на Angular 22: сигналы и OnPush без zone.js, DI и провайдеры, HttpClient, интерцепторы и httpResource, роутер с lazy-загрузкой и guards по ролям, Signal Forms с серверной проверкой слота, RxJS для поиска и живого расписания через SSE, тесты на Vitest и сборка под nginx.',
       stack: ['Angular 22', 'TypeScript', 'Signals', 'Signal Forms', 'RxJS'],
+      note: 'Нужен Docker (Node 24); аккаунтов и ключей нет.',
       difficulty: 'Высокая',
       open: 'angular/Angular_Lab_RoomBook.html',
       repo: 'https://github.com/meeymirita/angular-lab',
@@ -1623,6 +1630,7 @@
       image: 'css/css.png',
       desc: 'Современный CSS с нуля на сайте фронтенд-конференции: каскад и @layer, токены, oklch и тёмная тема через light-dark(), Flexbox, Grid и subgrid, адаптив и container queries, :has() и формы, sticky, анимации и view transitions. Разметка готовая — вы пишете только стили, без фреймворков и препроцессоров.',
       stack: ['CSS', '@layer', 'Grid', 'Container Queries', 'oklch'],
+      note: 'Нужен Docker (nginx) и браузер с современным CSS.',
       difficulty: 'Базовая',
       open: 'css/CSS_Lab_FrontFest.html',
       repo: 'https://github.com/meeymirita/css-lab',
@@ -1636,6 +1644,7 @@
       image: 'tailwind/tailwind.png',
       desc: 'Tailwind CSS v4 с нуля на сервисе аналитики «Pulse»: лендинг, дашборд и настройки. Утилиты и шкалы, тема через @theme, варианты и состояния (group, peer, has-*), адаптив и container queries, тёмная тема, формы, @layer components и @apply, сборка на Vite и nginx. Разметку пишете сами.',
       stack: ['Tailwind CSS 4', '@theme', 'Vite', 'Container Queries', 'Dark mode'],
+      note: 'Нужен Docker (Node 24, nginx); аккаунтов и ключей нет.',
       difficulty: 'Базовая',
       open: 'tailwind/Tailwind_Lab_Pulse.html',
       repo: 'https://github.com/meeymirita/tailwind-lab',
@@ -1649,6 +1658,7 @@
       image: 'php/php.png',
       desc: 'Чистый PHP 8.4 без фреймворка: strict_types и copy-on-write массивы, суперглобалы, замыкания и генераторы, магические методы — и своими руками роутер, DI-контейнер, PDO-слой, сессии и CSRF.',
       stack: ['PHP 8.4', 'PDO', 'PostgreSQL', 'Composer (PSR-4)'],
+      note: 'Нужен Docker (PHP 8.4, PostgreSQL); аккаунтов и ключей нет.',
       difficulty: 'Базовая',
       open: 'php/PHP_Lab_VanillaCoffee.html',
       repo: 'https://github.com/meeymirita/php-lab',
@@ -1662,6 +1672,7 @@
       image: 'works/images/php.png',
       desc: 'ООП на PHP 8.4 с нуля на маленьком API кофейни: 4 принципа ООП, Factory, Decorator, Strategy, Repository, SOLID, наследование vs композиция.',
       stack: ['PHP 8.4', 'Laravel 13', 'PostgreSQL', 'RabbitMQ'],
+      note: 'Нужен Docker (PHP 8.4; в шаге 5 ещё RabbitMQ).',
       difficulty: 'Базовая',
       open: 'php-coffee/docs/OOP_Lab_CoffeeShop.html',
       repo: 'https://github.com/meeymirita/oop-lab',
@@ -1675,6 +1686,7 @@
       image: 'algorithms-php/algorithms-php.png',
       desc: 'Алгоритмы на задачах кофейни, каждое утверждение — замером: сложность без формул, хеш-таблицы, стек и очередь, списки, рекурсия, бинарный поиск и сортировки, деревья, кучи, графы, динамическое программирование, разбор собеседований.',
       stack: ['PHP 8.4', 'SPL', 'PHPUnit', 'Docker'],
+      note: 'Нужен Docker (PHP 8.4); база данных не нужна.',
       difficulty: 'Базовая',
       open: 'algorithms-php/Algo_Lab_CoffeeAlgo.html',
       repo: 'https://github.com/meeymirita/algorithms-php-lab',
@@ -1688,6 +1700,7 @@
       image: 'nestjs/nest.png',
       desc: 'Helpdesk API собран с нуля слой за слоем: свой мини-DI контейнер, границы модулей и provider scopes, Prisma и транзакции, JWT-ротация refresh-токенов с reuse-detection, RBAC через TicketPolicy, доменные события и WebSocket-шлюз, свой динамический модуль, unit и e2e тесты.',
       stack: ['NestJS 11', 'Prisma 7', 'PostgreSQL 18', 'JWT + argon2', 'Socket.IO'],
+      note: 'Нужен Docker (PostgreSQL 18); задания 9.5 без подсказок решаете сами.',
       difficulty: 'Высокая',
       open: 'nestjs/NestJS_Lab_Plan.html',
       repo: 'https://github.com/meeymirita/nestjs-lab',
@@ -1701,6 +1714,7 @@
       image: 'graphql/GraphQL.png',
       desc: 'Самостоятельный проект CineGraph с нуля: язык запросов и жизненный цикл запроса, N+1 в резолверах и DataLoader, JWT и права на уровне полей, интерфейсы и юнионы, курсорная пагинация, подписки через Redis, защита от тяжёлых запросов, unit и e2e тесты.',
       stack: ['NestJS + Apollo Server', 'Prisma 7', 'PostgreSQL 18', 'DataLoader', 'Redis'],
+      note: 'Нужен Docker (PostgreSQL, Redis) и интернет для клиента 6.3 (graphql-ws с esm.sh); задания 6.6 решаете сами.',
       difficulty: 'Высокая',
       open: 'graphql/GraphQL_Lab_Plan.html',
       repo: 'https://github.com/meeymirita/graphql-lab',
@@ -1714,6 +1728,7 @@
       image: 'works/images/laravel.png',
       desc: 'Laravel 13 «изнутри»: ~30 компонентов illuminate/*, Eloquent-связи, Service Container, Auth/Policy, Observer, очереди, Mailable, кэш, Broadcasting, тесты.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'Redis', 'RabbitMQ', 'Reverb'],
+      note: 'Нужен Docker: PostgreSQL, Redis, RabbitMQ, Mailpit и Reverb — несколько контейнеров сразу.',
       difficulty: 'Высокая',
       open: 'laravel/Laravel_Lab_TaskFlow.html',
       repo: 'https://github.com/meeymirita/laravel-lab',
@@ -1727,6 +1742,7 @@
       image: 'laravel-performance/laravel-performance.png',
       desc: 'Измерять, а не гадать: Coffee Shop с 1 млн заказов, перцентили и k6, Debugbar и Telescope, профилирование SPX и Blackfire, OPcache и JIT, кеш с тегами и блокировками, Octane + FrankenPHP, бюджет p95 в CI.',
       stack: ['Laravel 13', 'k6', 'SPX', 'OPcache', 'Octane'],
+      note: 'Нужен Docker (k6, 1 млн заказов; ноутбук греется). Blackfire (4.5) требует аккаунт, CI-проверка (9.2) — репозиторий на GitHub: проверяете сами.',
       difficulty: 'Базовая',
       open: 'laravel-performance/Perf_Lab_LaravelCoffeePerf.html',
       repo: 'https://github.com/meeymirita/laravel-performance-lab',
@@ -1740,6 +1756,7 @@
       image: 'inertia/inertia.png',
       desc: 'Laravel 13 + Inertia 3 + Vue 3 без starter kit: протокол на проводе (объект страницы, XHR-визиты, 303-редиректы), props как публичный API через ресурсы, формы и валидация без 422, SSR и его типичные поломки (hydration mismatch, утечка Pinia между посетителями), роли и Policies без дублирования прав на фронте.',
       stack: ['Laravel 13', 'Inertia 3', 'Vue 3', 'TypeScript', 'Pinia'],
+      note: 'Нужен Docker (PHP 8.4, Node 24); задания 6.3 без подсказок решаете сами.',
       difficulty: 'Средняя',
       open: 'inertia/Inertia_Lab_Inkwell.html',
       repo: 'https://github.com/meeymirita/inertia-lab',
@@ -1753,6 +1770,7 @@
       image: 'works/images/redis.png',
       desc: 'Redis как кэш, хранилище сессий, примитив синхронизации и брокер событий: cache-aside, distributed lock, rate limiter, Streams, XAUTOCLAIM, Pub/Sub-дашборд.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'Redis 8'],
+      note: 'Нужен Docker (Redis 8); задания 3.5 без подсказок решаете сами.',
       difficulty: 'Средняя',
       open: 'redis/Redis_Lab_Plan.html',
       repo: 'https://github.com/meeymirita/redis-lab',
@@ -1766,6 +1784,7 @@
       image: 'works/images/rabbitmq.png',
       desc: 'Асинхронная обработка заказов через очереди: Transactional Outbox, идемпотентный consumer, prefetch, crash-тесты, retry с TTL→DLX, priority queues, fanout.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'RabbitMQ', 'Mailpit'],
+      note: 'Нужен Docker (RabbitMQ 4, PostgreSQL 18).',
       difficulty: 'Высокая',
       open: 'rabbitmq/docs/RabbitMQ_Lab_Plan_v1_pro_max.html',
       repo: 'https://github.com/meeymirita/rabbitmq-lab',
@@ -1779,6 +1798,7 @@
       image: 'postgresql/PostgreSQL.png',
       desc: 'Что происходит под ORM на миллионе заказов кофейни: JOIN с нуля, EXPLAIN и индексы B-tree/GIN/BRIN под конкретный запрос, статистика, N+1 глазами базы, уровни изоляции и аномалии, блокировки и дедлоки, SKIP LOCKED, MVCC и VACUUM, партиционирование.',
       stack: ['PostgreSQL 18', 'psql', 'pgbench', 'Docker'],
+      note: 'Нужен Docker (PostgreSQL 18); сид на 1 млн заказов — около 1 ГБ диска и минута-две.',
       difficulty: 'Средняя–высокая',
       open: 'postgresql/PostgreSQL_Lab_CoffeeShop.html',
       repo: 'https://github.com/meeymirita/postgresql-lab',
@@ -1792,6 +1812,7 @@
       image: 'works/images/docker.png',
       desc: 'Docker и Bash с нуля: образы, контейнеры, docker-compose, сети и тома — через практику в терминале.',
       stack: ['Docker', 'Docker Compose', 'Bash'],
+      note: 'Нужен Docker и bash; аккаунтов и ключей нет.',
       difficulty: 'Базовая',
       open: 'docker/Docker_Bash_Lab.html',
       repo: 'https://github.com/meeymirita/docker-lab',
@@ -1805,6 +1826,7 @@
       image: 'traefik/traefik.png',
       desc: 'Reverse proxy и service discovery для стека из нескольких сервисов без ручной правки конфигов: EntryPoint → Router → Middleware → Service, TLS, canary-деплой.',
       stack: ['Traefik 3', 'Docker Compose', 'Node.js', 'PostgreSQL'],
+      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert.',
       difficulty: 'Низкая–средняя',
       open: 'traefik/Docker_and_Traefik_Lab_Plan.html',
       repo: 'https://github.com/meeymirita/traefik-lab',
@@ -1818,6 +1840,7 @@
       image: 'kubernetes/kubernetes.png',
       desc: 'Миграция стека из Traefik-лабы в Kubernetes (kind): Pod и Deployment, Service и DNS, ConfigMap/Secret, Volumes и PVC, readiness/liveness-пробы, Traefik как Ingress-контроллер, HorizontalPodAutoscaler.',
       stack: ['Kubernetes v1.37.0', 'kind v0.33.0', 'kubectl', 'Traefik'],
+      note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке.',
       difficulty: 'Средняя–высокая',
       open: 'kubernetes/Kubernetes_Lab_Plan.html',
       repo: 'https://github.com/meeymirita/kubernetes-lab',
@@ -1878,6 +1901,7 @@
           <p class="card-subtitle">${escapeHtml(p.subtitle)}</p>
           <p class="card-desc">${escapeHtml(p.desc)}</p>
           <div class="chips">${chips}</div>
+          ${p.note ? '<p class="card-note">* ' + escapeHtml(p.note) + '</p>' : ''}
           <div class="card-actions">
             ${openHtml}
             <a href="${p.repo}" target="_blank" rel="noopener" class="card-repo" aria-label="GitHub">
