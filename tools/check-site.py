@@ -108,8 +108,11 @@ try:
         raw = _re.search(r'<script type="__bundler/template">(.*?)</script>', read(p), _re.S).group(1)
         if 'data-all-labs-nav' not in raw or 'data-all-labs-link' in raw or 'x-dc{display:none' not in raw or 'goHash' not in raw:
             bad(f'{p}: нет ссылки «все работы» или правки x-dc (python3 tools/patch-manuals.py)')
+        if 'works/js/sync.js' not in raw:
+            bad(f'{p}: нет скрипта синхронизации прогресса (python3 tools/patch-manuals.py)')
         if 'works/js/prereq.js' not in raw or 'this.__ps' not in raw:
             bad(f'{p}: нет окна «Что нужно знать» или правки прокрутки (python3 tools/patch-manuals.py)')
+    if 'js/sync.js' not in read('works/progress.html'): bad('works/progress.html без sync.js (python3 tools/build-progress.py)')
     # окно «Что нужно знать до старта»: запись на каждую лабу и общий порядок (works/js/prereq.js)
     pq = read('works/js/prereq.js')
     for k in keys:

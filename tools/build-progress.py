@@ -137,6 +137,7 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
+<script src="js/sync.js"></script>
 <script>
 var GROUPS = __DATA__;
 

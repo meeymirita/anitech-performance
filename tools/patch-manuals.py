@@ -15,6 +15,9 @@
 5. окно «Что нужно знать до старта» на главном экране методички: в шаблон добавляется <script src=".../works/js/prereq.js">
    (данные по всем лабам и порядок прохождения лежат в этом файле; открывается само один раз, дальше — кнопкой на главном экране).
 
+6. синхронизация прогресса: в шаблон добавляется <script src=".../works/js/sync.js"> (кнопка ☁, сохранение прогресса на Cloudflare Worker,
+   см. tools/progress-worker/README.md; пока адрес Worker не вписан в sync.js, работают только экспорт и импорт файла).
+
 Запуск из корня репозитория:  python3 tools/patch-manuals.py
 Запускать после добавления лабы или перевыгрузки методички из дизайн-исходников.
 """
@@ -83,6 +86,9 @@ for p in paths:
     if 'works/js/prereq.js' not in new:              # окно «Что нужно знать до старта»
         assert new.count('<\\u002Fbody>') == 1, (p, 'body')
         new = new.replace('<\\u002Fbody>', '<script src=\\"' + '../' * p.count('/') + 'works/js/prereq.js\\"><\\u002Fscript><\\u002Fbody>')
+    if 'works/js/sync.js' not in new:                # синхронизация прогресса
+        assert new.count('works/js/prereq.js') == 1, (p, 'prereq')
+        new = new.replace('works/js/prereq.js\\"><\\u002Fscript>', 'works/js/prereq.js\\"><\\u002Fscript><script src=\\"' + '../' * p.count('/') + 'works/js/sync.js\\"><\\u002Fscript>', 1)
     new = OLD_LINK.sub('', new)                      # убрать старую ссылку внизу
     h = href_for(p)
     if MARK in new:                                  # обновить путь у уже вставленных кнопок
