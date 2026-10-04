@@ -8,6 +8,13 @@
 3. переход по якорю: ссылки оглавления на странице лабы ведут на методичка.html#sec-3 / #step-2-1 — при загрузке и при смене
    хэша методичка открывает этот раздел (раньше URL менялся, а страница оставалась на месте).
 
+4. componentDidUpdate(pp, ps): рантайм вызывает его без prevState, `ps[k]` падало (консольная ошибка «reading 'done'») и до строк
+   «прокрутить наверх» / «прокрутить к шагу» дело не доходило — после «Шаг пройден, дальше →» страница оставалась прокрученной вниз,
+   а прогресс не сохранялся при смене состояния. Теперь прошлое состояние запоминается в this.__ps.
+
+5. окно «Что нужно знать до старта» на главном экране методички: в шаблон добавляется <script src=".../works/js/prereq.js">
+   (данные по всем лабам и порядок прохождения лежат в этом файле; открывается само один раз, дальше — кнопкой на главном экране).
+
 Запуск из корня репозитория:  python3 tools/patch-manuals.py
 Запускать после добавления лабы или перевыгрузки методички из дизайн-исходников.
 """
@@ -69,6 +76,13 @@ for p in paths:
         for old, repl in pairs:
             assert new.count(old) == 1, (p, old)
             new = new.replace(old, repl)
+    if '__ps' not in new:                            # componentDidUpdate без prevState
+        old = "componentDidUpdate(pp, ps) {\\n    const s = this.state;\\n"
+        assert new.count(old) == 1, (p, 'componentDidUpdate')
+        new = new.replace(old, "componentDidUpdate(pp) {\\n    const s = this.state, ps = this.__ps || {};\\n    this.__ps = s;\\n")
+    if 'works/js/prereq.js' not in new:              # окно «Что нужно знать до старта»
+        assert new.count('<\\u002Fbody>') == 1, (p, 'body')
+        new = new.replace('<\\u002Fbody>', '<script src=\\"' + '../' * p.count('/') + 'works/js/prereq.js\\"><\\u002Fscript><\\u002Fbody>')
     new = OLD_LINK.sub('', new)                      # убрать старую ссылку внизу
     h = href_for(p)
     if MARK in new:                                  # обновить путь у уже вставленных кнопок

@@ -108,6 +108,13 @@ try:
         raw = _re.search(r'<script type="__bundler/template">(.*?)</script>', read(p), _re.S).group(1)
         if 'data-all-labs-nav' not in raw or 'data-all-labs-link' in raw or 'x-dc{display:none' not in raw or 'goHash' not in raw:
             bad(f'{p}: нет ссылки «все работы» или правки x-dc (python3 tools/patch-manuals.py)')
+        if 'works/js/prereq.js' not in raw or 'this.__ps' not in raw:
+            bad(f'{p}: нет окна «Что нужно знать» или правки прокрутки (python3 tools/patch-manuals.py)')
+    # окно «Что нужно знать до старта»: запись на каждую лабу и общий порядок (works/js/prereq.js)
+    pq = read('works/js/prereq.js')
+    for k in keys:
+        if not _re.search(r"(^|\n)\s*'?%s'?: \{\s*\n\s*name:" % _re.escape(k), pq): bad(f'works/js/prereq.js: нет записи для лабы {k!r}')
+        if not _re.search(r"ORDER = \[[^\]]*'%s'" % _re.escape(k), pq): bad(f'works/js/prereq.js: лабы {k!r} нет в ORDER')
 except Exception as e:
     bad(f'проверка шаблонов методичек: {e}')
 
