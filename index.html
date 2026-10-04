@@ -1023,51 +1023,55 @@
       background: var(--pink); transform: skewX(-10deg);
     }
 
-    /* ---------- заставка ---------- */
+    /* ---------- заставка (вариант 9: дуотон + наклонные ленты) ---------- */
+    /* палитра и настройки — только для первого экрана (переменные на .opening); их же меняет панель-шестерёнка в углу */
     .opening {
+      --pink:#f91f73;--cyan:#fbff00;--sun:#fab038;--dimmer:rgb(255 255 255);
+      --bg9:#050407;--gA9:#f53d84;--gB9:#3df5ae;--ang9:135deg;--blend9:multiply;--gop9:1;--b9:1.8;--c9:1.05;
+ --dot9:#aa0947;--dotA9:0.3;--dotR9:1.5px;--step9:13px;--fade9:#bd0f52;--fadeMid9:#3d2e3a;--fadeMidA9:.5;--f1:35%;--f2:55%;
+ --tAbg9:var(--ink);--tAfg9:var(--paper);--tAbd9:#f91f73;--rotA9:-3deg;--spdA9:22s;
+ --tBbg9:#fab038;--tBfg9:var(--ink);--rotB9:2deg;
+ --t1c9:#f7f2f5;--t2c9:#fbff00;--kc9:#fbff00;--leadc9:#dcd8da;--notec9:rgb(255 255 255);--statc9:#f7f2f5;--statt9:#d9d6d8;
+ --bm9:#ffffff;--bn9:var(--paper);--bnb9:var(--paper);--bg9t:#d9d6d8;--spdB9:26s;--tapeH9:8px;
+ 
       position: relative; overflow: hidden; isolation: isolate;
       min-height: calc(100vh - var(--header-h));
       display: grid; align-content: center;
-      padding: clamp(40px,7vh,90px) 0 clamp(80px,12vh,130px);
-      background: var(--ink);
+      padding: clamp(40px,7vh,90px) 0 clamp(130px,19vh,180px);
+      background: var(--bg9);
     }
-    .op-lines {
-      position: absolute; inset: -40%; z-index: -3; pointer-events: none;
-      background: repeating-conic-gradient(from 0deg at 62% 42%, rgba(247,242,245,.07) 0deg 1.2deg, transparent 1.2deg 7deg);
-      mask-image: radial-gradient(closest-side at 62% 42%, transparent 12%, #000 60%);
-      animation: op-spin 90s linear infinite;
-      transition: translate .4s ease-out;
-    }
-    @keyframes op-spin { to { rotate: 360deg; } }
-    .op-halftone {
-      position: absolute; inset: -30px; z-index: -2; pointer-events: none;
-      background: var(--halftone);
-      mask-image: linear-gradient(115deg, transparent 35%, #000 75%);
-      opacity: .7; transition: translate .4s ease-out;
-    }
-    .op-slab { position: absolute; z-index: -1; pointer-events: none; transform: skewY(-9deg); }
-    .op-slab-a { left: -10%; right: 42%; top: 58%; height: 26%; background: linear-gradient(90deg, var(--pink), rgba(255,46,136,.0)); opacity: .9; }
-    .op-slab-b { left: 48%; right: -10%; top: 8%; height: 9%; background: linear-gradient(270deg, var(--cyan), rgba(125,249,255,0)); opacity: .55; }
-    .op-flash { position: absolute; inset: 0; z-index: 5; background: #fff; opacity: 0; visibility: hidden; pointer-events: none; }
+    .op-img { position: absolute; inset: 0 0 0 34%; z-index: -2; overflow: hidden; }
+    .op-ph { position: absolute; inset: 0; background: url('images/hero.jpg') 36% 35% / auto max(100vh, 100%) no-repeat; filter: grayscale(1) contrast(var(--c9)) brightness(var(--b9)); }
+    .op-img::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(var(--ang9), var(--gA9), var(--gB9)); mix-blend-mode: var(--blend9); opacity: var(--gop9); }
+    .op-img::after { content: ""; position: absolute; inset: 0; z-index: 2; mix-blend-mode: multiply;
+      background: radial-gradient(color-mix(in srgb, var(--dot9) calc(var(--dotA9) * 100%), transparent) var(--dotR9), transparent calc(var(--dotR9) + .5px)) 0 0 / var(--step9) var(--step9); }
+    .op-fade { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: linear-gradient(90deg, var(--fade9) var(--f1), color-mix(in srgb, var(--fadeMid9) calc(var(--fadeMidA9) * 100%), transparent) var(--f2), transparent); }
+    .op-flash { position: absolute; inset: 0; z-index: 6; background: #fff; opacity: 0; visibility: hidden; pointer-events: none; }
+    .op-inner { position: relative; z-index: 5; width: min(1300px, 92%); margin-inline: auto; padding: 0; }
+
+    .op-tape { position: absolute; left: -5%; width: 110%; padding: var(--tapeH9) 0; z-index: 3; overflow: hidden; pointer-events: none;
+      font: 700 14px 'JetBrains Mono', monospace; letter-spacing: .2em; white-space: nowrap; }
+    .op-tape-a { bottom: 12%; background: var(--tAbg9); color: var(--tAfg9); transform: rotate(var(--rotA9)); border-top: 2px solid var(--tAbd9); border-bottom: 2px solid var(--tAbd9); }
+    .op-tape-b { bottom: 3%; background: var(--tBbg9); color: var(--tBfg9); transform: rotate(var(--rotB9)); }
+    .op-tape div { display: flex; width: max-content; animation: op-mq var(--spdA9) linear infinite; }
+    .op-tape span { padding-right: 28px; }
+    .op-tape-b div { animation-direction: reverse; animation-duration: var(--spdB9); }
+    @keyframes op-mq { to { transform: translateX(-50%); } }
 
     .op-season {
-      display: inline-flex; align-items: center; gap: 10px; width: max-content;
-      font-size: 12px; color: var(--cyan); margin-bottom: clamp(14px,2.4vh,26px);
+      display: inline-flex; align-items: center; gap: 8px; width: max-content;
+      font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--kc9);
+      margin-bottom: clamp(10px,1.6vh,18px);
     }
-    .op-live { width: 9px; height: 9px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 14px var(--pink); animation: blink 1.4s steps(1) infinite; }
+    .op-live { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: op-ping 1.8s infinite; }
+    @keyframes op-ping { 0% { box-shadow: 0 0 0 0 var(--pink); } 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 
-    .op-title { margin: 0; line-height: .9; }
-    .op-title-main {
-      position: relative; display: block; white-space: nowrap;
-      font-size: clamp(52px,12.5vw,190px); color: var(--paper);
-      text-shadow: 6px 6px 0 var(--pink), 12px 12px 0 rgba(125,249,255,.35);
-    }
+    .op-title { margin: 0; line-height: .92; }
+    .op-title-main { position: relative; display: block; white-space: nowrap; font-size: clamp(46px,8.4vw,128px); letter-spacing: -.01em; text-transform: uppercase; color: var(--t1c9); }
     .op-ch { display: inline-block; }
     /* глитч: две смещённые копии вспыхивают раз в несколько секунд */
-    .op-title-main::before, .op-title-main::after {
-      content: attr(data-text); position: absolute; inset: 0; pointer-events: none;
-      text-shadow: none; opacity: 0;
-    }
+    .op-title-main::before, .op-title-main::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; text-shadow: none; opacity: 0; }
     .op-title-main::before { color: var(--cyan); }
     .op-title-main::after { color: var(--pink); }
     .opening.is-played .op-title-main::before { animation: op-glitch-a 5s steps(1) infinite 1s; }
@@ -1083,49 +1087,52 @@
       90% { opacity: .9; transform: translate(6px, -3px); clip-path: inset(45% 0 30% 0); }
       92% { opacity: .9; transform: translate(-5px, 3px); clip-path: inset(5% 0 75% 0); }
     }
-    .op-title-sub {
-      display: inline-block; margin-top: clamp(8px,1.4vw,18px);
-      font-size: clamp(18px,3.6vw,52px); letter-spacing: .28em;
-      color: transparent; -webkit-text-stroke: 1.5px var(--paper);
-    }
+    .op-title-sub { display: inline-block; margin-top: clamp(4px,.8vw,10px); font-size: clamp(20px,3.4vw,46px); letter-spacing: .28em; text-transform: uppercase;
+      color: transparent; -webkit-text-stroke: 1.5px var(--t2c9); }
 
-    .op-cols {
-      display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,.9fr);
-      gap: clamp(28px,5vw,80px); align-items: end; margin-top: clamp(26px,5vh,54px);
-    }
-    .op-tagline { margin: 0; max-width: 58ch; font-size: clamp(16px,1.5vw,20px); line-height: 1.6; font-weight: 500; color: var(--paper); }
-    .op-note { margin: 14px 0 0; max-width: 58ch; padding-left: 14px; border-left: 3px solid var(--pink); color: var(--text-dim); font-size: 14px; line-height: 1.65; }
-    .op-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .op-cols { display: block; margin-top: 0; }
+    .op-tagline { margin: 18px 0 0; max-width: 56ch; font-size: clamp(15px,1.4vw,19px); line-height: 1.6; font-weight: 400; color: var(--leadc9); }
+    .op-note { margin: 12px 0 0; max-width: 54ch; padding: 0; border: 0; color: var(--notec9); font-size: 14px; line-height: 1.6; }
+    .op-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
     .op-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 22px; border: 2px solid var(--paper); color: var(--paper);
-      font-weight: 700; font-size: 14px;
-      box-shadow: 5px 5px 0 var(--paper); background: var(--ink);
-      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+      display: inline-block; padding: 13px 20px; font: 900 13px 'Onest', sans-serif; letter-spacing: .06em; text-transform: uppercase;
+      border: 2px solid var(--bnb9); color: var(--bn9); background: transparent; box-shadow: 5px 5px 0 var(--bnb9);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease; cursor: pointer;
     }
-    .op-btn:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--paper); }
-    .op-btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--paper); }
-    .op-btn-main { background: var(--pink); border-color: var(--pink); color: var(--ink); box-shadow: 5px 5px 0 var(--cyan); }
+    .op-btn:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--bnb9); }
+    .op-btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--bnb9); }
+    .op-btn-main { background: var(--pink); border-color: var(--pink); color: var(--bm9); box-shadow: 5px 5px 0 var(--cyan); }
     .op-btn-main:hover { box-shadow: 8px 8px 0 var(--cyan); }
-    .op-btn-ghost { border-color: rgba(247,242,245,.35); box-shadow: none; color: var(--text-dim); }
-    .op-btn-ghost:hover { box-shadow: 5px 5px 0 rgba(247,242,245,.35); color: var(--paper); }
+    .op-btn-ghost { border-color: rgba(247,242,245,.35); box-shadow: none; color: var(--bg9t); }
+    .op-btn-ghost:hover { box-shadow: none; }
 
-    .op-meta { display: grid; gap: 12px; }
-    .op-stat {
-      display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 16px;
-      padding: 14px 16px; background: rgba(5,4,7,.72); border: 1px solid var(--line); border-left: 4px solid var(--pink);
-    }
-    .op-stat:nth-child(2) { border-left-color: var(--cyan); }
-    .op-stat:nth-child(3) { border-left-color: var(--sun); }
-    .op-stat b { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: clamp(30px,3.2vw,44px); line-height: 1; }
-    .op-stat b small { font-size: .45em; color: var(--text-dimmer); }
-    .op-stat > span { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+    .op-meta { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 36px; }
+    .op-stat { display: flex; flex-direction: column; gap: 4px; padding: 0; background: none; border: 0; }
+    .op-stat b { font-family: 'Dela Gothic One', sans-serif; font-weight: 400; font-size: clamp(32px,3.4vw,52px); line-height: 1; color: var(--statc9); }
+    .op-stat > span { font-size: 13px; color: var(--statt9); line-height: 1.35; max-width: 24ch; }
 
-    .op-scroll {
-      position: absolute; left: 50%; bottom: 22px; translate: -50% 0;
-      font-size: 11px; color: var(--text-dimmer); display: flex; flex-direction: column; align-items: center; gap: 4px;
-    }
-    .op-scroll span { animation: float 1.6s ease-in-out infinite; }
+    /* кнопка-шестерёнка в углу и панель настройки первого экрана */
+    .op-cfg-btn { position: absolute; z-index: 7; right: 10px; top: 10px; width: 22px; height: 22px; padding: 0; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.35); background: rgba(0,0,0,.12); color: #fff; font-size: 11px; line-height: 1; cursor: pointer; opacity: .2; transition: opacity .2s; }
+    .op-cfg-btn:hover, .op-cfg-btn:focus-visible { opacity: .95; }
+    #opPanel { display: none; position: fixed; z-index: 400; right: 12px; top: calc(var(--header-h) + 10px); width: 318px; max-height: calc(100vh - var(--header-h) - 24px); flex-direction: column;
+      background: rgba(10,8,14,.95); border: 2px solid #f4efe6; box-shadow: 6px 6px 0 rgba(0,0,0,.6); font: 12px 'JetBrains Mono', monospace; color: #f4efe6; backdrop-filter: blur(8px); }
+    #opPanel.open { display: flex; }
+    #opPanel header { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #f4efe6; color: #050407; font-weight: 700; letter-spacing: .08em; cursor: pointer; position: static; height: auto; border: 0; }
+    #opPanel header button { background: none; border: 0; font: 700 16px 'JetBrains Mono', monospace; cursor: pointer; color: #050407; }
+    #opPanel .pbody { overflow: auto; padding: 6px 10px 10px; }
+    #opPanel h4 { margin: 12px 0 6px; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #7df9ff; border-bottom: 1px solid rgba(255,255,255,.15); padding-bottom: 3px; }
+    #opPanel .row { display: grid; grid-template-columns: 118px 1fr 52px; gap: 8px; align-items: center; margin: 5px 0; }
+    #opPanel .row label { color: rgba(255,255,255,.8); line-height: 1.2; }
+    #opPanel input[type=range] { width: 100%; accent-color: #ff2e88; }
+    #opPanel input[type=color] { width: 100%; height: 24px; border: 1px solid rgba(255,255,255,.4); background: none; padding: 0; cursor: pointer; }
+    #opPanel select { grid-column: 2/4; background: #050407; color: #f4efe6; border: 1px solid rgba(255,255,255,.4); padding: 3px; font: 12px 'JetBrains Mono', monospace; }
+    #opPanel .val { font-size: 10px; color: rgba(255,255,255,.6); text-align: right; }
+    #opPanel footer { display: flex; gap: 6px; padding: 8px 10px; border-top: 1px solid rgba(255,255,255,.2); }
+    #opPanel footer button { flex: 1; padding: 7px 4px; background: #ff2e88; color: #050407; border: 0; font: 700 11px 'JetBrains Mono', monospace; cursor: pointer; }
+    #opPanel footer button.g { background: transparent; color: #f4efe6; border: 1px solid rgba(255,255,255,.4); }
+    #opPanel textarea { width: 100%; height: 120px; margin-top: 8px; background: #050407; color: #7df9ff; border: 1px solid rgba(255,255,255,.3); font: 11px 'JetBrains Mono', monospace; display: none; }
+    @media (prefers-reduced-motion: reduce) { .op-tape div, .op-live { animation: none; } }
 
     /* ---------- раздел 1: автор ---------- */
     .about-section { background: var(--bg); }
@@ -1321,15 +1328,12 @@
     .modal-slider { border-radius: 0; border: 2px solid var(--line); }
     .modal-close { border-radius: 0; }
 
-    @media (max-width: 980px) {
-      .op-cols { grid-template-columns: 1fr; align-items: start; }
-    }
     @media (max-width: 700px) {
       .opening { min-height: 0; padding-top: 48px; }
-      .op-title-main { text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 rgba(125,249,255,.35); }
+      .op-img { inset: 0; opacity: .45; }
       .op-title-sub { -webkit-text-stroke-width: 1px; letter-spacing: .18em; }
-      .op-btn { width: 100%; justify-content: center; }
-      .op-scroll { display: none; }
+      .op-btn { width: 100%; text-align: center; }
+      #opPanel { right: 6px; width: calc(100vw - 12px); }
       .works-count-box { justify-items: start; margin-top: 16px; }
       .works-count { font-size: 64px; }
       .card { box-shadow: 5px 5px 0 var(--accent); }
@@ -1387,11 +1391,9 @@
 </div>
 
 <section id="intro" class="opening">
+  <div class="op-img" aria-hidden="true"><div class="op-ph"></div></div>
+  <div class="op-fade" aria-hidden="true"></div>
   <div class="op-flash" aria-hidden="true"></div>
-  <div class="op-lines" aria-hidden="true"></div>
-  <div class="op-halftone" aria-hidden="true"></div>
-  <div class="op-slab op-slab-a" aria-hidden="true"></div>
-  <div class="op-slab op-slab-b" aria-hidden="true"></div>
 
   <div class="wrap op-inner">
     <div class="op-season mono"><span class="op-live"></span>Обучающая платформа · 21 лабораторная</div>
@@ -1402,16 +1404,13 @@
     </h1>
 
     <div class="op-cols">
-      <div>
-        <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: двадцать одна лабораторная от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
-        <p class="op-note">Каждую лабу веду и прохожу сам, методички к ним написаны вместе с Claude. Проходить всё подряд не обязательно — выбери маршрут и иди по своему направлению.</p>
-        <div class="op-actions">
+      <p class="op-tagline">Обучающая платформа по бэкенду, фронтенду и инфраструктуре: двадцать одна лабораторная от Docker до Kubernetes. У каждой — своя методичка, свой репозиторий и финальное задание без подсказок.</p>
+      <p class="op-note">Каждую лабу веду и прохожу сам, методички к ним написаны вместе с Claude. Проходить всё подряд не обязательно — выбери маршрут и иди по своему направлению.</p>
+      <div class="op-actions">
           <a href="#works" class="op-btn op-btn-main">Все лабораторные ↓</a>
           <a href="#routes" class="op-btn">Выбрать маршрут</a>
           <a href="https://github.com/meeymirita/anitech-performance" target="_blank" rel="noopener" class="op-btn op-btn-ghost">GitHub ↗</a>
         </div>
-      </div>
-
       <div class="op-meta">
         <div class="op-stat"><b>21</b><span>лабораторных с методичками</span></div>
         <div class="op-stat"><b>3</b><span>направления: фронтенд, бэкенд, инфраструктура</span></div>
@@ -1420,8 +1419,12 @@
     </div>
   </div>
 
-  <a href="#top" class="op-scroll mono" aria-label="Листать ниже">листай <span>↓</span></a>
+  <div class="op-tape op-tape-a" aria-hidden="true"><div><span>ДОКЕР ✦ ТРАЕФИК ✦ КУБЕРНЕТЕС ✦ PHP ✦ LARAVEL ✦ POSTGRES ✦ REDIS ✦ VUE ✦ NUXT ✦ ANGULAR ✦ </span><span>ДОКЕР ✦ ТРАЕФИК ✦ КУБЕРНЕТЕС ✦ PHP ✦ LARAVEL ✦ POSTGRES ✦ REDIS ✦ VUE ✦ NUXT ✦ ANGULAR ✦ </span></div></div>
+  <div class="op-tape op-tape-b" aria-hidden="true"><div><span>21 ЛАБОРАТОРНАЯ ✦ 3 НАПРАВЛЕНИЯ ✦ 15 ТЕХНОЛОГИЙ ✦ БЕЗ ПОДСКАЗОК ✦ </span><span>21 ЛАБОРАТОРНАЯ ✦ 3 НАПРАВЛЕНИЯ ✦ 15 ТЕХНОЛОГИЙ ✦ БЕЗ ПОДСКАЗОК ✦ </span><span>21 ЛАБОРАТОРНАЯ ✦ 3 НАПРАВЛЕНИЯ ✦ 15 ТЕХНОЛОГИЙ ✦ БЕЗ ПОДСКАЗОК ✦ </span></div></div>
+  <button type="button" class="op-cfg-btn" id="opCfgBtn" aria-label="Настройка цветов первого экрана" title="Настройка цветов">⚙</button>
 </section>
+
+<div id="opPanel" role="dialog" aria-label="Настройка первого экрана"><header id="opPhead"><span>🎛 НАСТРОЙКА ПЕРВОГО ЭКРАНА</span><button type="button" id="opPmin" aria-label="закрыть">×</button></header><div class="pbody" id="opPbody"></div><footer><button type="button" id="opPcopy">Копировать CSS</button><button type="button" class="g" id="opPrand">🎲 Случайно</button><button type="button" class="g" id="opPreset">Сброс</button></footer></div>
 
 <section id="top" class="about-section">
   <div class="about-glow"></div>
@@ -2422,24 +2425,12 @@
     if (!gsapReady) { opening.classList.add('is-played'); return; }
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' }, onComplete: function () { opening.classList.add('is-played'); } });
     tl.set('.op-inner', { autoAlpha: 1 })
-      .from('.op-slab-a', { xPercent: -130, duration: .55, ease: 'power4.out' })
-      .from('.op-slab-b', { xPercent: 130, duration: .55, ease: 'power4.out' }, '<.08')
       .from('.op-ch', { yPercent: -120, scale: 2.4, autoAlpha: 0, filter: 'blur(8px)', duration: .5, stagger: .055, ease: 'back.out(2)' }, '-=.25')
       .fromTo('.op-flash', { autoAlpha: .9 }, { autoAlpha: 0, duration: .45, ease: 'power2.out' }, '-=.1')
       .from('.op-title-sub', { xPercent: -8, autoAlpha: 0, duration: .5 }, '<')
       .from('.op-season, .op-tagline, .op-note, .op-actions > *, .op-stat', { y: 24, autoAlpha: 0, duration: .5, stagger: .05 }, '-=.25')
-      .from('.op-scroll', { autoAlpha: 0, duration: .4 }, '-=.1');
+      .from('.op-tape', { autoAlpha: 0, yPercent: 120, duration: .6, stagger: .12, ease: 'power3.out' }, '-=.35');
   }
-
-  window.addEventListener('mousemove', function (e) {
-    if (!opening || prefersReducedMotion()) return;
-    var x = (e.clientX / window.innerWidth - .5) * 24;
-    var y = (e.clientY / window.innerHeight - .5) * 24;
-    var lines = document.querySelector('.op-lines');
-    var tone = document.querySelector('.op-halftone');
-    if (lines) lines.style.translate = x + 'px ' + y + 'px';
-    if (tone) tone.style.translate = (-x) + 'px ' + (-y) + 'px';
-  });
 
   // ---- routes: lanes x steps map + per-track highlight ----
   // row = lane, col = step inside the lane (1-based)
@@ -2665,6 +2656,47 @@
   initLayeredPanels();
   observeReveal();
   playOpening();
+
+// ───────── панель настройки варианта 9 ─────────
+(()=>{
+ const root=document.documentElement,v9=document.getElementById('intro');
+ const C=(label,name,target='v9')=>({t:'color',label,name,target});
+ const R=(label,name,min,max,step,unit='',target='v9')=>({t:'range',label,name,min,max,step,unit,target});
+ const S=(label,name,opts,target='v9')=>({t:'select',label,name,opts,target});
+ const groups=[
+  ['Общая палитра (весь блок)',[C('Акцент 1 (--pink)','--pink','root'),C('Акцент 2 (--cyan)','--cyan','root'),C('Жёлтый (--sun)','--sun','root'),C('Чёрный (--ink)','--ink','root'),C('Светлый (--paper)','--paper','root'),C('Подписи (--dimmer)','--dimmer','root')]],
+  ['Картинка',[C('Градиент: цвет A','--gA9'),C('Градиент: цвет B','--gB9'),R('Угол градиента','--ang9',0,360,5,'deg'),S('Наложение','--blend9',['multiply','screen','overlay','soft-light','hard-light','color','color-dodge','difference','normal']),R('Сила градиента','--gop9',0,1,.05),R('Яркость фото','--b9',.3,3.5,.05),R('Контраст фото','--c9',.5,2.5,.05)]],
+  ['Точки (полутон)',[C('Цвет точек','--dot9'),R('Прозрачность','--dotA9',0,1,.05),R('Размер точки','--dotR9',0,4,.1,'px'),R('Шаг сетки','--step9',3,24,1,'px')]],
+  ['Затемнение слева',[C('Цвет слева','--fade9'),R('Где кончается цвет','--f1',0,100,1,'%'),C('Цвет перехода','--fadeMid9'),R('Прозрачность перехода','--fadeMidA9',0,1,.05),R('Где кончается переход','--f2',0,100,1,'%'),C('Фон секции','--bg9')]],
+  ['Текст и кнопки',[C('Заголовок ANITECH','--t1c9'),C('PERFORMANCE (контур)','--t2c9'),C('Надпись над заголовком','--kc9'),C('Основной абзац','--leadc9'),C('Примечание','--notec9'),C('Цифры 21 / 3 / 15','--statc9'),C('Подписи под цифрами','--statt9'),C('Кнопка «Все лабораторные»: текст','--bm9'),C('Кнопка «Выбрать маршрут»: текст','--bn9'),C('Кнопка «Выбрать маршрут»: рамка/тень','--bnb9'),C('Кнопка GitHub: текст','--bg9t')]],
+  ['Лента сверху',[C('Фон','--tAbg9'),C('Текст','--tAfg9'),C('Обводка','--tAbd9'),R('Наклон','--rotA9',-12,12,.5,'deg'),R('Скорость (сек, меньше — быстрее)','--spdA9',6,60,1,'s')]],
+  ['Лента снизу',[C('Фон','--tBbg9'),C('Текст','--tBfg9'),R('Наклон','--rotB9',-12,12,.5,'deg'),R('Скорость (сек)','--spdB9',6,60,1,'s'),R('Толщина лент','--tapeH9',2,26,1,'px')]],
+ ];
+ const norm=v=>{const c=document.createElement('canvas').getContext('2d');c.fillStyle='#000';c.fillStyle=v.trim();return c.fillStyle.startsWith('#')?c.fillStyle:'#000000'};
+ const el=n=>v9;
+ const read=(c)=>getComputedStyle(el(c.target)).getPropertyValue(c.name).trim();
+ const set=(c,val)=>el(c.target).style.setProperty(c.name,val);
+ const body=document.getElementById('opPbody');const ctl=[];
+ groups.forEach(([title,items])=>{const h=document.createElement('h4');h.textContent=title;body.appendChild(h);
+  items.forEach(c=>{const row=document.createElement('div');row.className='row';const lb=document.createElement('label');lb.textContent=c.label;row.appendChild(lb);
+   c.def=read(c);let inp,out;
+   if(c.t==='color'){inp=document.createElement('input');inp.type='color';inp.value=norm(c.def);inp.oninput=()=>{set(c,inp.value);out.textContent=inp.value};out=document.createElement('span');out.className='val';out.textContent=inp.value;row.append(inp,out)}
+   else if(c.t==='range'){inp=document.createElement('input');inp.type='range';inp.min=c.min;inp.max=c.max;inp.step=c.step;inp.value=parseFloat(c.def);inp.oninput=()=>{set(c,inp.value+c.unit);out.textContent=inp.value+c.unit};out=document.createElement('span');out.className='val';out.textContent=parseFloat(c.def)+c.unit;row.append(inp,out)}
+   else{inp=document.createElement('select');c.opts.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;inp.appendChild(op)});inp.value=c.def;inp.onchange=()=>set(c,inp.value);row.appendChild(inp)}
+   c.inp=inp;c.out=out;body.appendChild(row);ctl.push(c)})});
+ const ta=document.createElement('textarea');ta.readOnly=true;body.appendChild(ta);
+ const sync=()=>ctl.forEach(c=>{const v=read(c);if(c.t==='color'){c.inp.value=norm(v);c.out.textContent=c.inp.value}else if(c.t==='range'){c.inp.value=parseFloat(v);c.out.textContent=parseFloat(v)+c.unit}else c.inp.value=v});
+ document.getElementById('opPreset').onclick=()=>{ctl.forEach(c=>el(c.target).style.removeProperty(c.name));sync();ta.style.display='none'};
+ document.getElementById('opPrand').onclick=()=>{const h=Math.floor(Math.random()*360),hc=(x,s,l)=>`hsl(${(h+x)%360} ${s}% ${l}%)`;
+  const P={'--pink':hc(0,95,55),'--cyan':hc(150,90,65),'--sun':hc(60,95,60),'--gA9':hc(0,90,60),'--gB9':hc(180,90,60),'--fade9':hc(0,85,40),'--dot9':hc(0,90,35),'--tAbd9':hc(0,95,55),'--tBbg9':hc(60,95,60)};
+  ctl.forEach(c=>{if(P[c.name]){const hex=norm(P[c.name]);set(c,hex)}});sync()};
+ document.getElementById('opPcopy').onclick=()=>{const r=[],v=[];ctl.forEach(c=>{const cur=read(c);const same=c.t==='color'?norm(cur)===norm(c.def):parseFloat(cur)===parseFloat(c.def)&&cur===c.def;if(!same)(c.target==='root'?r:v).push(`  ${c.name}: ${cur};`)});
+  const txt=(r.length?`#intro{\n${r.join('\n')}\n}\n`:'')+(v.length?`#intro{\n${v.join('\n')}\n}\n`:'')||'/* ничего не менялось */';
+  ta.value=txt;ta.style.display='block';ta.select();try{navigator.clipboard.writeText(txt)}catch(e){document.execCommand('copy')}
+  const b=document.getElementById('opPcopy');b.textContent='Скопировано ✓';setTimeout(()=>b.textContent='Копировать CSS',1500)};
+ const pan=document.getElementById('opPanel');document.getElementById('opPhead').onclick=()=>pan.classList.remove('open');
+ document.getElementById('opCfgBtn').onclick=()=>pan.classList.toggle('open');
+})();
 </script>
 
 </body>
