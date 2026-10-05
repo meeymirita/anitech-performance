@@ -11,3 +11,5 @@ done
 git submodule foreach --quiet 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'
 python3 tools/check-site.py | tail -1
 git add -A . && git commit -q -m "$MSG" -m "$TR" && git pull -q --rebase origin main && git push -q origin main && git log --oneline -1
+# бакет: то же делает GitHub Actions после пуша; локально — только если есть ключи
+[ -f ~/.config/anitech/yc.env ] && python3 tools/sync-bucket.py | tail -3

@@ -1,0 +1,26 @@
+name: Sync bucket
+
+# Пуш в main (родитель обновляется последним, после подмодулей) → бакет Yandex Object Storage
+# приводится в точное соответствие с репозиторием: новое грузится, изменённое заменяется, лишнее удаляется.
+# Секреты репозитория: YC_ACCESS_KEY_ID, YC_SECRET_ACCESS_KEY (статический ключ с ролью storage.editor).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-bucket
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: pip install boto3
+      - run: python3 tools/sync-bucket.py
+        env:
+          YC_ACCESS_KEY_ID: ${{ secrets.YC_ACCESS_KEY_ID }}
+          YC_SECRET_ACCESS_KEY: ${{ secrets.YC_SECRET_ACCESS_KEY }}
