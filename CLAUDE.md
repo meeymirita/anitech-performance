@@ -28,10 +28,13 @@
 | `laravel` | laravel-lab | Laravel 13 изнутри |
 | `laravel-performance` | laravel-performance-lab | Производительность Laravel — CoffeePerf: k6, SPX, OPcache, кеш, Octane (9 сессий, Базовая; вычитана 04.10) |
 | `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC |
+| `caddy` | caddy-lab | Caddy 2 — Edge: reverse proxy, автоматический HTTPS, xcaddy (13 сессий, Средняя; добавлена 05.10, **на сайт ещё не выведена** — см. ниже) |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`), а также `works/changelog.html` (хронология) и `works/progress.html` (все работы и прогресс) |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
 
 **Формат методичек (с 02.10.2026):** HTML-«бандл» — текст лежит в сжатом JSON внутри файла (`window.LAB`), обычный grep/sed по нему не работает. Читать и править через `fixes/common/_tools/bundle.py` (`dump` / `grep` / `sub`, из Python — `rewrite`); `prep.py` умеет оба формата.
+
+**Если методичка пришла самодельным HTML (не бандлом)** — так было с Caddy Lab 05.10: шаблон (`<script type="__bundler/manifest">` + `<script type="__bundler/template">`) у всех лаб побайтово одинаков, отличаются только случайные UUID ассетов в манифесте. Если данные в `window.LAB` уже той же формы (`units[]` с `kind: theory/step/ref`, `sessions[].steps[]` — ссылки по ключу, поля `why`/`deep`/`quiz`) — переупаковка тривиальна: взять `.html` любой существующей лабы как есть и `bundle.transform(path, lambda old: новый_текст_window_LAB)` подменяет payload, валидирует JSON сам. Если схема другая — сначала сверить ключи (`sorted(json.keys())`, по `kind` в `units`) и писать недостающее руками.
 
 **Версии-стандарт (решения пользователя 03.10.2026):** PHP 8.4 везде; Node 24 LTS; Redis 8; PostgreSQL 18 везде, включая `postgresql` и `rabbitmq` (том монтируется в `/var/lib/postgresql`, **не** в `/data`); Traefik v3.7; nginx 1.30; kind v0.33 / Kubernetes 1.37; TypeScript 6.0 (`typescript@~6.0`: просто `typescript` на npm теперь 7.x, с ним `vue-tsc` не работает); Vite 7 везде, где его можно закрепить (`vite@^7` + `laravel-vite-plugin@^2` в Inertia; Nuxt и Angular держат Vite внутри себя); Prisma 7 везде (`prisma@7` — на npm latest у `prisma` это 8.0 RC); NestJS 11 (`@nestjs/cli@11`, `@nestjs/graphql@13`: `@latest` создаёт NestJS 12). Исключение по TypeScript: стартер Nest 11 несовместим с TS 6 (`baseUrl` → TS5101), NestJS/GraphQL-лабы остаются на TypeScript из стартера. Основания и результаты прогонов — `fixes/common/site.md`, раздел «Единые версии».
 
@@ -43,6 +46,8 @@
 - Сами обложки больше НЕ лежат в корне сабмодуля лабы (убрано 05.10, чтобы непройденная лаба = только методичка + README). Один архивный экземпляр всех 21 — в `works/images/<ключ>.png` (имя по ключу лабы, не по оригинальному файлу — у `php` и `php-coffee` оригиналы одинаково назывались `php.png`, коллизия). `works/images/thumbs/*.webp` остаются в репозитории как есть (сайт их тоже грузит с бакета, но локальная копия — источник для будущей перегенерации).
 - Гит остаётся версионностью (сабмодуль лабы = источник методички и README; `works/images/` = источник картинок), бакет — только раздача. **Синхронизации нет**: поправил методичку/обложку локально → загрузи файл в бакет вручную через консоль Yandex Cloud, иначе публичная версия разойдётся с гитом. Детали и цифры — `yandex-cloud-free-tier.md` в корне (не в гите) и артефакт-документ, ссылка там же.
 - Новую лабу интегрировать с этим в голове — см. п.1 и п.4 чек-листа ниже, туда тоже нужна загрузка в бакет.
+
+**Caddy Lab (05.10.2026) — сделан только пункт 1 чек-листа, остальное впереди.** Сабмодуль `caddy` подключён (репозиторий `caddy-lab`, README готов, методичка переупакована в стандартный бандл — см. выше), обложка в `works/images/caddy.png` и миниатюра в `works/images/thumbs/caddy.webp`. Локальная папка для загрузки в бакет собрана (`yandex-upload-caddy/` на столе пользователя, вне репозитория — обложка + методичка + README + миниатюра). **Не сделано:** сама загрузка в бакет (ждёт пользователя), и пункты 2–12 чек-листа — карточка в `index.html`, запись в `works/js/lab.js`, карта маршрутов, счётчики лаб (останутся «21», пока лабу не посчитали), `works/<key>.html`, `lab-anime.js`, корневой README, changelog, `fixes/common/_order.md` и `_proofread.md`, `prep.py`, `prereq.js`, `build-progress.py`/`patch-manuals.py`. До этого лаба на сайте не появится нигде, кроме как по прямой ссылке на методичку.
 
 ## Правила git
 
