@@ -43,6 +43,10 @@ m = re.search(r"var ORDER = \[(.*?)\]", anim_js)
 order_keys = re.findall(r"'([^']+)'", m.group(1)) if m else []
 if sorted(order_keys) != keys: bad(f'lab-anime.js ORDER не совпадает с works/*.html: {sorted(set(keys) ^ set(order_keys))}')
 
+# 1б. оглавления для окна «Оглавление» (works/js/toc.json) не отстали от методичек
+if subprocess.run([sys.executable, 'tools/build-toc.py', '--check']).returncode != 0:
+    bad('works/js/toc.json устарел или отсутствует — запустите python3 tools/build-toc.py')
+
 # 2. счётчик лаб в тексте сайта
 wrong = sorted(set(re.findall(r'\b(\d{2})\s*(?:ЛАБ|лаб)', idx + readme)) - {str(N)})
 if wrong: bad(f'счётчик лаб: найдено {wrong}, ожидалось {N}')
