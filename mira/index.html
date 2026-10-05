@@ -8,253 +8,630 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <style>
   :root {
-    --bg: #f6f5f2; --card: #ffffff; --ink: #17171a; --muted: #5f6068; --line: #dedcd6;
-    --accent: #0a8f6a; --accent-soft: #e2f3ed; --warn: #b4540a; --warn-soft: #fbeedd; --code: #efede8;
+    --bg: #f4f2ed; --panel: #ffffff; --ink: #1a1a1d; --muted: #61626b; --line: #dedbd3;
+    --accent: #0b7f5f; --accent-ink: #ffffff; --accent-soft: #dff1ea;
+    --blue: #2358b8; --blue-soft: #e3ecfb; --warn: #a8480a; --warn-soft: #fbebd9;
+    --bad: #b3261e; --bad-soft: #fbe4e2; --code: #ece9e1; --code-ink: #23242a; --shadow: 0 1px 2px rgba(0,0,0,.06);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #101113; --card: #18191c; --ink: #ecebe7; --muted: #9a9ba3; --line: #2b2c31;
-      --accent: #3ccf9f; --accent-soft: #123228; --warn: #f0a15c; --warn-soft: #33220f; --code: #212226;
+      --bg: #0f1012; --panel: #17181b; --ink: #ecebe6; --muted: #9b9ca5; --line: #2a2b30;
+      --accent: #3ccf9f; --accent-ink: #06201a; --accent-soft: #11302a;
+      --blue: #8db3ff; --blue-soft: #16233d; --warn: #f0a15c; --warn-soft: #33220f;
+      --bad: #ff8f86; --bad-soft: #3a1714; --code: #1f2024; --code-ink: #e8e7e2; --shadow: none;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #101113; --card: #18191c; --ink: #ecebe7; --muted: #9a9ba3; --line: #2b2c31;
-    --accent: #3ccf9f; --accent-soft: #123228; --warn: #f0a15c; --warn-soft: #33220f; --code: #212226;
+    --bg: #0f1012; --panel: #17181b; --ink: #ecebe6; --muted: #9b9ca5; --line: #2a2b30;
+    --accent: #3ccf9f; --accent-ink: #06201a; --accent-soft: #11302a;
+    --blue: #8db3ff; --blue-soft: #16233d; --warn: #f0a15c; --warn-soft: #33220f;
+    --bad: #ff8f86; --bad-soft: #3a1714; --code: #1f2024; --code-ink: #e8e7e2; --shadow: none;
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  a { color: var(--accent); text-underline-offset: 2px; }
-  header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
-  header.top .in { max-width: 1040px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-  header.top b { letter-spacing: .04em; }
-  header.top nav { display: flex; gap: 4px 14px; flex-wrap: wrap; font-size: 14px; flex: 1; }
-  header.top nav a { color: var(--muted); text-decoration: none; }
-  header.top nav a:hover { color: var(--accent); }
-  #theme { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 14px; }
-  main { max-width: 1040px; margin: 0 auto; padding: 28px 16px 80px; }
-  h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.15; margin: 8px 0 12px; }
-  h2 { font-size: 24px; margin: 52px 0 6px; padding-top: 8px; }
-  h3 { font-size: 17px; margin: 22px 0 6px; }
-  p { margin: 8px 0; }
-  .lead { color: var(--muted); font-size: 18px; max-width: 760px; }
-  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); margin: 16px 0; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
-  .card h3 { margin: 0 0 4px; }
-  .card p { margin: 6px 0; font-size: 15px; }
-  .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 2px 8px; }
-  .tag.warn { color: var(--warn); background: var(--warn-soft); }
-  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 12px 0; font-size: 15px; }
-  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--code); }
-  tr:last-child td { border-bottom: 0; }
-  .scroll { overflow-x: auto; }
-  code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9em; }
-  code { background: var(--code); padding: 1px 6px; border-radius: 5px; word-break: break-word; }
-  pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; margin: 10px 0; line-height: 1.55; }
-  pre code { background: none; padding: 0; }
-  .note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 15px; }
-  .note.warn { border-color: var(--warn); background: var(--warn-soft); }
-  ul, ol { padding-left: 22px; margin: 8px 0; }
-  li { margin: 3px 0; }
-  .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0; font-size: 14px; }
-  .flow span.n { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
-  .flow span.a { color: var(--muted); }
-  footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 56px; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  code, pre, kbd { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  code { font-size: .88em; background: var(--code); color: var(--code-ink); padding: 2px 7px; border-radius: 6px; overflow-wrap: anywhere; }
+
+  /* ── каркас ───────────────────────────────────────── */
+  .top { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .top .in { display: flex; align-items: center; gap: 10px; padding: 10px 16px; max-width: 1280px; margin: 0 auto; }
+  .brand { font-weight: 800; letter-spacing: .03em; margin-right: auto; font-size: 15px; white-space: nowrap; }
+  .brand small { color: var(--muted); font-weight: 600; letter-spacing: 0; margin-left: 6px; }
+  .btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 7px 12px; cursor: pointer; font: inherit; font-size: 14px; line-height: 1.2; }
+  .btn:hover { border-color: var(--accent); }
+  #menuBtn { display: none; }
+  .layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 40px; max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+  aside.side { position: sticky; top: 62px; align-self: start; max-height: calc(100vh - 74px); overflow: auto; padding: 22px 0 30px; }
+  aside.side h4 { margin: 18px 0 6px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  aside.side a { display: block; padding: 5px 10px; margin: 1px 0; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1.4; border-left: 3px solid transparent; }
+  aside.side a:hover { background: var(--panel); }
+  aside.side a.on { background: var(--accent-soft); border-left-color: var(--accent); font-weight: 700; }
+  main { padding: 30px 0 90px; min-width: 0; max-width: 860px; }
+
+  /* ── типографика ──────────────────────────────────── */
+  h1 { font-size: clamp(32px, 5.2vw, 50px); line-height: 1.1; margin: 10px 0 14px; letter-spacing: -.02em; }
+  h2 { font-size: clamp(25px, 3.4vw, 32px); line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  h3 { font-size: 19px; margin: 28px 0 6px; }
+  p { margin: 10px 0; }
+  .lead { font-size: 20px; color: var(--muted); max-width: 720px; }
+  section { padding-top: 54px; }
+  .num { display: inline-block; font: 800 13px/1 ui-monospace, Menlo, monospace; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 5px 8px; margin-bottom: 10px; letter-spacing: .06em; }
+  .sub { color: var(--muted); margin: 0 0 18px; font-size: 18px; }
+  ul, ol { padding-left: 24px; }
+  li { margin: 5px 0; }
+
+  /* ── блоки ────────────────────────────────────────── */
+  .callout { border-radius: 12px; padding: 14px 18px; margin: 18px 0; border: 1px solid transparent; }
+  .callout b.t { display: block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .callout.simple { background: var(--blue-soft); border-color: color-mix(in srgb, var(--blue) 25%, transparent); }
+  .callout.simple b.t { color: var(--blue); }
+  .callout.warn { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 30%, transparent); }
+  .callout.warn b.t { color: var(--warn); }
+  .callout.stop { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 30%, transparent); }
+  .callout.stop b.t { color: var(--bad); }
+  .callout.ok { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  .callout.ok b.t { color: var(--accent); }
+  .callout p:first-of-type { margin-top: 0; } .callout p:last-child { margin-bottom: 0; }
+
+  .cmd { position: relative; margin: 18px 0 12px; }
+  .cmd pre { margin: 0; background: var(--code); color: var(--code-ink); border-radius: 12px; padding: 16px 92px 14px 16px; overflow-x: auto; font-size: 14.5px; line-height: 1.6; border: 1px solid var(--line); }
+  .cmd pre code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+  .cmd .where { position: absolute; left: 14px; top: -11px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0 8px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); line-height: 20px; }
+  .cmd .copy { position: absolute; right: 8px; top: 8px; padding: 4px 10px; font-size: 12px; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin: 16px 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .card h3 { margin: 6px 0 4px; font-size: 18px; }
+  .card p { margin: 6px 0; font-size: 15.5px; }
+  .card .links { margin-top: 10px; font-size: 15px; display: flex; gap: 6px 14px; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 3px 8px; }
+  .tag.b { color: var(--blue); background: var(--blue-soft); } .tag.w { color: var(--warn); background: var(--warn-soft); }
+
+  /* схема */
+  .flow { display: grid; gap: 10px; margin: 20px 0; }
+  .lane { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: stretch; }
+  .lane .lbl { font-size: 13px; font-weight: 800; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; padding-top: 12px; }
+  .chain { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .node { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 14.5px; line-height: 1.35; }
+  .node small { display: block; color: var(--muted); font-size: 12px; }
+  .arr { color: var(--muted); font-size: 18px; }
+
+  /* шаги */
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 14px 0; }
+  .steps > li { counter-increment: s; position: relative; padding: 2px 0 14px 46px; margin: 0; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 800; display: grid; place-items: center; font-size: 15px; }
+  .steps > li::after { content: ""; position: absolute; left: 15px; top: 36px; bottom: 4px; width: 2px; background: var(--line); }
+  .steps > li:last-child::after { display: none; }
+  .steps > li > b:first-child { display: block; }
+
+  /* рецепты */
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; margin: 12px 0; box-shadow: var(--shadow); }
+  details > summary { cursor: pointer; padding: 15px 18px; font-weight: 700; font-size: 18px; list-style: none; display: flex; gap: 12px; align-items: baseline; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸"; color: var(--accent); transition: transform .15s; flex: none; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  details > summary small { display: block; font-weight: 400; color: var(--muted); font-size: 15px; }
+  details .body { padding: 0 18px 16px; border-top: 1px solid var(--line); }
+
+  /* ключи */
+  .key { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; margin: 12px 0; box-shadow: var(--shadow); }
+  .key .name { display: inline-flex; align-items: center; gap: 8px; font: 700 15px ui-monospace, Menlo, monospace; background: var(--code); padding: 5px 10px; border-radius: 8px; overflow-wrap: anywhere; }
+  .key dl { display: grid; grid-template-columns: 130px 1fr; gap: 6px 14px; margin: 12px 0 0; font-size: 15.5px; }
+  .key dt { color: var(--muted); font-weight: 700; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; padding-top: 2px; }
+  .key dd { margin: 0; }
+
+  /* «симптом → что делать» */
+  .fix { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn); border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .fix h4 { margin: 0 0 4px; font-size: 16.5px; }
+  .fix p { margin: 4px 0; font-size: 15.5px; }
+
+  dl.gl { margin: 14px 0; } dl.gl dt { font-weight: 800; margin-top: 14px; } dl.gl dd { margin: 2px 0 0; color: var(--muted); }
+  footer { margin-top: 70px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
+
+  /* ── телефон ──────────────────────────────────────── */
+  @media (max-width: 920px) {
+    body { font-size: 16.5px; }
+    .layout { display: block; padding: 0 16px; }
+    #menuBtn { display: inline-block; }
+    aside.side { position: fixed; inset: 53px 0 0 auto; width: min(86vw, 340px); max-height: none; z-index: 40; background: var(--bg); border-left: 1px solid var(--line); padding: 8px 14px 30px; transform: translateX(105%); visibility: hidden; transition: transform .2s, visibility .2s; box-shadow: -12px 0 30px rgba(0,0,0,.25); }
+    body.menu aside.side { transform: none; visibility: visible; }
+    .brand small { display: none; }
+    .lane { grid-template-columns: 1fr; gap: 4px; } .lane .lbl { padding-top: 0; }
+    .key dl { grid-template-columns: 1fr; gap: 2px; } .key dt { margin-top: 8px; }
+    .cmd pre { padding-right: 16px; padding-top: 40px; } .cmd .copy { top: 8px; }
+    .steps > li { padding-left: 42px; }
+  }
 </style>
 <script>try { var t = localStorage.getItem('mira-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
+
 <header class="top"><div class="in">
-  <b>ANITECH · для себя</b>
-  <nav>
-    <a href="#map">Как всё связано</a>
-    <a href="#where">Где что лежит</a>
-    <a href="#keys">Ключи</a>
-    <a href="#features">Функционал</a>
-    <a href="#progress">Прогресс</a>
-    <a href="#bucket">Бакет</a>
-    <a href="#ci">Автозапуск</a>
-    <a href="#server">Сервер</a>
-    <a href="#cmd">Команды</a>
-    <a href="#fix">Если сломалось</a>
-  </nav>
-  <button id="theme" type="button" aria-label="Тема">◐ Тема</button>
+  <span class="brand">ANITECH<small>· шпаргалка владельца</small></span>
+  <button class="btn" id="theme" type="button" aria-label="Переключить тему">◐ Тема</button>
+  <button class="btn" id="menuBtn" type="button" aria-label="Открыть оглавление" aria-expanded="false">☰ Разделы</button>
 </div></header>
 
+<div class="layout">
+<aside class="side" id="side" aria-label="Разделы страницы">
+  <h4>Начать</h4>
+  <a href="#start">Что это за страница</a>
+  <a href="#simple">Как всё работает</a>
+  <a href="#after-push">Что случается после «пуш»</a>
+  <h4>Что где</h4>
+  <a href="#where">Где что лежит</a>
+  <a href="#keys">Ключи и пароли</a>
+  <a href="#server">Сервер</a>
+  <a href="#bucket">Бакет с файлами</a>
+  <a href="#progress">Прогресс прохождения</a>
+  <h4>Действия</h4>
+  <a href="#recipes">Что делать, когда…</a>
+  <a href="#commands">Команды</a>
+  <a href="#fix">Если сломалось</a>
+  <a href="#rules">Правила</a>
+  <h4>Справка</h4>
+  <a href="#features">Что умеет сайт</a>
+  <a href="#today">Что мы сделали 05.10</a>
+  <a href="#glossary">Словарик</a>
+</aside>
+
 <main>
-  <span class="tag">приватная шпаргалка · не индексируется</span>
-  <h1>Как устроен ANITECH PERFORMANCE и где что лежит</h1>
-  <p class="lead">Инструкция владельца: из каких частей собран сайт, в каких сервисах что хранится, какие ключи где висят и что делать, если что-то сломалось. <b>Значений ключей здесь нет и быть не должно</b> — только их имена и места.</p>
 
-  <h2 id="map">Как всё связано</h2>
-  <div class="flow">
-    <span class="n">Правка на ноутбуке</span><span class="a">→</span>
-    <span class="n">GitHub: подмодуль, потом родитель</span><span class="a">→</span>
-    <span class="n">GitHub Actions «Sync bucket»</span><span class="a">→</span>
-    <span class="n">Бакет Yandex Object Storage</span>
-  </div>
-  <div class="flow">
-    <span class="n">Браузер</span><span class="a">→</span>
-    <span class="n">Cloudflare (DNS, HTTPS)</span><span class="a">→</span>
-    <span class="n">Сервер с Caddy</span><span class="a">→</span>
-    <span class="n">страницы сайта</span><span class="a">+</span>
-    <span class="n">картинки и методички из бакета</span>
-  </div>
-  <div class="flow">
-    <span class="n">Методичка / страница прогресса</span><span class="a">⇄</span>
-    <span class="n">Cloudflare Worker + KV</span><span class="a">(синхронизация прогресса)</span>
-  </div>
-  <div class="note">Репозиторий — источник правды. Бакет только раздаёт файлы и всегда приводится к репозиторию (лишнее удаляется). Прогресс прохождения живёт отдельно: в браузере и в Cloudflare KV.</div>
+<!-- ═══════════ 0 ═══════════ -->
+<section id="start" style="padding-top:6px">
+  <span class="num">СТАРТ</span>
+  <h1>Как устроен ANITECH и что делать, чтобы он работал</h1>
+  <p class="lead">Эта страница — ваша инструкция. Если что-то забыли или сломалось, начните отсюда: здесь написано, что где лежит, что делать пошагово и какие команды вставлять.</p>
+  <div class="callout simple"><b class="t">Простыми словами</b>
+    <p>У сайта три «места жизни»: <b>GitHub</b> (там хранятся все файлы и история), <b>сервер</b> (там сайт видят люди) и <b>бакет Yandex</b> (там лежат тяжёлые файлы: методички и картинки). Вы меняете файлы у себя, отправляете их на GitHub командой «пуш», а дальше <b>всё само разъезжается</b> по серверу и бакету. Руками ничего никуда загружать не надо.</p></div>
+  <div class="callout stop"><b class="t">Главное правило безопасности</b>
+    <p>Пароли и ключи нигде не пишем: ни в чат, ни в письма, ни в этот сайт. Здесь только <b>названия</b> ключей и места, где они лежат. Если ключ всё-таки попал в чат или на скриншот, считайте его скомпрометированным и перевыпустите (рецепт ниже).</p></div>
+  <p>Страница закрыта от поисковиков, но тот, кто знает адрес, её увидит: в ней есть ссылки на ваши панели (входить в них всё равно надо с вашим логином).</p>
+</section>
 
-  <h2 id="where">Где что лежит</h2>
+<!-- ═══════════ 1 ═══════════ -->
+<section id="simple">
+  <span class="num">01</span>
+  <h2>Как всё работает: картина целиком</h2>
+  <p class="sub">Аналогия: вы пишете книгу, а типография и склад сами печатают и раскладывают тираж.</p>
+
+  <div class="flow">
+    <div class="lane"><div class="lbl">Вы меняете</div><div class="chain">
+      <span class="node">Файлы на вашем Mac<small>папка lab-laroboti</small></span><span class="arr">→</span>
+      <span class="node">Команда «пуш»<small>tools/save-push.sh</small></span><span class="arr">→</span>
+      <span class="node">GitHub<small>хранит всё + историю</small></span></div></div>
+    <div class="lane"><div class="lbl">Сайт</div><div class="chain">
+      <span class="node">GitHub</span><span class="arr">→</span>
+      <span class="node">Таймер на сервере<small>раз в минуту</small></span><span class="arr">→</span>
+      <span class="node">Папка сайта<small>/var/www/anitech-performance</small></span><span class="arr">→</span>
+      <span class="node">Caddy<small>показывает людям</small></span></div></div>
+    <div class="lane"><div class="lbl">Файлы</div><div class="chain">
+      <span class="node">GitHub</span><span class="arr">→</span>
+      <span class="node">GitHub Actions<small>робот, запускается сам</small></span><span class="arr">→</span>
+      <span class="node">Бакет Yandex<small>методички, картинки</small></span></div></div>
+    <div class="lane"><div class="lbl">Прогресс</div><div class="chain">
+      <span class="node">Методичка в браузере</span><span class="arr">⇄</span>
+      <span class="node">Воркер Cloudflare<small>+ хранилище KV</small></span></div></div>
+  </div>
+
+  <h3>Из каких частей это состоит — одним абзацем на каждую</h3>
+  <ul>
+    <li><b>GitHub</b> — «облачная папка» с историей: можно вернуться к любой версии файла. Основной репозиторий <code>anitech-performance</code> содержит сайт, а каждая лаба лежит в <b>своём отдельном репозитории</b>, подключённом внутрь (это называется «подмодуль»).</li>
+    <li><b>Сервер</b> — компьютер в интернете (Ubuntu), на нём программа <b>Caddy</b> отдаёт сайт по адресу <code>anitech.meeymirita.ru</code>. Туда сайт попадает сам, по таймеру.</li>
+    <li><b>Бакет</b> — «облачный склад» Yandex. Методички, обложки и фото открываются прямо оттуда, чтобы не нагружать сервер.</li>
+    <li><b>Воркер Cloudflare</b> — маленькая программа, которая хранит ваш прогресс по лабам, чтобы он не пропадал, если вы очистите браузер или откроете сайт на другом устройстве.</li>
+    <li><b>Cloudflare</b> также отвечает за <b>DNS</b>: это «телефонная книга», которая говорит браузеру, что <code>anitech.meeymirita.ru</code> находится на сервере <code>45.10.166.23</code>.</li>
+  </ul>
+  <div class="callout ok"><b class="t">Что важно понять</b>
+    <p>Источник правды — <b>GitHub</b>. Сервер и бакет — «копии для показа». Если на сайте что-то не так, правим в репозитории и пушим, а не лезем править сервер руками (иначе при следующем обновлении правка исчезнет).</p></div>
+</section>
+
+<!-- ═══════════ 2 ═══════════ -->
+<section id="after-push">
+  <span class="num">02</span>
+  <h2>Что случается после «пуш»</h2>
+  <p class="sub">По секундам: вы отправили изменения — что происходит дальше.</p>
+  <ol class="steps">
+    <li><b>Вы (или я по вашей просьбе) запускаете пуш</b>
+      Команда <code>bash tools/save-push.sh "что изменили"</code> сохраняет изменения и отправляет их на GitHub. Сначала отправляются подмодули (отдельные репозитории лаб), потом главный репозиторий. <i>Порядок важен</i>: иначе главный будет ссылаться на то, чего ещё нет на GitHub.</li>
+    <li><b>Через секунды просыпается робот GitHub Actions</b>
+      Он называется «Sync bucket». Скачивает репозиторий, сравнивает файлы с бакетом и загружает в бакет только новое и изменённое. Старые версии заменяемых файлов он сначала откладывает про запас (см. раздел «Бакет»). Занимает около 30–40 секунд.</li>
+    <li><b>Через ≤ 1 минуты срабатывает таймер на сервере</b>
+      Раз в минуту сервер спрашивает GitHub «есть новое?». Если да, скачивает и копирует в папку сайта только то, что нужно сайту. Если нет, ничего не делает.</li>
+    <li><b>Сайт обновлён</b>
+      Откройте <code>anitech.meeymirita.ru</code> и нажмите Cmd+Shift+R (обновить без кеша). На практике изменение появляется через 20–60 секунд.</li>
+  </ol>
+  <p>Проверить, что робот отработал: <a href="https://github.com/meeymirita/anitech-performance/actions">вкладка Actions</a> в репозитории — зелёная галочка у последнего запуска.</p>
+</section>
+
+<!-- ═══════════ 3 ═══════════ -->
+<section id="where">
+  <span class="num">03</span>
+  <h2>Где что лежит</h2>
+  <p class="sub">Все ваши панели и что в них искать.</p>
   <div class="grid">
     <div class="card"><span class="tag">код</span><h3>GitHub</h3>
-      <p>Родитель <code>meeymirita/anitech-performance</code> + по подмодулю на каждую лабу (<code>&lt;тема&gt;-lab</code>), <code>works-lab</code> (страницы-витрины), <code>lab-fixes</code> (находки вычитки).</p>
-      <p><a href="https://github.com/meeymirita/anitech-performance">Репозиторий</a> · <a href="https://github.com/meeymirita/anitech-performance/settings/secrets/actions">Секреты Actions</a> · <a href="https://github.com/meeymirita/anitech-performance/actions">Запуски Actions</a></p></div>
-    <div class="card"><span class="tag">файлы</span><h3>Yandex Cloud</h3>
-      <p>Бакет <code>meeymirita-files</code>: методички, обложки, миниатюры, README лаб, фото автора, скрины «О проекте». Доступ на запись — у сервисного аккаунта <code>anitech-object-storage</code>.</p>
-      <p><a href="https://console.yandex.cloud/folders/b1gou0tps1441mmaihin/iam/service-account/ajeqt4ld96cojmf6te1k/overview">Сервисный аккаунт</a> (статические ключи — здесь)</p></div>
-    <div class="card"><span class="tag">прогресс</span><h3>Cloudflare Worker</h3>
-      <p>Воркер <code>anitech-progress</code> + хранилище KV <code>anitech-progress</code>: тут лежит прогресс прохождения, если вы вошли по паролю (кнопка ☁).</p>
-      <p><a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954/workers/services/view/anitech-progress/production">Панель воркера</a></p></div>
-    <div class="card"><span class="tag">домен</span><h3>Cloudflare DNS</h3>
-      <p>Зона <code>meeymirita.ru</code> (куплена у REG.RU, там только делегирование на серверы Cloudflare). Здесь записи, HTTPS и кеш.</p>
-      <p><a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954">Панель Cloudflare</a></p></div>
+      <p>Основной репозиторий <code>meeymirita/anitech-performance</code> и по репозиторию на каждую лабу (<code>…-lab</code>), плюс <code>works-lab</code> (страницы-витрины) и <code>lab-fixes</code> (заметки вычитки).</p>
+      <div class="links"><a href="https://github.com/meeymirita/anitech-performance">Репозиторий</a><a href="https://github.com/meeymirita/anitech-performance/actions">Запуски робота</a><a href="https://github.com/meeymirita/anitech-performance/settings/secrets/actions">Секреты</a></div></div>
+    <div class="card"><span class="tag b">файлы</span><h3>Yandex Cloud</h3>
+      <p>Бакет <code>meeymirita-files</code>: методички, обложки, миниатюры, фото, скриншоты. Права на запись — у сервисного аккаунта <code>anitech-object-storage</code> (там же выпускаются ключи).</p>
+      <div class="links"><a href="https://console.yandex.cloud/folders/b1gou0tps1441mmaihin/iam/service-account/ajeqt4ld96cojmf6te1k/overview">Сервисный аккаунт</a></div></div>
+    <div class="card"><span class="tag w">прогресс</span><h3>Cloudflare Worker</h3>
+      <p>Воркер <code>anitech-progress</code> и хранилище KV: тут лежит ваш прогресс, если вы вошли по паролю (кнопка ☁ в методичке).</p>
+      <div class="links"><a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954/workers/services/view/anitech-progress/production">Панель воркера</a></div></div>
+    <div class="card"><span class="tag w">домен</span><h3>Cloudflare DNS</h3>
+      <p>Зона <code>meeymirita.ru</code> (куплена у REG.RU, там только указано, что управляет Cloudflare). В DNS запись для <code>anitech</code> должна вести на IP сервера.</p>
+      <div class="links"><a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954">Панель Cloudflare</a></div></div>
     <div class="card"><span class="tag">сервер</span><h3>Сервер с Caddy</h3>
-      <p>Отдаёт сайт <code>anitech.meeymirita.ru</code>, сам делает http→https (308) и проксирует ещё один сайт. Подробности — в разделе «Сервер».</p></div>
+      <p>Ubuntu 22.04, адрес <code>45.10.166.23</code>. Заходите по SSH (раздел «Сервер»). Он же держит ваш другой сайт <code>meeymirita.ru</code>.</p></div>
+    <div class="card"><span class="tag">тут</span><h3>Эта страница</h3>
+      <p>Файл <code>mira/index.html</code> в репозитории. Меняется как любой другой файл: правка → пуш → через минуту на сайте.</p></div>
   </div>
+</section>
 
-  <h2 id="keys">Ключи и секреты — только имена</h2>
-  <p>Значения нигде в репозитории не лежат. Если ключ попал в чат, письмо или скриншот — считайте скомпрометированным и перевыпустите.</p>
-  <div class="scroll"><table>
-    <tr><th>Имя</th><th>Где хранится</th><th>Зачем</th><th>Как заменить</th></tr>
-    <tr><td><code>YC_ACCESS_KEY_ID</code></td><td>GitHub → Settings → Secrets → Actions (репозиторий <code>anitech-performance</code>); по желанию локально в <code>~/.config/anitech/yc.env</code></td><td>Идентификатор статического ключа сервисного аккаунта <code>anitech-object-storage</code></td><td>Yandex Cloud → сервисный аккаунт → «Статические ключи доступа» → создать новый, обновить оба секрета, старый удалить</td></tr>
-    <tr><td><code>YC_SECRET_ACCESS_KEY</code></td><td>там же</td><td>Секретная часть того же ключа (показывается один раз при создании)</td><td>Вместе с предыдущим</td></tr>
-    <tr><td><code>PASSWORD</code></td><td>Cloudflare → Workers → <code>anitech-progress</code> → Settings → Variables (секрет); и у вас в голове</td><td>Пароль, по которому браузер получает доступ к сохранённому прогрессу</td><td>Изменить секрет в Cloudflare; на устройствах ввести заново в панели ☁</td></tr>
-    <tr><td>SSH-ключ <code>id_anitech</code></td><td>Mac: <code>~/.ssh/id_anitech</code> (секретный, + пароль-фраза); сервер: <code>/root/.ssh/authorized_keys</code> (публичный)</td><td>Вход на сервер</td><td>Создать новый (<code>ssh-keygen -t ed25519</code>), добавить публичную часть на сервер, потом убрать старую строку из <code>authorized_keys</code>. Потеряете ключ — зайти можно только через консоль хостинга</td></tr>
-    <tr><td>KV <code>anitech-progress</code></td><td>Cloudflare → Workers → KV (привязка к воркеру)</td><td>Хранилище прогресса (это не ключ, но без привязки воркер не сохраняет)</td><td>—</td></tr>
-  </table></div>
-  <div class="note warn">Ключи Yandex Cloud, которые когда-либо попадали в переписку, нужно заменить.</div>
+<!-- ═══════════ 4 ═══════════ -->
+<section id="keys">
+  <span class="num">04</span>
+  <h2>Ключи и пароли: названия и места</h2>
+  <p class="sub">Значений здесь нет и не должно быть. Только как называется, где лежит, зачем и как заменить.</p>
 
-  <h2 id="features">Что умеет сайт</h2>
-  <h3>Главная (<code>index.html</code>)</h3>
-  <ul>
-    <li>Карточки всех лаб с категориями, группами, сноской «что требуется» (Docker, аккаунт, домен, ключи) и обложкой из бакета.</li>
-    <li>Карта маршрутов и треки («Весь путь» и тематические): порядок и зависимости лаб.</li>
-    <li>Первый экран с настройками (шестерёнка), окно «О проекте» со скриншотами и фото автора.</li>
-  </ul>
-  <h3>Страница лабы (<code>works/&lt;лаба&gt;.html</code>)</h3>
-  <ul>
-    <li>Табы «Чему вы научитесь», стек, сессии, схема архитектуры (можно двигать), FAQ.</li>
-    <li>Окно «Оглавление» — читает готовый <code>works/js/toc.json</code>, не зависит от сети до бакета.</li>
-    <li>Ссылка на методичку открывает файл из бакета.</li>
-  </ul>
-  <h3>Методичка (<code>&lt;лаба&gt;/&lt;лаба&gt;.html</code>, лежит в бакете)</h3>
-  <ul>
-    <li>Один HTML-файл-«бандл»: текст внутри сжатого JSON. Правится только через <code>fixes/common/_tools/bundle.py</code>.</li>
-    <li>Режимы «Лента» и «По шагам», таймеры по сессиям, отметки «Проверь себя», поиск по лабе (Ctrl K), тёмная тема.</li>
-    <li>У каждого шага: «Зачем», «Под капотом», «Почитать», ожидаемый результат, блоки «сломать → починить».</li>
-    <li>Кнопка «Все работы», окно «Что нужно знать до старта», кнопка ☁ синхронизации прогресса.</li>
-  </ul>
-  <h3>Служебные страницы</h3>
-  <ul>
-    <li><code>works/progress.html</code> — все работы и общий прогресс.</li>
-    <li><code>works/changelog.html</code> — хронология (колонки «Главное», «Вычитка и запуск», «Полный отчёт»).</li>
-    <li><code>works/verification.html</code> — что и чем проверено.</li>
-    <li><code>/mira/</code> — эта страница.</li>
-  </ul>
+  <div class="key"><span class="name">YC_ACCESS_KEY_ID</span>
+    <dl><dt>Где лежит</dt><dd>GitHub → репозиторий → Settings → Secrets and variables → Actions. Копия может быть на Mac в <code>~/.config/anitech/yc.env</code>, если вы захотите запускать загрузку у себя.</dd>
+    <dt>Зачем</dt><dd>«Логин» робота, чтобы он мог загружать файлы в бакет Yandex. Относится к сервисному аккаунту <code>anitech-object-storage</code>.</dd>
+    <dt>Как заменить</dt><dd>См. рецепт «Заменить ключи Yandex» ниже.</dd></dl></div>
+  <div class="key"><span class="name">YC_SECRET_ACCESS_KEY</span>
+    <dl><dt>Где лежит</dt><dd>Там же, рядом с предыдущим.</dd>
+    <dt>Зачем</dt><dd>«Пароль» робота к бакету. Показывается <b>один раз</b> при создании ключа в Yandex, потом его не посмотреть — только создать новый.</dd>
+    <dt>Как заменить</dt><dd>Вместе с логином, одним рецептом.</dd></dl></div>
+  <div class="key"><span class="name">PASSWORD</span>
+    <dl><dt>Где лежит</dt><dd>Cloudflare → Workers → <code>anitech-progress</code> → Settings → Variables and Secrets (тип Secret). И в вашей голове.</dd>
+    <dt>Зачем</dt><dd>Пароль, который вы вводите в методичке (кнопка ☁), чтобы получить доступ к своему прогрессу. После 10 неверных попыток с одного адреса воркер блокирует вход на 15 минут.</dd>
+    <dt>Как заменить</dt><dd>В панели воркера изменить значение секрета и нажать Deploy. Потом заново ввести пароль на устройствах.</dd></dl></div>
+  <div class="key"><span class="name">EXTRA_ORIGINS</span>
+    <dl><dt>Где лежит</dt><dd>Cloudflare → воркер → Settings → Variables (тип Text, это не секрет).</dd>
+    <dt>Зачем</dt><dd>Список адресов, которым можно обращаться к воркеру. Сейчас там адрес бакета, потому что методички открываются оттуда. Если появится новый адрес сайта и в методичке напишет «нет связи с Worker», его надо добавить сюда.</dd></dl></div>
+  <div class="key"><span class="name">id_anitech</span>
+    <dl><dt>Где лежит</dt><dd>На вашем Mac: <code>~/.ssh/id_anitech</code> (секретный файл, защищён паролем-фразой). Его «замочная» половина <code>id_anitech.pub</code> лежит на сервере в <code>/root/.ssh/authorized_keys</code>.</dd>
+    <dt>Зачем</dt><dd>Вход на сервер. По паролю сервер больше не пускает.</dd>
+    <dt>Потеряли?</dt><dd>Зайти можно только через консоль в личном кабинете хостинга. Поэтому копию файла <code>id_anitech</code> стоит сохранить в надёжном месте (менеджер паролей), но не отправлять по почте/в чат.</dd></dl></div>
+  <div class="key"><span class="name">Привязка PROGRESS (KV)</span>
+    <dl><dt>Где лежит</dt><dd>Cloudflare → Workers → KV, хранилище <code>anitech-progress</code>, привязано к воркеру под именем <code>PROGRESS</code>.</dd>
+    <dt>Зачем</dt><dd>Это «шкафчик», где воркер хранит прогресс. Не пароль, но без привязки воркер ничего не сохранит.</dd></dl></div>
+</section>
 
-  <h2 id="progress">Прогресс прохождения</h2>
+<!-- ═══════════ 5 сервер ═══════════ -->
+<section id="server">
+  <span class="num">05</span>
+  <h2>Сервер</h2>
+  <p class="sub">Что на нём стоит и как зайти.</p>
+  <h3>Что на сервере</h3>
   <ul>
-    <li>Отметки шагов и разделов хранятся в <code>localStorage</code> браузера (ключи вида <code>lab-redesign-v1:&lt;лаба&gt;</code>).</li>
-    <li>Если вы вошли по паролю (кнопка ☁ слева внизу в методичке и на странице прогресса), копия уходит на Cloudflare Worker <code>anitech-progress</code> и хранится в KV. С другого устройства войдите тем же паролем — прогресс подтянется.</li>
-    <li>Слияние: побеждает более новое; пустое не затирает непустое.</li>
-    <li>Запасной путь — экспорт/импорт файлом в той же панели.</li>
-    <li>Код воркера: <code>tools/progress-worker/</code> (<code>worker.js</code>, README, <code>test.mjs</code>), клиент — <code>works/js/sync.js</code>. Воркер разрешает запросы только с известных адресов: <code>https://anitech.meeymirita.ru</code> и <code>https://meeymirita-files.storage.yandexcloud.net</code> (методички открываются из бакета). Список — в <code>worker.js</code> и в переменной воркера <code>EXTRA_ORIGINS</code> (Cloudflare → воркер → Settings → Variables); новый адрес сайта нужно добавить туда, иначе в методичке будет «нет связи с Worker».</li>
-  </ul>
-  <div class="note warn">Если менять <code>worker.js</code> в репозитории — править и копию в панели Cloudflare вручную, она не обновляется сама.</div>
-
-  <h2 id="bucket">Бакет Yandex Object Storage</h2>
-  <p>Имя <code>meeymirita-files</code>, публичное чтение, адрес <code>https://meeymirita-files.storage.yandexcloud.net/…</code>.</p>
-  <pre><code>&lt;лаба&gt;/&lt;лаба&gt;.html        методичка
-&lt;лаба&gt;/README.md            README лабы
-&lt;лаба&gt;/thumb.webp           миниатюра для карточек
-&lt;лаба&gt;/&lt;имя&gt;.png            обложка (имя берётся из ссылки image: в index.html)
-site/me.jpg                 фото автора
-site/screenshots/*.jpg      скрины окна «О проекте»
-old_files/                  ваши старые выгрузки (скрипт не трогает)
-old_files/last-sync/        прежние версии файлов с последней загрузки (скрипт перезаписывает)</code></pre>
-  <p>Источники в репозитории: методичка и README — в подмодуле лабы; миниатюры — <code>works/images/thumbs/&lt;лаба&gt;.webp</code>; обложки — <code>works/images/&lt;лаба&gt;.png</code>; фото — <code>works/images/me.jpg</code>; скрины — <code>docs/screenshots/</code>.</p>
-  <ul>
-    <li><b>Руками в консоли Yandex ничего загружать не нужно</b> — скрипт <code>tools/sync-bucket.py</code> сам загружает новое, заменяет изменённое (по MD5) и удаляет лишнее в папках лаб и <code>site/</code>.</li>
-    <li><b>Страховка:</b> перед каждой загрузкой, которая что-то меняет или удаляет, прежние версии этих файлов копируются в <code>old_files/last-sync/</code> (с теми же путями); предыдущая копия там стирается — хранится ровно один шаг назад. Вернуть файл: скопировать его из <code>old_files/last-sync/</code> на прежнее место (в консоли Yandex).</li>
-    <li>Сухой прогон без ключей: <code>python3 tools/sync-bucket.py --dry-run</code> — покажет разницу.</li>
-    <li>Сайт читает бакет только по публичным ссылкам; ключи нужны лишь для записи.</li>
+    <li><b>Система:</b> Ubuntu 22.04, адрес <code>45.10.166.23</code>.</li>
+    <li><b>Caddy</b> (веб-сервер). Конфиг — <code>/etc/caddy/Caddyfile</code>. В нём два сайта:
+      <ul><li><code>anitech.meeymirita.ru</code> — отдаёт папку <code>/var/www/anitech-performance</code>;</li>
+      <li><code>meeymirita.ru</code> — передаёт запросы на <code>127.0.0.1:8080</code>, то есть вашему другому сайту (он работает в Docker).</li></ul>
+      Сертификаты для https Caddy выпускает и продлевает сам. С http на https перенаправляет тоже сам.</li>
+    <li><b>Docker-контейнеры</b> (<code>meeymirita-frontend</code>, <code>-backend</code>, <code>-postgres</code>, <code>-redis</code> и <code>amnezia-awg2</code>, похоже на VPN). <b>Их не трогаем</b>: это другой проект. У всех включён автозапуск после перезагрузки.</li>
+    <li><b>Таймер деплоя</b> <code>anitech-deploy.timer</code> — раз в минуту обновляет сайт. Рабочая копия репозитория — <code>/opt/anitech-src</code>.</li>
   </ul>
 
-  <h2 id="ci">Автозапуск после пуша</h2>
-  <p>Файл <code>.github/workflows/sync-bucket.yml</code>: на каждый пуш в <code>main</code> родительского репозитория GitHub забирает его вместе с подмодулями и запускает <code>tools/sync-bucket.py</code> с секретами <code>YC_ACCESS_KEY_ID</code> и <code>YC_SECRET_ACCESS_KEY</code>. Результат виден во вкладке Actions.</p>
-  <div class="note"><b>Порядок пуша важен:</b> сначала подмодули, потом родитель. Иначе родитель ссылается на коммит, которого нет на GitHub, и запуск падает на checkout (<code>not our ref</code>). Скрипт <code>tools/save-push.sh "сообщение"</code> делает всё по порядку и при ошибке подмодуля родителя не пушит. Подмодуль может стоять в detached HEAD — скрипт пушит <code>HEAD:main</code>.</div>
+  <h3>Как зайти на сервер</h3>
+  <div class="cmd"><span class="where">на вашем Mac</span><pre><code>ssh -i ~/.ssh/id_anitech root@45.10.166.23</code></pre><button class="btn copy" type="button">Копировать</button></div>
+  <p>Спросит <b>пароль от ключа</b> (тот, что вы придумали при создании), а не пароль сервера. В начале строки появится <code>root@weaselcloud…</code>. Выйти: <code>exit</code>.</p>
+  <div class="callout warn"><b class="t">Важно не перепутать</b>
+    <p>Команды из этой страницы делятся на два вида: «на вашем Mac» (в строке <code>…@MacBook</code>) и «на сервере» (в строке <code>root@weaselcloud</code>). Над каждым блоком с командой написано, где её выполнять. Вставили не туда — не страшно, но ничего не сработает или создастся не там (как было с ключом).</p></div>
 
-  <h2 id="server">Сервер и домен</h2>
-  <ul>
-    <li><b>Сервер:</b> Ubuntu 22.04, <code>45.10.166.23</code> (IPv6 <code>2a03:afc0:9::15c9</code>). Вход <b>только по SSH-ключу</b>, по паролю сервер не пускает (с 05.10.2026): <code>ssh -i ~/.ssh/id_anitech root@45.10.166.23</code>. Секретный ключ <code>~/.ssh/id_anitech</code> лежит на вашем Mac и защищён паролем-фразой; публичная половина — в <code>/root/.ssh/authorized_keys</code> на сервере. Настройка запрета пароля — файл <code>/etc/ssh/sshd_config.d/00-keyonly.conf</code>.</li>
-    <li><b>Домен:</b> <code>anitech.meeymirita.ru</code>, DNS — в Cloudflare (зона <code>meeymirita.ru</code>, куплена у REG.RU, там только делегирование).</li>
-    <li><b>Caddy</b> (<code>systemctl status caddy</code>), конфиг <code>/etc/caddy/Caddyfile</code>. Два сайта:
-      <ul>
-        <li><code>anitech.meeymirita.ru</code> — раздаёт папку <code>/var/www/anitech-performance</code> (<code>file_server</code>, сжатие zstd/gzip);</li>
-        <li><code>meeymirita.ru</code> — проксирует на <code>127.0.0.1:8080</code> (другой сайт на этом сервере).</li>
-      </ul>
-    </li>
-    <li>HTTPS выпускает и продлевает сам Caddy, http→https (308) он делает сам. Редиректов в коде страниц нет.</li>
-  </ul>
-  <h3>Как сайт обновляется (деплой)</h3>
-  <p>Файлы в <code>deploy/</code>. На сервере лежит клон репозитория <code>/opt/anitech-src</code>; <b>таймер systemd <code>anitech-deploy.timer</code> раз в минуту</b> запускает <code>deploy/deploy-site.sh</code>: подтягивает <code>main</code>, и если версия изменилась — копирует в <code>/var/www/anitech-performance</code> только нужное сайту (<code>index.html</code>, <code>favicon.svg</code>, <code>images/</code>, <code>mira/</code>, <code>works/</code> без больших картинок). Ключи не нужны: репозиторий публичный. После пуша сайт обновится через ~1 минуту.</p>
-  <pre><code># поставить (один раз, на сервере от root)
-curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/install.sh | bash
-
-# посмотреть, когда сработал таймер и что выложено
+  <h3>Как устроен деплой сайта</h3>
+  <p>Скрипт <code>/opt/anitech-src/deploy/deploy-site.sh</code> делает три вещи: подтягивает свежий <code>main</code> с GitHub, сравнивает номер версии с уже выложенным (он записан в <code>/var/lib/anitech-deploy.rev</code>) и, если версия новая, копирует нужное сайту в папку Caddy. Копируется только: <code>index.html</code>, <code>favicon.svg</code>, <code>images/</code>, <code>mira/</code>, <code>works/</code> (без тяжёлых картинок). Всё остальное (папки лаб, методички) сайту не нужно: методички открываются из бакета.</p>
+  <div class="cmd"><span class="where">на сервере</span><pre><code># когда срабатывал таймер и что выложил
 systemctl list-timers anitech-deploy.timer
 journalctl -u anitech-deploy.service -n 20 --no-pager
 
 # выложить прямо сейчас, не ждать минуту
-FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code></pre>
-  <p>Перед первой установкой скрипт делает копию старой папки сайта: <code>/var/www/anitech-performance.bak-&lt;дата&gt;</code> (потом её можно удалить).</p>
-  <div class="note warn">Кеш: если перед сервером снова включат проксирование Cloudflare, после выката может понадобиться Caching → Purge Everything.</div>
+FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code></pre><button class="btn copy" type="button">Копировать</button></div>
 
-  <h2 id="cmd">Команды</h2>
-  <pre><code>python3 tools/check-site.py              # проверка целостности сайта (запускать перед коммитом)
-python3 tools/build-toc.py               # пересобрать works/js/toc.json после правки методичек
-python3 tools/build-progress.py          # пересобрать works/progress.html
-python3 tools/build-verification.py      # пересобрать works/verification.html из fixes/common/_verification.md
-python3 tools/patch-manuals.py           # кнопка «Все работы», защита от мигания (после перевыгрузки методички)
-python3 tools/sync-bucket.py --dry-run   # что изменилось бы в бакете
-bash tools/save-push.sh "сообщение"      # коммит и пуш: подмодули → родитель
+  <h3>Чего на сервере ещё не сделано</h3>
+  <ul>
+    <li>25 обновлений пакетов не установлены и сервер просит перезагрузку (<code>System restart required</code>). Вы решили отложить. Когда захотите: <code>apt-get update &amp;&amp; apt-get upgrade -y</code>, затем <code>reboot</code>. Контейнеры и Caddy поднимутся сами.</li>
+  </ul>
+</section>
+
+<!-- ═══════════ 6 бакет ═══════════ -->
+<section id="bucket">
+  <span class="num">06</span>
+  <h2>Бакет с файлами (Yandex Object Storage)</h2>
+  <p class="sub">Там лежат методички, обложки, миниатюры и фото. Адрес файлов: <code>https://meeymirita-files.storage.yandexcloud.net/…</code></p>
+  <div class="cmd"><span class="where">как устроены папки</span><pre><code>&lt;лаба&gt;/&lt;лаба&gt;.html       методичка
+&lt;лаба&gt;/README.md           README лабы
+&lt;лаба&gt;/thumb.webp          миниатюра для карточек
+&lt;лаба&gt;/&lt;имя&gt;.png           обложка
+site/me.jpg                 фото автора
+site/screenshots/*.jpg      скриншоты окна «О проекте»
+old_files/last-sync/        прежние версии файлов с последней загрузки
+old_files/…остальное        ваши старые выгрузки (робот не трогает)</code></pre><button class="btn copy" type="button">Копировать</button></div>
+  <h3>Как файлы попадают в бакет</h3>
+  <p>Вручную ничего загружать не нужно. Робот GitHub Actions после каждого пуша запускает скрипт <code>tools/sync-bucket.py</code>. Он сверяет файлы репозитория с бакетом (по контрольной сумме) и:</p>
+  <ul><li><b>загружает</b> новые файлы;</li><li><b>заменяет</b> изменённые;</li><li><b>удаляет</b> то, чего в репозитории уже нет (в папках лаб и <code>site/</code>).</li></ul>
+  <div class="callout simple"><b class="t">Страховка</b>
+    <p>Перед тем как заменить или удалить файл, робот копирует его прежнюю версию в <code>old_files/last-sync/</code>. Предыдущая копия там стирается, то есть хранится <b>ровно один шаг назад</b>. Если пуш что-то сломал, прежнюю версию можно взять оттуда (рецепт «Вернуть старую версию файла»).</p></div>
+  <h3>Посмотреть, что изменится, ничего не меняя</h3>
+  <div class="cmd"><span class="where">на вашем Mac, из папки проекта</span><pre><code>python3 tools/sync-bucket.py --dry-run</code></pre><button class="btn copy" type="button">Копировать</button></div>
+  <p>Ключи для этого не нужны. «Загрузить 0, удалить 0» означает, что бакет полностью совпадает с репозиторием.</p>
+</section>
+
+<!-- ═══════════ 7 прогресс ═══════════ -->
+<section id="progress">
+  <span class="num">07</span>
+  <h2>Прогресс прохождения</h2>
+  <p class="sub">Как сохраняются ваши галочки в методичках.</p>
+  <ul>
+    <li><b>Сначала в браузере.</b> Каждая отметка шага хранится в памяти браузера (<code>localStorage</code>) отдельно для каждой лабы. Если ничего больше не делать, прогресс живёт только на этом устройстве и в этом браузере.</li>
+    <li><b>Потом в облаке.</b> Если вы нажали ☁ (слева внизу в методичке или на странице «Все работы и прогресс») и ввели пароль, копия прогресса уходит в воркер Cloudflare и лежит в KV. С другого устройства войдите тем же паролем — прогресс подтянется.</li>
+    <li><b>Если с двух мест разное:</b> побеждает более новое; пустое никогда не затирает непустое.</li>
+    <li><b>Запасной путь:</b> в той же панели есть «выгрузить файл» и «загрузить файл».</li>
+  </ul>
+  <div class="callout ok"><b class="t">Проверено 05.10.2026</b>
+    <p>Вы отметили шаги, вышли, очистили хранилище браузера, снова ввели пароль, и прогресс вернулся. Значит облако работает.</p></div>
+  <p>Код воркера: <code>tools/progress-worker/worker.js</code>. Клиент: <code>works/js/sync.js</code>. Воркер отвечает только тем адресам, которые в списке: <code>https://anitech.meeymirita.ru</code> и адрес бакета (последний — через переменную <code>EXTRA_ORIGINS</code> и в коде).</p>
+  <div class="callout warn"><b class="t">Осторожно</b>
+    <p>Если менять <code>worker.js</code> в репозитории, то код в панели Cloudflare сам не обновится: его надо вставить туда вручную и нажать Deploy.</p></div>
+</section>
+
+<!-- ═══════════ 8 рецепты ═══════════ -->
+<section id="recipes">
+  <span class="num">08</span>
+  <h2>Что делать, когда…</h2>
+  <p class="sub">Готовые рецепты. Нажмите на заголовок, он раскроется.</p>
+
+  <details open><summary><span>Я изменил что-то на сайте или в лабе и хочу, чтобы это появилось<small>самый частый случай</small></span></summary><div class="body">
+    <ol class="steps">
+      <li><b>Скажите мне, что поменять</b>Например: «поменяй текст на главной» или «добавь абзац в шаг 3.2 Caddy». Я меняю файлы и проверяю командой <code>check-site.py</code>, что ничего не сломалось.</li>
+      <li><b>Скажите «запушь»</b>Я сохраняю и отправляю на GitHub (подмодули, потом главный). Сам я пушу только когда вы попросите.</li>
+      <li><b>Подождите около минуты</b>Затем откройте сайт и обновите страницу без кеша: Cmd+Shift+R.</li>
+      <li><b>Если не появилось</b>Смотрите раздел «Если сломалось» ниже.</li>
+    </ol>
+    <p>Если делаете сами, без меня:</p>
+    <div class="cmd"><span class="where">на вашем Mac, из папки проекта</span><pre><code>bash tools/save-push.sh "что изменили, по-английски"</code></pre><button class="btn copy" type="button">Копировать</button></div>
+  </div></details>
+
+  <details><summary><span>Я изменил методичку или картинку лабы<small>идут через бакет, а не через сервер</small></span></summary><div class="body">
+    <p>Делается так же: пуш. Робот сам обновит бакет. Дополнительно:</p>
+    <ul><li>Если правились <b>заголовки или шаги</b> методички, до пуша нужно пересобрать оглавление: <code>python3 tools/build-toc.py</code> (иначе в окне «Оглавление» на странице лабы будет старый список). <code>check-site.py</code> предупредит об этом.</li>
+    <li>Методичку нельзя править «как текст»: внутри неё сжатые данные. Правки идут только через специальные скрипты (<code>fixes/common/_tools/bundle.py</code>) — просто попросите меня.</li></ul>
+  </div></details>
+
+  <details><summary><span>Сайт не обновился<small>старая версия после пуша</small></span></summary><div class="body">
+    <ol class="steps">
+      <li><b>Подождите 2 минуты и обновите страницу без кеша</b>Cmd+Shift+R. Часто дело в кеше браузера.</li>
+      <li><b>Проверьте, что пуш дошёл</b>Откройте <a href="https://github.com/meeymirita/anitech-performance/commits/main">историю коммитов</a>: ваш пуш должен быть наверху.</li>
+      <li><b>Проверьте таймер на сервере</b>
+        <div class="cmd"><span class="where">на сервере</span><pre><code>journalctl -u anitech-deploy.service -n 20 --no-pager</code></pre><button class="btn copy" type="button">Копировать</button></div>
+        Если видите ошибку, пришлите мне её.</li>
+      <li><b>Выложить принудительно</b>
+        <div class="cmd"><span class="where">на сервере</span><pre><code>FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code></pre><button class="btn copy" type="button">Копировать</button></div></li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Зайти на сервер</span></summary><div class="body">
+    <div class="cmd"><span class="where">на вашем Mac</span><pre><code>ssh -i ~/.ssh/id_anitech root@45.10.166.23</code></pre><button class="btn copy" type="button">Копировать</button></div>
+    <p>Введите пароль от ключа. Выйти — <code>exit</code>. Если пишет <code>Permission denied (publickey)</code>, проверьте, что команда выполняется на Mac, а не на самом сервере, и что файл <code>~/.ssh/id_anitech</code> существует.</p>
+  </div></details>
+
+  <details><summary><span>Заменить ключи Yandex<small>например, ключ попал в чат или скриншот</small></span></summary><div class="body">
+    <ol class="steps">
+      <li><b>Создайте новый ключ</b>Откройте <a href="https://console.yandex.cloud/folders/b1gou0tps1441mmaihin/iam/service-account/ajeqt4ld96cojmf6te1k/overview">сервисный аккаунт</a> → «Создать новый ключ» → «Создать статический ключ доступа». Покажутся <b>идентификатор</b> и <b>секретный ключ</b> (секрет виден один раз; сразу скопируйте оба).</li>
+      <li><b>Обновите секреты на GitHub</b><a href="https://github.com/meeymirita/anitech-performance/settings/secrets/actions">Страница секретов</a> → у <code>YC_ACCESS_KEY_ID</code> и <code>YC_SECRET_ACCESS_KEY</code> нажмите карандаш → вставьте новые значения → Update secret.</li>
+      <li><b>Проверьте</b>Сделайте любой небольшой пуш (или во вкладке Actions запустите «Sync bucket» вручную): запуск должен быть зелёным.</li>
+      <li><b>Удалите старый ключ</b>Вернитесь в сервисный аккаунт и удалите старый ключ. Новые ключи в чат не присылайте.</li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Сменить пароль прогресса</span></summary><div class="body">
+    <ol class="steps">
+      <li>Откройте <a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954/workers/services/view/anitech-progress/production">панель воркера</a> → Settings → Variables and Secrets.</li>
+      <li>У <code>PASSWORD</code> нажмите Edit, впишите новый пароль, сохраните и нажмите Deploy.</li>
+      <li>В методичке нажмите ☁ и введите новый пароль. Сохранённый прогресс не пропадёт: он лежит в KV и от пароля не зависит.</li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Вернуть старую версию файла<small>пуш что-то сломал</small></span></summary><div class="body">
+    <p><b>Если сломан сайт или текст</b> (то, что лежит в GitHub). Скажите мне «откати последний пуш» — я верну прежнюю версию отдельным коммитом (история не пропадёт).</p>
+    <p><b>Если сломан файл в бакете</b> (методичка или картинка), а откатить нужно прямо сейчас:</p>
+    <ol class="steps">
+      <li>Откройте бакет <code>meeymirita-files</code> в консоли Yandex, папку <code>old_files/last-sync/</code>.</li>
+      <li>Найдите файл с тем же путём (например, <code>caddy/caddy.html</code>), скачайте его и загрузите в бакет на прежнее место.</li>
+      <li>Учтите: при следующем пуше робот сверит бакет с репозиторием и вернёт то, что в репозитории. Поэтому важно <b>исправить и сам репозиторий</b> (просто попросите меня).</li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Поменять настройки Caddy<small>/etc/caddy/Caddyfile</small></span></summary><div class="body">
+    <p>Правьте конфиг только если понимаете зачем. Безопасная последовательность: сначала проверка, потом перезагрузка конфига (сайты не отключаются).</p>
+    <div class="cmd"><span class="where">на сервере</span><pre><code>nano /etc/caddy/Caddyfile
+caddy validate --config /etc/caddy/Caddyfile
+systemctl reload caddy
+systemctl status caddy --no-pager | head -5</code></pre><button class="btn copy" type="button">Копировать</button></div>
+    <p>Если <code>validate</code> показал ошибку, <code>reload</code> не делайте. Блок <code>meeymirita.ru</code> — это ваш другой проект, его трогать не нужно.</p>
+  </div></details>
+
+  <details><summary><span>Начать работать с нового компьютера</span></summary><div class="body">
+    <ol class="steps">
+      <li><b>Скачайте проект вместе с подмодулями</b>
+        <div class="cmd"><span class="where">на новом компьютере</span><pre><code>git clone --recurse-submodules https://github.com/meeymirita/anitech-performance.git
+cd anitech-performance</code></pre><button class="btn copy" type="button">Копировать</button></div></li>
+      <li><b>Войдите в GitHub</b>Нужен установленный <code>gh</code> и вход: <code>gh auth login</code>.</li>
+      <li><b>Скопируйте SSH-ключ</b>Если нужен доступ к серверу, перенесите файл <code>~/.ssh/id_anitech</code> со старого компьютера (через менеджер паролей, не через почту) или создайте новый ключ и добавьте его на сервер (см. «Потерял SSH-ключ»).</li>
+      <li><b>Проверьте</b><code>python3 tools/check-site.py</code> должен написать «OK: проблем не найдено».</li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Потерял SSH-ключ или забыл пароль от него</span></summary><div class="body">
+    <p>На сервер больше не зайти по паролю, поэтому используйте консоль в личном кабинете хостинга (она работает независимо от SSH). Порядок:</p>
+    <ol class="steps">
+      <li>Создайте новый ключ на Mac: <code>ssh-keygen -t ed25519 -f ~/.ssh/id_anitech2</code>.</li>
+      <li>Покажите публичную половину на Mac: <code>cat ~/.ssh/id_anitech2.pub</code> и скопируйте строку целиком.</li>
+      <li>В консоли хостинга выполните <code>echo 'СТРОКА' &gt;&gt; /root/.ssh/authorized_keys</code> (вместо СТРОКА вставьте скопированное).</li>
+      <li>Проверьте вход: <code>ssh -i ~/.ssh/id_anitech2 root@45.10.166.23</code>. Старую строку из <code>authorized_keys</code> потом уберите.</li>
+    </ol>
+  </div></details>
+
+  <details><summary><span>Добавить новую лабу</span></summary><div class="body">
+    <p>Это длинный список из 12 пунктов (карточка на главной, страницы, реестры, миниатюра, загрузка в бакет и т.д.). Просто скажите мне «добавь лабу …» и пришлите методичку — я пройду по чек-листу из <code>CLAUDE.md</code> и проверю командой <code>check-site.py</code>. Бакет, сайт и оглавление обновятся сами после пуша.</p>
+  </div></details>
+
+  <details><summary><span>Обновить сервер<small>отложено</small></span></summary><div class="body">
+    <div class="cmd"><span class="where">на сервере</span><pre><code>apt-get update &amp;&amp; apt-get upgrade -y
+reboot</code></pre><button class="btn copy" type="button">Копировать</button></div>
+    <p>После <code>reboot</code> соединение оборвётся, подождите минуту-две и зайдите снова. Caddy и все контейнеры (включая ваш другой сайт и VPN) стартуют сами; автозапуск у них включён. На минуту сайты и VPN будут недоступны.</p>
+  </div></details>
+</section>
+
+<!-- ═══════════ 9 команды ═══════════ -->
+<section id="commands">
+  <span class="num">09</span>
+  <h2>Команды: шпаргалка</h2>
+  <p class="sub">Все — из папки проекта на вашем Mac, если не написано иное.</p>
+  <div class="cmd"><span class="where">на вашем Mac</span><pre><code>python3 tools/check-site.py              # проверка, что всё на месте и ничего не сломано (перед пушем)
+python3 tools/build-toc.py               # пересобрать оглавления лаб (после правки заголовков методичек)
+python3 tools/build-progress.py          # пересобрать страницу «Все работы и прогресс»
+python3 tools/build-verification.py      # пересобрать страницу проверок из fixes/common/_verification.md
+python3 tools/patch-manuals.py           # вернуть кнопку «Все работы» в методичке (после перевыгрузки)
+python3 tools/sync-bucket.py --dry-run   # что изменилось бы в бакете (ничего не меняет)
+bash tools/save-push.sh "сообщение"      # сохранить и отправить на GitHub: подмодули, потом главный
 gh run list --workflow "Sync bucket"     # статус автозагрузки в бакет
-gh run rerun &lt;id&gt;                        # перезапустить упавший запуск</code></pre>
+gh run rerun &lt;номер&gt;                     # перезапустить упавший запуск</code></pre><button class="btn copy" type="button">Копировать</button></div>
+</section>
 
-  <h2 id="fix">Если что-то сломалось</h2>
-  <div class="scroll"><table>
-    <tr><th>Симптом</th><th>Причина</th><th>Что делать</th></tr>
-    <tr><td>Actions упал на checkout, <code>not our ref</code></td><td>Подмодуль не запушен, а родитель уже ссылается на его коммит</td><td>Запушить подмодуль (<code>git push origin HEAD:main</code> внутри него), затем <code>gh run rerun</code></td></tr>
-    <tr><td>Картинка или методичка не открывается</td><td>Файла нет в бакете (запуск не прошёл или имя не совпало)</td><td>Посмотреть Actions; локально <code>sync-bucket.py --dry-run</code></td></tr>
-    <tr><td>На сайте старая версия</td><td>Таймер деплоя не сработал или кеш браузера</td><td><code>journalctl -u anitech-deploy.service -n 20</code> на сервере; <code>FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code>; Ctrl+Shift+R</td></tr>
-    <tr><td>«Не удалось загрузить оглавление»</td><td>Нет <code>works/js/toc.json</code> на сервере или он устарел</td><td><code>python3 tools/build-toc.py</code>, закоммитить; <code>check-site.py</code> ловит устаревший файл</td></tr>
-    <tr><td>Прогресс не синхронизируется</td><td>Неверный пароль, адрес не в списке разрешённых воркера, воркер не обновлён</td><td>Проверить панель ☁ и воркер в Cloudflare</td></tr>
-    <tr><td>Методичка не открывается после правки</td><td>Невалидный JSON внутри бандла</td><td>Править только через <code>bundle.py</code>; потом <code>check-site.py</code></td></tr>
-  </table></div>
+<!-- ═══════════ 10 если сломалось ═══════════ -->
+<section id="fix">
+  <span class="num">10</span>
+  <h2>Если что-то сломалось</h2>
+  <p class="sub">Симптом → причина → что делать.</p>
+  <div class="fix"><h4>Робот (Actions) упал с ошибкой «not our ref»</h4><p><b>Причина:</b> главный репозиторий ссылается на версию подмодуля, которой ещё нет на GitHub (значит, подмодуль не отправлен).</p><p><b>Что делать:</b> отправить подмодуль (<code>git push origin HEAD:main</code> внутри его папки), потом перезапустить: <code>gh run rerun &lt;номер&gt;</code>. Либо просто попросите меня.</p></div>
+  <div class="fix"><h4>Картинка или методичка не открывается</h4><p><b>Причина:</b> файла нет в бакете (робот не отработал или имя не совпало).</p><p><b>Что делать:</b> посмотреть вкладку Actions; выполнить <code>python3 tools/sync-bucket.py --dry-run</code>: он покажет, чего не хватает.</p></div>
+  <div class="fix"><h4>На сайте старая версия</h4><p><b>Причина:</b> кеш браузера или таймер на сервере не сработал.</p><p><b>Что делать:</b> Cmd+Shift+R; затем рецепт «Сайт не обновился».</p></div>
+  <div class="fix"><h4>В окне «Оглавление» написано «не удалось загрузить»</h4><p><b>Причина:</b> нет файла <code>works/js/toc.json</code> на сервере или он устарел.</p><p><b>Что делать:</b> <code>python3 tools/build-toc.py</code>, потом пуш.</p></div>
+  <div class="fix"><h4>В методичке «нет связи с Worker»</h4><p><b>Причина:</b> адрес, с которого открыта методичка, не разрешён воркеру (так было 05.10 с бакетом).</p><p><b>Что делать:</b> добавить адрес в переменную <code>EXTRA_ORIGINS</code> в панели воркера (через запятую) и нажать Deploy.</p></div>
+  <div class="fix"><h4>Методичка не открывается после правки</h4><p><b>Причина:</b> в данных внутри неё оказался некорректный JSON.</p><p><b>Что делать:</b> правки методичек делать только через скрипты <code>bundle.py</code>, потом <code>check-site.py</code>. Если уже сломали, скажите мне: вернём прошлую версию из истории GitHub.</p></div>
+  <div class="fix"><h4>Не пускает на сервер</h4><p><b>Причина:</b> команда выполняется не на Mac, нет файла ключа или неверный пароль от ключа.</p><p><b>Что делать:</b> см. рецепты «Зайти на сервер» и «Потерял SSH-ключ».</p></div>
+</section>
 
-  <footer>Обновлено 05.10.2026 (деплой работает). Подробная история решений — <code>CLAUDE.md</code> в корне репозитория и <a href="../works/changelog.html">хронология</a>.</footer>
+<!-- ═══════════ 11 правила ═══════════ -->
+<section id="rules">
+  <span class="num">11</span>
+  <h2>Правила, чтобы ничего не сломать</h2>
+  <ul>
+    <li>Пушить только через <code>tools/save-push.sh</code> (или просить меня): он соблюдает порядок «сначала подмодули, потом главный».</li>
+    <li>Не править файлы руками на сервере и в бакете: при следующем пуше их вернут к состоянию репозитория. Правим всегда в репозитории.</li>
+    <li>Ключи и пароли не отправлять в чат, почту, скриншоты. Если отправили, перевыпустить.</li>
+    <li>Не трогать на сервере Docker-контейнеры и блок <code>meeymirita.ru</code> в Caddyfile: это другой проект.</li>
+    <li>Правки методичек только через скрипты (<code>bundle.py</code>), не обычным редактором.</li>
+    <li>Перед пушем: <code>python3 tools/check-site.py</code> должен показать «OK».</li>
+    <li>GitHub Pages выключен, сайт живёт только на сервере. Заново его не включать.</li>
+  </ul>
+</section>
+
+<!-- ═══════════ 12 функционал ═══════════ -->
+<section id="features">
+  <span class="num">12</span>
+  <h2>Что умеет сайт</h2>
+  <h3>Главная страница</h3>
+  <ul><li>Карточки всех 22 лаб по направлениям, со сноской «что понадобится» (Docker, аккаунт, домен, ключи) и обложкой из бакета.</li><li>Карта маршрутов и треки обучения: в каком порядке проходить лабы и от чего они зависят.</li><li>Первый экран с настройками (шестерёнка) и окно «О проекте» со скриншотами и фото автора.</li></ul>
+  <h3>Страница лабы (<code>works/&lt;лаба&gt;.html</code>)</h3>
+  <ul><li>Вкладки «Чему вы научитесь», стек, сессии, схема архитектуры (элементы можно двигать), частые вопросы.</li><li>Окно «Оглавление»: читает готовый <code>works/js/toc.json</code>, поэтому работает с любого адреса.</li><li>Кнопка, открывающая методичку из бакета.</li></ul>
+  <h3>Методичка (HTML-файл в бакете)</h3>
+  <ul><li>Режимы «Лента» и «По шагам», таймеры по сессиям, отметки «Проверь себя», поиск по лабе (Ctrl+K), тёмная тема.</li><li>В каждом шаге: «Зачем», «Под капотом», «Почитать», ожидаемый результат, блоки «сломать → починить».</li><li>Кнопка «Все работы», окно «Что нужно знать до старта», кнопка ☁ для облачного прогресса.</li></ul>
+  <h3>Служебные страницы</h3>
+  <ul><li><a href="../works/progress.html">Все работы и прогресс</a>; <a href="../works/changelog.html">Хронология</a> (что делалось по дням); <a href="../works/verification.html">Проверки</a> (что и чем проверено); эта страница.</li></ul>
+</section>
+
+<!-- ═══════════ 13 сегодня ═══════════ -->
+<section id="today">
+  <span class="num">13</span>
+  <h2>Что мы сделали 5 октября 2026</h2>
+  <ol>
+    <li>Починили слишком большое меню «Содержание» в методичке Caddy: теперь как у остальных лаб.</li>
+    <li>Убрали из страниц лишние редиректы http→https: этим теперь занимается Caddy.</li>
+    <li>Сделали <b>автозагрузку файлов в бакет</b> (робот GitHub Actions + скрипт <code>sync-bucket.py</code>), заложили туда страховку «один шаг назад».</li>
+    <li>Починили окно «Оглавление» в лабах: оно читает готовый <code>toc.json</code>.</li>
+    <li>Настроили <b>автообновление сайта на сервере</b> (таймер раз в минуту). Раньше новые файлы на сервер не попадали вообще.</li>
+    <li>Перевели вход на сервер на <b>SSH-ключ</b>, вход по паролю выключили.</li>
+    <li>Выключили GitHub Pages: сайт живёт только на сервере.</li>
+    <li>Починили облачный прогресс: воркер теперь принимает запросы с адреса бакета (проверили: прогресс переживает очистку браузера).</li>
+    <li>Сделали эту страницу.</li>
+  </ol>
+  <p>Подробная хронология — в <a href="../works/changelog.html">changelog</a>, технические детали — в файле <code>CLAUDE.md</code> в корне репозитория.</p>
+</section>
+
+<!-- ═══════════ 14 словарик ═══════════ -->
+<section id="glossary">
+  <span class="num">14</span>
+  <h2>Словарик</h2>
+  <dl class="gl">
+    <dt>Репозиторий</dt><dd>Папка проекта с историей изменений. Хранится на GitHub.</dd>
+    <dt>Коммит</dt><dd>Один сохранённый «снимок» изменений с подписью, что изменили.</dd>
+    <dt>Пуш (push)</dt><dd>Отправить свои коммиты на GitHub.</dd>
+    <dt>Подмодуль</dt><dd>Отдельный репозиторий, подключённый внутрь главного. Каждая лаба — подмодуль. Поэтому пуш делается в два этапа: сначала лабы, потом главный.</dd>
+    <dt>GitHub Actions</dt><dd>Роботы GitHub, которые запускаются сами после пуша. У нас один: «Sync bucket».</dd>
+    <dt>Секрет GitHub</dt><dd>Пароль, спрятанный в настройках репозитория: робот его использует, а в логах и коде он не виден.</dd>
+    <dt>Бакет (Object Storage)</dt><dd>Облачное хранилище файлов у Yandex. Каждый файл имеет адрес.</dd>
+    <dt>Статический ключ доступа</dt><dd>Пара «логин + пароль» для программ (не для людей), чтобы они могли работать с бакетом.</dd>
+    <dt>Caddy</dt><dd>Программа-веб-сервер. Принимает запросы из интернета и отдаёт страницы; сама получает сертификаты для https.</dd>
+    <dt>Caddyfile</dt><dd>Файл настроек Caddy.</dd>
+    <dt>SSH</dt><dd>Защищённый способ зайти в командную строку удалённого сервера.</dd>
+    <dt>SSH-ключ</dt><dd>Пара файлов: секретный (остаётся у вас) и публичный («замок» на сервере). Надёжнее пароля.</dd>
+    <dt>Таймер systemd</dt><dd>«Будильник» на сервере, который по расписанию запускает скрипт. У нас — раз в минуту обновляет сайт.</dd>
+    <dt>DNS</dt><dd>«Телефонная книга» интернета: переводит имя сайта в адрес сервера. У нас ею управляет Cloudflare.</dd>
+    <dt>Cloudflare Worker</dt><dd>Маленькая программа в облаке Cloudflare. У нас хранит прогресс.</dd>
+    <dt>KV</dt><dd>Простое хранилище «ключ → значение» у Cloudflare. Там лежит прогресс.</dd>
+    <dt>CORS</dt><dd>Правило браузера: страница с одного адреса может обращаться к другому адресу, только если тот это разрешил. Из-за него воркеру нужен список разрешённых адресов.</dd>
+    <dt>localStorage</dt><dd>Память браузера для сайта. Очищается, когда вы чистите данные сайта.</dd>
+  </dl>
+</section>
+
+<footer>Обновлено 05.10.2026. Нашли на странице устаревшее — скажите мне, поправлю. Правится файл <code>mira/index.html</code> и деплоится как весь сайт.</footer>
 </main>
+</div>
+
 <script>
+(function () {
+  var root = document.documentElement;
   document.getElementById('theme').addEventListener('click', function () {
-    var root = document.documentElement;
     var dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     var next = dark ? 'light' : 'dark';
     root.dataset.theme = next;
     try { localStorage.setItem('mira-theme', next); } catch (e) {}
   });
+
+  var body = document.body, menuBtn = document.getElementById('menuBtn');
+  function setMenu(open) { body.classList.toggle('menu', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  menuBtn.addEventListener('click', function () { setMenu(!body.classList.contains('menu')); });
+  document.getElementById('side').addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+  document.addEventListener('click', function (e) { if (body.classList.contains('menu') && !e.target.closest('#side') && !e.target.closest('#menuBtn')) setMenu(false); });
+
+  // копирование команд
+  document.querySelectorAll('.cmd .copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = b.parentNode.querySelector('pre').innerText.replace(/\n$/, '');
+      var done = function () { b.textContent = 'Скопировано'; setTimeout(function () { b.textContent = 'Копировать'; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+      else { var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) {} t.remove(); }
+    });
+  });
+
+  // подсветка текущего раздела
+  var links = {}; document.querySelectorAll('#side a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { Object.keys(links).forEach(function (k) { links[k].classList.remove('on'); }); if (links[e.target.id]) links[e.target.id].classList.add('on'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
+  }
+})();
 </script>
 </body>
 </html>
