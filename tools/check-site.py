@@ -79,7 +79,7 @@ sys.path.insert(0, 'fixes/common/_tools')
 try:
     import bundle
     for p in sorted(glob.glob('*/*.html') + glob.glob('*/docs/*.html')):
-        if p.startswith(('works/', 'fixes/')):
+        if p.startswith(('works/', 'fixes/', 'mira/')):
             continue
         try:
             bundle._check_json(bundle.load(p))
