@@ -134,6 +134,13 @@ if not os.path.exists('sitemap.xml') or read('sitemap.xml').count('<loc>') != _n
 for _f in ('robots.txt', '404.html'):
     if not os.path.exists(_f): bad(f'нет {_f}')
 
+# 5e. SEO-теги (tools/build-seo.py): canonical, Open Graph, JSON-LD на главной и страницах лаб
+for _f in ['index.html'] + sorted(glob.glob('works/*.html')):
+    if os.path.basename(_f) in ('changelog.html', 'progress.html', 'verification.html'): continue
+    _t = read(_f)
+    if '<!-- seo:start -->' not in _t or 'rel="canonical"' not in _t or 'og:title' not in _t:
+        bad(f'{_f}: нет SEO-тегов (python3 tools/build-seo.py)')
+
 # 6. подмодули не опережают origin
 r = subprocess.run(['git', 'submodule', 'foreach', '--quiet', 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'], capture_output=True, text=True)
 for line in r.stdout.splitlines(): bad(f'подмодуль опережает origin: {line}')
