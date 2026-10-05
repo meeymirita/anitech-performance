@@ -12,10 +12,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'fixes', 'common', '_verification.md')
 OUT = os.path.join(ROOT, 'works', 'verification.html')
 
+FIXES_URL = 'https://github.com/meeymirita/lab-fixes/blob/main/'
+
 def inline(s):
     s = html.escape(s, quote=False)
     s = re.sub(r'`([^`]+)`', r'<code>\1</code>', s)
     s = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', s)
+    # [текст](https://…) — обычная ссылка
+    s = re.sub(r'\[([^\]]+)\]\((https?://[^)\s]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
+    # `fixes/<направление>/<файл>.md` — ссылка на файл подробностей в репозитории lab-fixes
+    s = re.sub(r'<code>fixes/((?:backend|devops|frontend|common)/[\w.-]+\.md)</code>',
+               lambda m: f'<a href="{FIXES_URL}{m.group(1)}" target="_blank" rel="noopener"><code>fixes/{m.group(1)}</code></a>', s)
     return s
 
 def cell(s):
@@ -76,6 +83,7 @@ hr {{ border:0; border-top:1px solid var(--hair); margin:32px 0; }}
 table {{ border-collapse:collapse; width:100%; font-size:14px; background:var(--card); }}
 th,td {{ text-align:left; vertical-align:top; padding:7px 10px; border:1px solid var(--hair); }}
 th {{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }}
+a {{ color:var(--accent); }} a code {{ color:inherit; }}
 td.ok {{ background:rgba(40,160,80,.12); }} td.part {{ background:rgba(230,170,0,.16); }}
 td.warn {{ background:rgba(236,48,19,.12); }} td.todo {{ background:rgba(128,128,128,.12); }}
 </style>
@@ -87,3 +95,43 @@ td.warn {{ background:rgba(236,48,19,.12); }} td.todo {{ background:rgba(128,128
 '''
 open(OUT, 'w', encoding='utf-8').write(page)
 print('works/verification.html собран, hash', h)
+
+# ── works/js/status.js: статус каждой лабы для карточки на главной и страницы лабы (единый источник — таблица «По лабам») ──
+KEYS = {'Algorithms PHP': 'algorithms-php', 'Laravel Performance': 'laravel-performance', 'CSS': 'css', 'Tailwind': 'tailwind',
+        'Inertia': 'inertia', 'Kubernetes': 'kubernetes', 'Docker': 'docker', 'Traefik': 'traefik', 'Caddy': 'caddy',
+        'ООП (php-coffee)': 'php-coffee', 'Чистый PHP': 'php', 'PostgreSQL': 'postgresql', 'Redis': 'redis', 'RabbitMQ': 'rabbitmq',
+        'Laravel': 'laravel', 'NestJS': 'nestjs', 'GraphQL': 'graphql', 'JS': 'js', 'TypeScript': 'typescript', 'Vue': 'vue',
+        'Nuxt': 'nuxt', 'Angular': 'angular'}
+import json
+status = {}
+sec = md.split('## По лабам', 1)[1].split('\n## ', 1)[0]
+for line in sec.split('\n'):
+    if not line.startswith('|') or line.startswith('|---') or line.startswith('| Лаба'):
+        continue
+    c = [x.strip() for x in line.strip().strip('|').split('|')]
+    if len(c) < 6 or c[0] not in KEYS:
+        continue
+    name, level, method, _done, todo, detail = c[:6]
+    partial = level.startswith('🟡')
+    rest, own = '', False
+    if todo.strip() not in ('—', ''):
+        t = todo.strip()
+        m = re.match(r'^—\s*\((.*)\)\s*$', t)       # «— (…)»: проверено, остаётся только то, что делает сам пользователь
+        t = m.group(1) if m else t
+        own = bool(re.search(r'сами\b', t))                # «проверите сами» / «решаете сами» — остаётся пользователю
+        t = re.sub(r'\s*[—-]\s*(проверите|решаете|проверит)\s+сами\s*$', '', t)
+        t = re.sub(r'^нужны внешние ресурсы:\s*', '', t)
+        rest = t.replace('`', '')
+    d = re.search(r'fixes/((?:backend|devops|frontend|common)/[\w.-]+\.md)', detail)
+    status[KEYS[name]] = {'level': 'part' if partial else 'ok',
+                          'head': 'Вычитана, проверена частично' if partial else 'Вычитана и проверена',
+                          'tail': 'не проверено' if partial else ('вам остаётся проверить самим' if own else 'не запускалось'),
+                          'method': [m for m, k in (('запуск в Docker', 'D'), ('проверка в браузере', 'B')) if k in method.split('+')],
+                          'rest': rest, 'detail': FIXES_URL + d.group(1) if d else ''}
+missing = sorted(set(KEYS.values()) - set(status))
+assert not missing, f'нет строк в таблице «По лабам»: {missing}'
+js = ('/* АВТОГЕНЕРАЦИЯ из fixes/common/_verification.md (tools/build-verification.py) — руками не править. */\n'
+      f'/* verification-md-hash: {h} */\n'
+      'window.LAB_STATUS = ' + json.dumps(status, ensure_ascii=False, indent=1) + ';\n')
+open(os.path.join(ROOT, 'works', 'js', 'status.js'), 'w', encoding='utf-8').write(js)
+print('works/js/status.js собран:', len(status), 'лаб')

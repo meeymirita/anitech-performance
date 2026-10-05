@@ -98,6 +98,8 @@ import hashlib as _hl
 _md = open('fixes/common/_verification.md', 'rb').read().decode('utf-8')
 if not os.path.exists('works/verification.html') or ('verification-md-hash: ' + _hl.sha256(_md.encode()).hexdigest()[:16]) not in read('works/verification.html'):
     bad('works/verification.html не соответствует fixes/common/_verification.md (python3 tools/build-verification.py)')
+if not os.path.exists('works/js/status.js') or ('verification-md-hash: ' + _hl.sha256(_md.encode()).hexdigest()[:16]) not in read('works/js/status.js'):
+    bad('works/js/status.js не соответствует fixes/common/_verification.md (python3 tools/build-verification.py)')
 
 # 5c. страница прогресса и правки шаблона методичек (tools/build-progress.py, tools/patch-manuals.py)
 if not os.path.exists('works/progress.html'):

@@ -487,6 +487,8 @@
     .card-desc { font-size: 13px; color: var(--text-dim); margin: 14px 0 0; line-height: 1.65; }
 
     .card-note { font-size: 11px; line-height: 1.5; color: var(--text-dim); opacity: .85; margin: 12px 0 0; }
+    .card-verify { font-size: 11px; line-height: 1.5; color: var(--text-dim); margin: 8px 0 0; }
+    .card-verify b { font-weight: 700; }
 
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
 
@@ -1496,6 +1498,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
+<script src="works/js/status.js"></script>
 <script src="works/js/flip-gallery.js"></script>
 
 <script>
@@ -1811,6 +1814,16 @@
   ];
 
   var grid = document.getElementById('grid');
+  // Статус вычитки и проверки (works/js/status.js — собирается из fixes/common/_verification.md)
+  function verifyHtml(key, accent) {
+    var st = window.LAB_STATUS && window.LAB_STATUS[key];
+    if (!st) return '';
+    var part = st.level === 'part';
+    return '<p class="card-verify card-verify-' + st.level + '"><b' + (accent ? ' style="color:' + escapeHtml(accent) + '"' : '') + '>' + (part ? '◐' : '✓') + '</b> ' +
+      (part ? 'проверена частично · ' : '') + 'возможны небольшие недочёты' +
+      (st.rest ? '<br>' + escapeHtml(st.tail) + ': ' + escapeHtml(st.rest) : '') + '</p>';
+  }
+
 
   function escapeHtml(str) {
     var div = document.createElement('div');
@@ -1864,6 +1877,7 @@
           <p class="card-desc">${escapeHtml(p.desc)}</p>
           <div class="chips">${chips}</div>
           ${p.note ? '<p class="card-note">* ' + escapeHtml(p.note) + '</p>' : ''}
+          ${verifyHtml(p.key, p.accent)}
           <div class="card-actions">
             ${openHtml}
             <a href="${p.repo}" target="_blank" rel="noopener" class="card-repo" aria-label="GitHub">
