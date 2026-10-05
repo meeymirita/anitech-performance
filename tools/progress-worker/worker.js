@@ -10,8 +10,7 @@
 
 const ORIGINS = [
   'https://anitech.meeymirita.ru',
-  'http://anitech.meeymirita.ru',
-  'https://meeymirita.github.io',
+  'https://meeymirita-files.storage.yandexcloud.net',   // методички открываются из бакета Object Storage
 ];
 const SLUG = /^[a-z0-9][a-z0-9._-]{0,80}$/i;
 const MAX_BODY = 100_000;         // байт на одну лабу

@@ -171,7 +171,7 @@
     <li>Если вы вошли по паролю (кнопка ☁ слева внизу в методичке и на странице прогресса), копия уходит на Cloudflare Worker <code>anitech-progress</code> и хранится в KV. С другого устройства войдите тем же паролем — прогресс подтянется.</li>
     <li>Слияние: побеждает более новое; пустое не затирает непустое.</li>
     <li>Запасной путь — экспорт/импорт файлом в той же панели.</li>
-    <li>Код воркера: <code>tools/progress-worker/</code> (<code>worker.js</code>, README, <code>test.mjs</code>), клиент — <code>works/js/sync.js</code>. Воркер разрешает запросы только с известных адресов (список в <code>worker.js</code>).</li>
+    <li>Код воркера: <code>tools/progress-worker/</code> (<code>worker.js</code>, README, <code>test.mjs</code>), клиент — <code>works/js/sync.js</code>. Воркер разрешает запросы только с известных адресов: <code>https://anitech.meeymirita.ru</code> и <code>https://meeymirita-files.storage.yandexcloud.net</code> (методички открываются из бакета). Список — в <code>worker.js</code> и в переменной воркера <code>EXTRA_ORIGINS</code> (Cloudflare → воркер → Settings → Variables); новый адрес сайта нужно добавить туда, иначе в методичке будет «нет связи с Worker».</li>
   </ul>
   <div class="note warn">Если менять <code>worker.js</code> в репозитории — править и копию в панели Cloudflare вручную, она не обновляется сама.</div>
 
