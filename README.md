@@ -8,13 +8,13 @@
 
 ## Как это выглядит
 
-На примере NestJS Lab: карточка на главной → страница лабы с описанием → оглавление методички → сама методичка.
+На примере Caddy Lab: карточка на главной → страница лабы с описанием → оглавление методички → сама методичка.
 
 | Карточки лаб на главной | Страница лабы |
 |---|---|
-| ![Карточки лаб](https://meeymirita-files.storage.yandexcloud.net/site/screenshots/1-cards.jpg) | ![Страница лабы](https://meeymirita-files.storage.yandexcloud.net/site/screenshots/2-lab-page.jpg) |
+| ![Карточки лаб](docs/screenshots/1-cards.jpg) | ![Страница лабы](docs/screenshots/2-lab-page.jpg) |
 | **Оглавление методички** | **Методичка** |
-| ![Оглавление](https://meeymirita-files.storage.yandexcloud.net/site/screenshots/3-toc.jpg) | ![Методичка](https://meeymirita-files.storage.yandexcloud.net/site/screenshots/4-manual.jpg) |
+| ![Оглавление](docs/screenshots/3-toc.jpg) | ![Методичка](docs/screenshots/4-manual.jpg) |
 
 ## Работы
 
