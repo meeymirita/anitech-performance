@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Статус проверки</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&display=swap">
+<style>
+  :root {
+    --bg: #f3f2f2;
+    --text: #201e1d;
+    --accent: #ec3013;
+    --accent-600: #dd2b0f;
+    --accent-700: #ae1800;
+    --divider: color-mix(in srgb, #201e1d 40%, transparent);
+  }
+  body { margin: 0; padding: 48px; background: var(--bg); color: var(--text); font-family: "Archivo", system-ui, sans-serif; }
+
+  .status { border-top: 2px solid var(--text); border-bottom: 2px solid var(--text); }
+  .status__main { display: grid; grid-template-columns: 64px minmax(0,1fr) auto; gap: 24px; align-items: center; padding: 24px 0; }
+  .status__icon { width: 64px; height: 64px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; }
+  .status__body { display: flex; flex-direction: column; gap: 6px; }
+  .status__meta { display: flex; gap: 12px; align-items: center; }
+  .status__kicker { font-size: 13px; font-weight: 700; letter-spacing: .1em; color: var(--accent-700); }
+  .status__title { margin: 0; font-weight: 900; font-size: 36px; line-height: 1; text-transform: uppercase; letter-spacing: -.01em; }
+  .status__text { margin: 0; font-size: 16px; line-height: 1.4; }
+  .status__actions { display: flex; gap: 8px; }
+  .status__note { border-top: 2px solid var(--divider); padding: 12px 0 12px 88px; display: flex; gap: 16px; align-items: baseline; }
+  .status__note span:last-child { font-size: 16px; }
+
+  .tag { display: inline-flex; align-items: center; font-size: 11px; letter-spacing: .02em; padding: 3px 10px; border: 1px solid var(--accent); color: var(--accent); }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none;
+         font-family: inherit; font-weight: 800; font-size: 14px; line-height: 1.2; color: var(--text);
+         padding: 10px 16px; border: 2px solid transparent; background: transparent; border-radius: 0; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { background: var(--accent-600); }
+  .btn-primary:active { background: var(--accent-700); }
+  .btn-secondary { border-color: var(--divider); }
+  .btn-secondary:hover { background: color-mix(in srgb, var(--text) 7%, transparent); }
+  .btn-secondary:active { background: color-mix(in srgb, var(--text) 14%, transparent); }
+
+  @media (max-width: 800px) {
+    .status__main { grid-template-columns: 48px minmax(0,1fr); }
+    .status__icon { width: 48px; height: 48px; }
+    .status__actions { grid-column: 1 / -1; flex-wrap: wrap; }
+    .status__note { padding-left: 0; flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<section class="status">
+  <div class="status__main">
+    <div class="status__icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <div class="status__body">
+      <div class="status__meta">
+        <span class="status__kicker">01 / СТАТУС ПРОВЕРКИ</span>
+        <span class="tag">Запуск в Docker</span>
+      </div>
+      <h2 class="status__title">Вычитана и проверена</h2>
+      <p class="status__text">возможны небольшие недочёты — методичка вычитана построчно, код из неё запускался</p>
+    </div>
+    <div class="status__actions">
+      <a class="btn btn-primary" href="#">Что чем проверено</a>
+      <a class="btn btn-secondary" href="#">Подробности →</a>
+    </div>
+  </div>
+  <div class="status__note">
+    <span class="status__kicker">ВАМ ОСТАЁТСЯ ПРОВЕРИТЬ САМИМ</span>
+    <span>задания 9.5 «Production Hell» без подсказок</span>
+  </div>
+</section>
+</body>
+</html>
