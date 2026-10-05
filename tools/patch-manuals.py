@@ -26,15 +26,19 @@ import json, os, re, subprocess, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
-js = open('works/js/lab.js', encoding='utf-8').read()
-paths = sorted(set(re.findall(r"open: '\.\./([^']+)'", js)))
+# методички теперь читаются из бакета (другой домен), а патчим локальную копию в сабмодуле —
+# путь к ней берём из fixes/common/_tools/prep.py (LABS: ключ -> локальный путь), не из lab.js
+_prep_src = open('fixes/common/_tools/prep.py', encoding='utf-8').read()
+_m = re.search(r'\nLABS = \{(.*?)\n\}\n', _prep_src, re.S)
+paths = sorted(set(eval('{' + _m.group(1) + '}').values()))
 
+SITE = 'https://anitech.meeymirita.ru'   # методичка открыта с другого домена (бакет) — ссылки на сайт абсолютные
 STYLE = '<style>x-dc{display:none!important}<\\u002Fstyle>'
 MARK = 'data-all-labs-nav'
 OLD_MARK = 'data-all-labs-link'     # прежняя ссылка внизу страницы — убираем
 
 def href_for(p):
-    return '../' * p.count('/') + 'works/progress.html'
+    return SITE + '/works/progress.html'
 
 def btn_home(h):
     return ('<a ' + MARK + '=\\"1\\" href=\\"' + h + '\\" title=\\"Все работы и общий прогресс\\" style=\\"display:flex;gap:8px;align-items:center;padding:10px 14px;'
@@ -83,12 +87,15 @@ for p in paths:
         old = "componentDidUpdate(pp, ps) {\\n    const s = this.state;\\n"
         assert new.count(old) == 1, (p, 'componentDidUpdate')
         new = new.replace(old, "componentDidUpdate(pp) {\\n    const s = this.state, ps = this.__ps || {};\\n    this.__ps = s;\\n")
+    # нормализуем уже вставленные относительные src на prereq.js/sync.js до абсолютных (методичка теперь
+    # на другом домене — бакете; "not in new" ниже не поймает уже вставленный относительный путь)
+    new = re.sub(r'src=\\"(?:\.\./)+works/js/(prereq|sync)\.js\\"', lambda mm: 'src=\\"' + SITE + '/works/js/' + mm.group(1) + '.js\\"', new)
     if 'works/js/prereq.js' not in new:              # окно «Что нужно знать до старта»
         assert new.count('<\\u002Fbody>') == 1, (p, 'body')
-        new = new.replace('<\\u002Fbody>', '<script src=\\"' + '../' * p.count('/') + 'works/js/prereq.js\\"><\\u002Fscript><\\u002Fbody>')
+        new = new.replace('<\\u002Fbody>', '<script src=\\"' + SITE + '/works/js/prereq.js\\"><\\u002Fscript><\\u002Fbody>')
     if 'works/js/sync.js' not in new:                # синхронизация прогресса
         assert new.count('works/js/prereq.js') == 1, (p, 'prereq')
-        new = new.replace('works/js/prereq.js\\"><\\u002Fscript>', 'works/js/prereq.js\\"><\\u002Fscript><script src=\\"' + '../' * p.count('/') + 'works/js/sync.js\\"><\\u002Fscript>', 1)
+        new = new.replace('works/js/prereq.js\\"><\\u002Fscript>', 'works/js/prereq.js\\"><\\u002Fscript><script src=\\"' + SITE + '/works/js/sync.js\\"><\\u002Fscript>', 1)
     new = OLD_LINK.sub('', new)                      # убрать старую ссылку внизу
     h = href_for(p)
     if MARK in new:                                  # обновить путь у уже вставленных кнопок

@@ -9,18 +9,33 @@
 Запускать заново при добавлении лабы или смене структуры методичек. tools/patch-manuals.py вставляет
 в каждую методичку ссылку на эту страницу.
 """
-import html, json, os, re, subprocess, sys
+import html, json, os, re, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 sys.path.insert(0, os.path.join(ROOT, 'fixes', 'common', '_tools'))
 import bundle
 
+BUCKET = 'https://meeymirita-files.storage.yandexcloud.net'
+
+# fixes/common/_tools/prep.py runs its CLI main() on import (no __main__ guard), so we can't
+# just `import prep` — pull its LABS dict (key -> local path) out of the source instead.
+_prep_src = open('fixes/common/_tools/prep.py', encoding='utf-8').read()
+_m = re.search(r'\nLABS = \{(.*?)\n\}\n', _prep_src, re.S)
+PREP_LABS = eval('{' + _m.group(1) + '}')
+
 # 1. лабы из lab.js (через node: файл — обычный JS-массив LABS)
 js = open('works/js/lab.js', encoding='utf-8').read()
 a = js.index('var LABS = ['); b = js.index('\n];\n', a) + 3
 code = js[a:b] + "\nprocess.stdout.write(JSON.stringify(LABS.map(l => ({key:l.key,title:l.title,subtitle:l.subtitle,open:l.open.replace('../',''),accent:l.accent,difficulty:l.difficulty}))));"
-labs = json.loads(subprocess.run(['node', '-e', code], capture_output=True, text=True, check=True).stdout)
+# code can exceed the OS arg-length limit once lab.js is big enough (hit with 22 labs) — run from a temp file, not -e
+with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as tf:
+    tf.write(code)
+    code_path = tf.name
+try:
+    labs = json.loads(subprocess.run(['node', code_path], capture_output=True, text=True, check=True).stdout)
+finally:
+    os.unlink(code_path)
 
 # 2. порядок и направления — как на главной (ORDER/TRACKS в lab-anime.js)
 anim = open('works/js/lab-anime.js', encoding='utf-8').read()
@@ -43,20 +58,23 @@ for row in open('fixes/common/_verification.md', encoding='utf-8'):
         elif left.startswith('—'): vstatus[key] = ('full', left[1:].strip(' ()')); verified.add(key)
         else: vstatus[key] = ('mostly', left)
 
-# 3. из методичек: slug и ключи разделов
+# 3. из методичек: slug и ключи разделов — читаем ЛОКАЛЬНУЮ копию (prep.LABS), а не бакет
+# (l['open'] из lab.js — это уже полный URL бакета, его используем только как ссылку, не как путь для чтения)
 for l in labs:
-    L, _ = json.JSONDecoder().raw_decode(bundle.load(l['open'])[len('window.LAB='):])
+    local_path = PREP_LABS.get(l['key'])
+    if not local_path:
+        sys.exit(f"tools/build-progress.py: лабы {l['key']!r} нет в fixes/common/_tools/prep.py LABS")
+    L, _ = json.JSONDecoder().raw_decode(bundle.load(local_path)[len('window.LAB='):])
     l['slug'] = L['slug']
     l['units'] = [u['key'] for u in L['units']]
-    depth = l['open'].count('/')
     l['href'] = l['open']
 
 data = []
 for title, keys in tracks:
     data.append({'title': title, 'labs': [{
         'key': k, 'title': by_key[k]['title'], 'subtitle': by_key[k]['subtitle'], 'difficulty': by_key[k]['difficulty'],
-        'accent': by_key[k]['accent'], 'open': '../' + by_key[k]['href'], 'page': f'{k}.html',
-        'thumb': f'images/thumbs/{k}.webp', 'verified': k in verified, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
+        'accent': by_key[k]['accent'], 'open': by_key[k]['href'], 'page': f'{k}.html',
+        'thumb': f'{BUCKET}/{k}/thumb.webp', 'verified': k in verified, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
     } for k in keys]})
 missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
