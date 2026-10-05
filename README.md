@@ -61,7 +61,7 @@
 
 **Стек:** Node.js (Express) + PostgreSQL, всё в Docker / Docker Compose.
 
-**Формат:** методичка `Docker_Bash_Lab.html` — методичка готова, прохождение впереди.
+**Формат:** методичка `docker.html` — методичка готова, прохождение впереди.
 
 **Что внутри (3 сессии):** разбор Docker с нуля (образ vs контейнер vs Dockerfile), Bash параллельным треком (shebang, переменные, циклы, `set -e -u -o pipefail`), ENTRYPOINT vs CMD, тома и сети, Docker Compose (`depends_on` + healthcheck) — пошаговая сборка маленького Node.js + PostgreSQL проекта, заканчивается явной точкой возврата к Traefik Lab.
 
@@ -75,7 +75,7 @@
 
 **Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 18 + RabbitMQ + Mailpit — брокер появляется только в последней сессии.
 
-**Формат:** методичка `OOP_Lab_CoffeeShop.html` (вычитана и исправлена 24.09) — ниже план по оглавлению. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
+**Формат:** методичка `php-coffee.html` (вычитана и исправлена 24.09) — ниже план по оглавлению. Первая сессия начинается с чистого PHP без фреймворка, чтобы увидеть ООП "без магии Laravel".
 
 **Что внутри (5 сессий):**
 - **Сессия 1** — касса на массивах (и почему это плохо) → первый объект `Money` → `abstract class Drink` + `enum` + полиморфизм → заказ с инвариантами
@@ -96,7 +96,7 @@
 
 **Стек:** PHP 8.4 CLI, встроенный dev-сервер, PostgreSQL через голый PDO, Composer только для автозагрузки (PSR-4) — без единого стороннего пакета до сессии 7.
 
-**Формат:** методичка `PHP_Lab_VanillaCoffee.html` — готова, прохождение впереди.
+**Формат:** методичка `php.html` — готова, прохождение впереди.
 
 **Что внутри (8 сессий):**
 - **Сессия 1** — стенд; `declare(strict_types=1)` + таблица `==` (чем PHP 7 отличается от PHP 8)
@@ -120,7 +120,7 @@
 
 **Стек:** Traefik 3 + Docker Compose (с заметками про Podman) + Node.js API + статический frontend + PostgreSQL + Adminer.
 
-**Формат:** методичка `Docker_and_Traefik_Lab_Plan.html` — не пройдена, ниже план по оглавлению. Есть отдельный раздел 0 "Введение в Docker с нуля" для тех, кто раньше не работал с контейнерами.
+**Формат:** методичка `traefik.html` — не пройдена, ниже план по оглавлению. Есть отдельный раздел 0 "Введение в Docker с нуля" для тех, кто раньше не работал с контейнерами.
 
 **Что внутри (3 сессии):**
 - **Сессия 1** — каталоги и `traefik/traefik.yml`; базовый `docker-compose.yml`; первый роутер через labels на тестовом сервисе `whoami`; dashboard Traefik и его защита; заметка про rootless Podman
@@ -139,7 +139,7 @@
 
 **Стек:** Kubernetes (kind) + kubectl + Traefik как Ingress-контроллер (IngressRoute CRD) — тот же стек приложения, что в Traefik Lab: Node.js API + статический frontend + PostgreSQL 18 + Adminer. Проверено на kind v0.24.0 / Kubernetes v1.31.0.
 
-**Формат:** методичка [`Kubernetes_Lab_Plan.html`](kubernetes/Kubernetes_Lab_Plan.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
+**Формат:** методичка [`kubernetes.html`](kubernetes/kubernetes.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
 
 **Что внутри (3 сессии):**
 - **Сессия 1** — kind-кластер; первый Pod руками и его смертность; Deployment и самолечение через ReplicaSet; сборка образа API и `kind load`; Service и стабильный адрес поверх набора Pod'ов
@@ -188,7 +188,7 @@
 
 **Стек:** Laravel 13 + PostgreSQL 18 + Redis 8.
 
-**Формат:** методичка `Redis_Lab_Plan.html` (открывается в браузере, прогресс по чекбоксам сохраняется локально) — ещё не пройдена, ниже план по оглавлению.
+**Формат:** методичка `redis.html` (открывается в браузере, прогресс по чекбоксам сохраняется локально) — ещё не пройдена, ниже план по оглавлению.
 
 **Что внутри (3 сессии):**
 - **Сессия 1** — docker-compose и `redis.conf`, Laravel + `.env`, миграции; **Cache-Aside** для карточки товара (`ProductRepository`); сессии в Redis (`SESSION_DRIVER=redis`); `StreamPublisher` — первый producer в Redis Streams; первый consumer (happy path)
@@ -207,7 +207,7 @@
 
 **Стек:** JavaScript (ES2022+, без TypeScript и без сборки) + Node 24+ (LTS) для сессий-песочниц; в браузере — нативные ES-модули без бандлера; `json-server` как мок-API (только `db.json`, ноль кода); собственный ~15-строчный сервер на `node:http`; тесты — встроенный `node --test`; Docker (compose-файл создаётся в сессии 1).
 
-**Формат:** методичка `JS_Lab_VanillaHelpdesk.html` — готова, прохождение впереди.
+**Формат:** методичка `js.html` — готова, прохождение впереди.
 
 **Что внутри (8 сессий):**
 - **Сессия 1** — переменные, область видимости, hoisting: воспроизведён и починен баг с `var` в цикле тремя способами
@@ -231,7 +231,7 @@
 
 **Стек:** Vue 3.5 + Vite 7 + Vue Router 4 + Pinia 2+ + Vitest, бэкенд — готовый мини-бэкенд (Node). Composition API + `<script setup>` (Options API — только в теории для сравнения). Всё в Docker.
 
-**Формат:** методичка `Vue_Lab_Helpdesk.html` — не пройдена, ниже план по оглавлению.
+**Формат:** методичка `vue.html` — не пройдена, ниже план по оглавлению.
 
 **Что внутри (5 сессий, порядок строгий — Pinia раньше Router, потому что guard'ам роутера нужен auth-store):**
 - **Сессия 1** — стенд (`docker-compose`, скаффолд готового бэкенда и `create-vue`); готовый мини-бэкенд на Node (auth, tickets, comments, history, WebSocket-gateway) — дан готовым; песочница реактивности: `ref`/`reactive`/`computed`/`watch`, директивы, `v-model`, `v-for`/`key`; `useAsync` и первый запрос к API
@@ -252,7 +252,7 @@
 
 **Стек:** TypeScript 6.0 (код проверен и на 5.9) + Node 24+ (LTS) + `tsx` + Vitest + Zod, в финале — Express и Vue 3 + TS. Отдельный репозиторий на npm workspaces: `packages/core`, `cli`, `api`, `web`. Всё в Docker.
 
-**Формат:** методичка `TypeScript_Lab_Warehouse.html` — не пройдена, ниже план по оглавлению. Каждый шаг заканчивается зелёным `npm run typecheck` — это главный критерий готовности.
+**Формат:** методичка `typescript.html` — не пройдена, ниже план по оглавлению. Каждый шаг заканчивается зелёным `npm run typecheck` — это главный критерий готовности.
 
 **Что внутри (5 сессий, порядок строгий):**
 - **Сессия 1** — стенд (Docker, workspaces, `tsconfig.base`, `tsx`, Vitest); песочница: аннотации, вывод типов, примитивы/объекты, union и литералы, `type` vs `interface`, функции, `any`/`unknown`/`never`, `strict`, `as const`
@@ -273,7 +273,7 @@
 
 > Prisma 7 везде (NestJS- и GraphQL-лабы): в командах стоит `@7`, потому что на npm у `prisma` сейчас latest — 8.0 RC. NestJS закреплён на 11 (`@nestjs/cli@11`): `@latest` создаёт NestJS 12.
 
-**Формат:** методичка [`NestJS_Lab_Plan.html`](nestjs/NestJS_Lab_Plan.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
+**Формат:** методичка [`nestjs.html`](nestjs/nestjs.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
 
 **Что внутри (5 сессий):**
 - **Сессия 1** — фундамент: TypeScript-минимум для Nest, DI руками (свой мини-контейнер), модули, конфиг с валидацией
@@ -294,7 +294,7 @@
 
 **Стек:** NestJS + `@nestjs/graphql` + Apollo Server (code-first: `@ObjectType`/`@Field`/`@Resolver`), Prisma 7 + PostgreSQL 18, `dataloader` для батчинга, `@nestjs/jwt` + bcryptjs, `graphql-subscriptions`/`graphql-redis-subscriptions` + Redis, `graphql-query-complexity`. Всё в Docker.
 
-**Формат:** методичка [`GraphQL_Lab_Plan.html`](graphql/GraphQL_Lab_Plan.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
+**Формат:** методичка [`graphql.html`](graphql/graphql.html) — открывается в браузере, прогресс по чекбоксам сохраняется локально.
 
 **Что внутри (3 сессии):**
 - **Сессия 1** — инфраструктура и схема: репозиторий и NestJS, docker-compose (Postgres + Redis), модель данных и seed, первые `ObjectType`/`Query`, резолверы полей наивно, воспроизводим и считаем N+1, input-типы
@@ -313,7 +313,7 @@
 
 **Стек:** Laravel 13 (PHP 8.4) + PostgreSQL 18 + Redis 8 + RabbitMQ 4 + Mailpit + Laravel Reverb; фронт — Vue 3 + Vite (JavaScript, только API-клиент). Всё в Docker.
 
-**Формат:** методичка `Laravel_Lab_TaskFlow.html` — не пройдена, ниже план по оглавлению.
+**Формат:** методичка `laravel.html` — не пройдена, ниже план по оглавлению.
 
 **Что внутри (10 сессий):**
 - **Сессия 1** — стенд (Docker, Laravel 13, Sanctum/Reverb/RabbitMQ-драйвер), схема данных и миграции
@@ -339,7 +339,7 @@
 
 **Стек:** PostgreSQL 18 в Docker + `psql` + `pgbench`; расширения `pg_stat_statements`, `pg_trgm`, `pageinspect`, `btree_gist`. Никакого фреймворка и ORM.
 
-**Формат:** методичка [`PostgreSQL_Lab_CoffeeShop.html`](postgresql/PostgreSQL_Lab_CoffeeShop.html) — методичка готова, прохождение впереди. У каждого шага — «Под капотом» и тренировка с ответами под спойлером; главный артефакт — журнал `NOTES.md` с планами «до/после».
+**Формат:** методичка [`postgresql.html`](postgresql/postgresql.html) — методичка готова, прохождение впереди. У каждого шага — «Под капотом» и тренировка с ответами под спойлером; главный артефакт — журнал `NOTES.md` с планами «до/после».
 
 **Что внутри (7 сессий):**
 - **Сессия 0** — JOIN с нуля на песочнице из пяти клиентов и семи заказов: INNER/LEFT/RIGHT/FULL, ловушка «условие в WHERE», self-join, anti- и semi-join, JOIN + GROUP BY
@@ -362,7 +362,7 @@
 
 **Стек:** Nuxt 4.5+ (с пометками про v5), TypeScript strict + `nuxi typecheck`, Nitro server routes, SQLite + Drizzle, Zod-схемы в `shared/`, nuxt-auth-utils, `@pinia/nuxt`, Nuxt Content v3, `@nuxtjs/sitemap` + `@nuxtjs/robots`, Vitest + `@nuxt/test-utils`, Docker Compose.
 
-**Формат:** методичка [`Nuxt_Lab_HelpCenter.html`](nuxt/Nuxt_Lab_HelpCenter.html) — методичка готова, прохождение впереди. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя».
+**Формат:** методичка [`nuxt.html`](nuxt/nuxt.html) — методичка готова, прохождение впереди. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя».
 
 **Что внутри (6 сессий, ~20,5 ч):**
 - **Сессия 1** — стенд и основы: скаффолд Nuxt 4, файловый роутинг, layouts, что генерирует `.nuxt/`, SSR vs SPA руками (`view-source`, `ssr: false`, `ClientOnly`)
@@ -384,7 +384,7 @@
 
 **Стек:** Angular 22 (standalone, zoneless, OnPush по умолчанию), Angular CLI + `@angular/build`, `HttpClient` + интерцепторы + `httpResource`, Signal Forms и Reactive Forms, RxJS 7 + rxjs-interop, Vitest через `ng test`; готовый API — `api/server.mjs` на Node 24 без зависимостей; Docker Compose, в проде nginx.
 
-**Формат:** методичка [`Angular_Lab_RoomBook.html`](angular/Angular_Lab_RoomBook.html) — методичка готова, прохождение впереди. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя».
+**Формат:** методичка [`angular.html`](angular/angular.html) — методичка готова, прохождение впереди. У каждого шага: код → «зачем» → команда → ожидаемый результат → «проверь себя».
 
 **Что внутри (6 сессий, 26 шагов, ~20,5 ч):**
 - **Сессия 1** (~3 ч) — стенд и основы: готовый API и `ng new`, компоненты с `input`/`output` и `@for`, `signal`/`computed`/`model`/`linkedSignal`/`effect`; ломаем OnPush + zoneless мутацией массива (счётчик растёт, а сетка нет)
@@ -406,7 +406,7 @@
 
 **Стек:** чистый CSS, без фреймворков и препроцессоров.
 
-**Формат:** методичка [`CSS_Lab_FrontFest.html`](css/CSS_Lab_FrontFest.html) — методичка готова и вычитана (30.09), прохождение впереди.
+**Формат:** методичка [`css.html`](css/css.html) — методичка готова и вычитана (30.09), прохождение впереди.
 
 **Что внутри (6 сессий, ~20 часов):** основы и каскад; токены, цвет, темы, текст; Flexbox; Grid; адаптив, container queries, `:has()`, формы; позиционирование, движение, view transitions, сборка. Разделы 1–9 — теория, раздел 10 — сессии, разделы 11–14 — чек-лист, глоссарий, вопросы, что дальше.
 
@@ -420,7 +420,7 @@
 
 **Стек:** Tailwind CSS 4.3, Vite + `@tailwindcss/vite`, чистый HTML и немного JS; Docker (dev на Vite, prod на nginx).
 
-**Формат:** методичка [`Tailwind_Lab_Pulse.html`](tailwind/Tailwind_Lab_Pulse.html) — методичка готова и вычитана (30.09), прохождение впереди.
+**Формат:** методичка [`tailwind.html`](tailwind/tailwind.html) — методичка готова и вычитана (30.09), прохождение впереди.
 
 **Что внутри (6 сессий, ~20 ч):** стенд и азбука; тема `@theme`; варианты и состояния; адаптив и container queries; тёмная тема, формы, `@layer components`, typography; продакшн и таблица «CSS-лаба ↔ Tailwind-лаба». Разделы 1–9 — теория, раздел 10 — сессии, 11–14 — чек-лист, глоссарий, вопросы, что дальше.
 
@@ -434,7 +434,7 @@
 
 **Стек:** Laravel 13 (PHP 8.4), `inertiajs/inertia-laravel` + `@inertiajs/vue3` 3, Vue 3 (`<script setup lang="ts">`), TypeScript strict, Pinia, Laravel Wayfinder, Tailwind CSS 4, SQLite.
 
-**Формат:** методичка [`Inertia_Lab_Inkwell.html`](inertia/Inertia_Lab_Inkwell.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
+**Формат:** методичка [`inertia.html`](inertia/inertia.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
 
 **Что внутри (5 сессий, ~16,5 ч):** протокол и фундамент (Inertia руками, лента, layout, Wayfinder); страница поста (SEO, SSR — включаем, ломаем, чиним); пользователи и формы (сессии, flash, Pinia, Policies, редактор); данные и производительность (фильтры, бесконечная лента, deferred props, polling); тесты, сборка, SSR в проде, Production Hell. Разделы 1–8 — теория, раздел 9 — сессии, 10–13 — чек-лист, глоссарий, вопросы, что дальше.
 
@@ -448,7 +448,7 @@
 
 **Стек:** Laravel 13 (PHP 8.4), PostgreSQL 18, Redis 8, nginx 1.30, k6, Debugbar и Telescope, SPX и Blackfire, OPcache и JIT, Octane + FrankenPHP. Всё в Docker Compose.
 
-**Формат:** методичка [`Perf_Lab_LaravelCoffeePerf.html`](laravel-performance/Perf_Lab_LaravelCoffeePerf.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
+**Формат:** методичка [`laravel-performance.html`](laravel-performance/laravel-performance.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
 
 **Что внутри (9 сессий, ~36 ч):**
 - **Сессия 1** — стенд, датасет в 1 млн заказов, приложение с проблемами; перцентили, первый замер curl и ApacheBench
@@ -471,7 +471,7 @@
 
 **Стек:** PHP 8.4 CLI, SPL, PHPUnit, Composer (только автозагрузка), Docker.
 
-**Формат:** методичка [`Algo_Lab_CoffeeAlgo.html`](algorithms-php/Algo_Lab_CoffeeAlgo.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
+**Формат:** методичка [`algorithms-php.html`](algorithms-php/algorithms-php.html) — методичка готова и вычитана (04.10.2026), прохождение впереди.
 
 **Что внутри (13 сессий, ~44 ч):** сложность без формул и замер; массивы и строки; хеш-таблицы и множества; стек и очередь; связные списки; рекурсия; бинарный поиск и сортировки (включая устойчивость); два указателя, скользящее окно, префиксные суммы; деревья (BST, обходы); кучи и топ-K; графы (BFS, DFS, Дейкстра); динамическое программирование (размен монет, рюкзак, LCS); разбор собеседований со шаблоном ответа, пятью задачами с замером и шпаргалкой по сложностям.
 
@@ -485,7 +485,7 @@
 
 **Стек:** Caddy 2 (Caddyfile + JSON-конфиг), Docker Compose, PHP-FPM через FastCGI, `xcaddy` для сборки модулей на Go.
 
-**Формат:** методичка [`Caddy_Lab_Edge.html`](caddy/Caddy_Lab_Edge.html) — методичка написана и частично проверена на реальном Caddy (сессии 1–6, 9–11); вычитка проектом и прохождение впереди.
+**Формат:** методичка [`caddy.html`](caddy/caddy.html) — методичка написана и частично проверена на реальном Caddy (сессии 1–6, 9–11); вычитка проектом и прохождение впереди.
 
 **Что внутри (13 сессий, ~48 ч):** первый запуск и Caddyfile; статический сайт (сжатие, кеш, редиректы, SPA, свои страницы ошибок); reverse proxy (WebSocket и SSE без спецнастроек, заголовки X-Forwarded); автоматический HTTPS (локальный CA, Let's Encrypt, On-Demand TLS); балансировка и отказоустойчивость (политики, health-checks, канарейка); безопасность (basic_auth, forward_auth, лимиты); Caddy в Docker и Compose; PHP и FastCGI; логи, метрики, отладка; продвинутый Caddyfile (матчеры, сниппеты, CEL); Admin API и JSON-конфиг; расширение через `xcaddy` и свой модуль на Go; продакшн — systemd, сеть, кластер, финальный аудит.
 
