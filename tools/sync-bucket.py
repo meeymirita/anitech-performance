@@ -14,6 +14,7 @@
     <лаба>/<лаба>.html      методичка        ← <лаба>/<лаба>.html
     <лаба>/README.md        README           ← <лаба>/README.md
     <лаба>/thumb.webp       миниатюра        ← works/images/thumbs/<лаба>.webp
+    <лаба>/og.jpg           картинка для превью ссылок (SEO) ← works/images/og/<лаба>.jpg (jpeg 1200 px; `sips -s format jpeg -s formatOptions 65 -Z 1200`)
     <лаба>/<имя>.png        обложка          ← works/images/<лаба>.png (имя — из ссылки `image:` в index.html)
     site/me.jpg             фото автора      ← works/images/me.jpg
     site/screenshots/*.jpg  скрины «О проекте» ← docs/screenshots/*.jpg
@@ -48,6 +49,8 @@ def build_manifest():
         if os.path.isfile(f'{k}/README.md'):
             m[f'{k}/README.md'] = f'{k}/README.md'
         m[f'{k}/thumb.webp'] = f'works/images/thumbs/{k}.webp'
+        if os.path.isfile(f'works/images/og/{k}.jpg'):
+            m[f'{k}/og.jpg'] = f'works/images/og/{k}.jpg'
         if k in covers:
             m[f'{k}/{covers[k]}'] = f'works/images/{k}.png'
         else:

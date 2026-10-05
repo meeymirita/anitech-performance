@@ -128,7 +128,7 @@ except Exception as e:
     bad(f'проверка шаблонов методичек: {e}')
 
 # 5d. sitemap.xml, robots.txt, 404.html (tools/build-sitemap.py)
-_n = len(glob.glob('works/*.html')) + 1
+_n = len(glob.glob('works/*.html'))   # главная + страницы витрины − progress.html (личная, noindex)
 if not os.path.exists('sitemap.xml') or read('sitemap.xml').count('<loc>') != _n:
     bad('sitemap.xml не соответствует страницам сайта (python3 tools/build-sitemap.py)')
 for _f in ('robots.txt', '404.html'):
@@ -140,6 +140,9 @@ for _f in ['index.html'] + sorted(glob.glob('works/*.html')):
     _t = read(_f)
     if '<!-- seo:start -->' not in _t or 'rel="canonical"' not in _t or 'og:title' not in _t:
         bad(f'{_f}: нет SEO-тегов (python3 tools/build-seo.py)')
+    if _f.startswith('works/') and 'og:image' in _t:
+        _k = os.path.basename(_f)[:-5]
+        if not os.path.exists(f'works/images/og/{_k}.jpg'): bad(f'нет works/images/og/{_k}.jpg для превью ссылок')
 
 # 6. подмодули не опережают origin
 r = subprocess.run(['git', 'submodule', 'foreach', '--quiet', 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'], capture_output=True, text=True)
