@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Onest:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Onest:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -151,109 +151,9 @@
       nav a:not(.nav-cta) { display: none; }
     }
 
-    .about-section {
-      position: relative;
-      min-height: calc(100vh - var(--header-h));
-      display: grid;
-      align-content: center;
-      padding: clamp(60px,9vw,120px) 0;
-      overflow: hidden;
-    }
-
-    .about-glow {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(50% 60% at 12% 20%, rgba(125,249,255,.14), transparent 70%),
-        radial-gradient(40% 50% at 90% 80%, rgba(255,46,136,.08), transparent 70%);
-    }
-
-    .about-grid {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
-      gap: clamp(28px,5vw,64px);
-      align-items: center;
-    }
-
     .kicker { font-size: 12px; letter-spacing: .24em; color: var(--cyan); margin-bottom: 14px; }
     .section-h2 { font-size: clamp(32px,5vw,64px); line-height: .95; margin: 0 0 12px; }
     .accent-word { color: var(--pink); }
-
-    .about-text p {
-      margin: 14px 0 0;
-      font-size: clamp(15px,1.5vw,18px);
-      line-height: 1.7;
-      color: var(--text-dim);
-    }
-
-    .about-text .chips { margin-top: 22px; }
-
-    .about-photo-wrap { display: flex; justify-content: center; perspective: 1000px; }
-    .about-photo-box { position: relative; width: 100%; max-width: 440px; }
-
-    .about-photo-box::before {
-      content: "DEVELOPER / 01";
-      position: absolute;
-      top: -13px;
-      left: 20px;
-      z-index: 4;
-      padding: 5px 9px;
-      background: var(--pink);
-      color: var(--bg);
-      font: 700 9px 'JetBrains Mono',monospace;
-      letter-spacing: .1em;
-    }
-
-    .about-photo-box::after {
-      content: "";
-      position: absolute;
-      inset: -12px;
-      border: 1px solid rgba(125,249,255,.15);
-      pointer-events: none;
-      transform: rotate(2deg);
-    }
-
-    .about-photo-big {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border-radius: 28px;
-      border: 1px solid rgba(255,46,136,.45);
-      box-shadow: 0 0 70px rgba(255,46,136,.2), 20px 20px 0 rgba(255,46,136,.06);
-      transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
-    }
-
-    .about-photo-box:hover .about-photo-big {
-      transform: rotate(-1deg) scale(1.025);
-      box-shadow: 0 0 90px rgba(255,46,136,.3), 20px 20px 0 rgba(125,249,255,.06);
-    }
-
-    @media (min-width: 700px) {
-      .about-photo-wrap { justify-content: flex-end; }
-    }
-
-    .about-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 24px;
-      border: 1px solid rgba(247,242,245,.2);
-      padding: 18px 22px;
-      color: var(--text);
-      font-size: 13px;
-      transition: border-color .2s ease, color .2s ease, background-color .2s ease, transform .2s ease;
-    }
-
-    .about-link:hover {
-      border-color: var(--cyan);
-      color: var(--cyan);
-      background: rgba(125,249,255,.08);
-      transform: translateX(5px);
-    }
 
     .hero { position: relative; padding: clamp(55px,8vw,110px) 0 clamp(55px,7vw,90px); overflow: hidden; }
 
@@ -866,8 +766,6 @@
     @media (max-width: 640px) {
       nav a:not(.nav-cta) { display: none; }
       .grid { grid-template-columns: 1fr; }
-      .about-grid { grid-template-columns: 1fr; }
-      .about-photo-wrap { justify-content: center; }
       .btn { padding: 13px 20px; font-size: 11px; }
     }
 
@@ -1135,18 +1033,70 @@
     @media (prefers-reduced-motion: reduce) { .op-tape div, .op-live { animation: none; } }
 
     /* ---------- раздел 1: автор ---------- */
-    .about-section { background: var(--bg); }
-    .about-glow { background: var(--halftone); opacity: .35; mask-image: linear-gradient(250deg, #000 10%, transparent 55%); }
-    .about-photo-box::before {
-      content: "автор"; top: -16px; left: -10px; padding: 7px 12px;
-      background: var(--sun); color: var(--ink); font: 700 11px 'JetBrains Mono', monospace; letter-spacing: .1em;
-      transform: rotate(-4deg); box-shadow: 3px 3px 0 var(--ink);
+    .author-section {
+      position: relative;
+      min-height: calc(100vh - var(--header-h));
+      display: grid;
+      grid-template-columns: 1fr;
+      align-content: center;
+      overflow: hidden;
+      padding: clamp(60px,9vw,120px) 0;
+      background: #120507;
     }
-    .about-photo-box::after { inset: 0; border: none; transform: none; background: var(--halftone); opacity: .4; mix-blend-mode: overlay; border-radius: 0; }
-    .about-photo-big { border-radius: 0; border: 3px solid var(--paper); box-shadow: 12px 12px 0 var(--pink); }
-    .about-photo-box:hover .about-photo-big { transform: translate(-4px,-4px); box-shadow: 16px 16px 0 var(--pink); }
-    .about-link { border-width: 2px; }
-    .about-link:hover { transform: translate(-3px,-3px); box-shadow: 5px 5px 0 var(--cyan); }
+    .author-grid {
+      position: relative;
+      z-index: 1;
+      width: min(1300px,92%);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(300px,580px) 1fr;
+      gap: clamp(32px,6vw,80px);
+      align-items: center;
+    }
+    .author-kicker {
+      display: inline-flex; align-items: center; gap: 12px; margin-bottom: 22px;
+      font: 600 12px 'IBM Plex Mono', monospace; letter-spacing: .16em; color: #ff4757;
+      text-transform: uppercase;
+    }
+    .author-kicker::before { content: ""; width: 40px; height: 2px; background: #ff4757; }
+    .author-heading {
+      margin: 0 0 20px; font: 800 clamp(44px,8vw,96px)/.92 'Unbounded', sans-serif;
+      color: #fff; letter-spacing: -.03em;
+    }
+    .author-heading .accent-word { color: #ff4757; }
+    .author-lead { margin: 0 0 26px; max-width: 54ch; font: 400 17px/1.6 'Onest', sans-serif; color: #d9c4c6; text-wrap: pretty; }
+    .author-tags {
+      display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 30px;
+      font: 500 13px 'IBM Plex Mono', monospace; color: #a88; list-style: none; padding: 0;
+    }
+    .author-links { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+    .author-link {
+      display: inline-block; border-bottom: 2px solid #ff4757; padding-bottom: 4px;
+      font: 600 14px 'IBM Plex Mono', monospace; color: #fff; letter-spacing: .02em;
+      text-transform: uppercase; transition: color .2s ease, border-color .2s ease;
+    }
+    .author-link:hover { color: #ff4757; }
+    .author-photo-wrap {
+      position: relative; height: clamp(320px,46vw,620px); overflow: hidden;
+    }
+    .about-photo-big {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      mask-image: linear-gradient(90deg, transparent 0, #000 40%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40%);
+    }
+    .author-watermark {
+      position: absolute; right: clamp(8px,2vw,30px); top: 0; bottom: 0;
+      writing-mode: vertical-rl; transform: rotate(180deg); text-align: center;
+      font: 900 clamp(64px,13vw,190px)/.82 'Unbounded', sans-serif;
+      color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.5);
+      text-transform: uppercase; pointer-events: none; user-select: none;
+    }
+    @media (max-width: 900px) {
+      .author-grid { grid-template-columns: 1fr; }
+      .author-photo-wrap { height: clamp(260px,70vw,420px); order: -1; }
+      .about-photo-big { mask-image: none; -webkit-mask-image: none; }
+      .author-watermark { font-size: clamp(48px,20vw,110px); }
+    }
 
     /* ---------- раздел 2: маршруты ---------- */
     .route-info {
@@ -1426,48 +1376,42 @@
 
 <div id="opPanel" role="dialog" aria-label="Настройка первого экрана"><header id="opPhead"><span>🎛 НАСТРОЙКА ПЕРВОГО ЭКРАНА</span><button type="button" id="opPmin" aria-label="закрыть">×</button></header><div class="pbody" id="opPbody"></div><footer><button type="button" id="opPcopy">Копировать CSS</button><button type="button" class="g" id="opPrand">🎲 Случайно</button><button type="button" class="g" id="opPreset">Сброс</button></footer></div>
 
-<section id="top" class="about-section">
-  <div class="about-glow"></div>
-  <div class="wrap about-grid reveal">
-    <div class="about-text">
-      <div class="kicker mono">Раздел 1 · автор</div>
-      <h2 class="section-h2 display">Об <span class="accent-word">авторе</span></h2>
-      <p>
+<section id="top" class="author-section">
+  <div class="author-grid reveal">
+    <div class="author-text">
+      <div class="author-kicker">Раздел 1 · автор</div>
+      <h2 class="author-heading">Об<br><span class="accent-word">авторе</span></h2>
+      <p class="author-lead">
         Бэкенд-разработчик, 2 года опыта, фокус — PHP/Laravel: проектирую API, строю
         бизнес-логику, работаю с очередями и кэшем через RabbitMQ и Redis для быстрых
         и надёжных систем. При необходимости подключаюсь и к фронту — Vue.js и
         TypeScript, чтобы доводить фичу от бэка до интерфейса самостоятельно.
       </p>
-      <div class="chips">
-        <span class="chip" style="--accent:#777BB4">PHP</span>
-        <span class="chip" style="--accent:#FF2D20">Laravel</span>
-        <span class="chip" style="--accent:#4A90D9">PostgreSQL</span>
-        <span class="chip" style="--accent:#FF6600">RabbitMQ</span>
-        <span class="chip" style="--accent:#DC382D">Redis</span>
-        <span class="chip" style="--accent:#F4D35E">JavaScript</span>
-        <span class="chip" style="--accent:#3178C6">TypeScript</span>
-        <span class="chip" style="--accent:#42B883">Vue</span>
-        <span class="chip" style="--accent:#00DC82">Nuxt</span>
-        <span class="chip" style="--accent:#CC26D5">Angular</span>
-        <span class="chip" style="--accent:#E0234E">NestJS</span>
-        <span class="chip" style="--accent:#E535AB">GraphQL</span>
-        <span class="chip" style="--accent:#2496ED">Docker</span>
-        <span class="chip" style="--accent:#14B8A6">Traefik</span>
-        <span class="chip" style="--accent:#326CE5">Kubernetes</span>
+      <ul class="author-tags">
+        <li>/PHP</li>
+        <li>/Laravel</li>
+        <li>/PostgreSQL</li>
+        <li>/RabbitMQ</li>
+        <li>/Redis</li>
+        <li>/JavaScript</li>
+        <li>/TypeScript</li>
+        <li>/Vue</li>
+        <li>/Nuxt</li>
+        <li>/Angular</li>
+        <li>/NestJS</li>
+        <li>/GraphQL</li>
+        <li>/Docker</li>
+        <li>/Traefik</li>
+        <li>/Kubernetes</li>
+      </ul>
+      <div class="author-links">
+        <a href="https://github.com/meeymirita" target="_blank" rel="noopener" class="author-link">github.com/meeymirita ↗</a>
+        <a href="https://t.me/meeymirita" target="_blank" rel="noopener" class="author-link">@meeymirita ↗</a>
       </div>
-      <a href="https://github.com/meeymirita" target="_blank" rel="noopener" class="about-link mono">
-        <span>github.com/meeymirita</span>
-        <span>→</span>
-      </a>
-      <a href="https://t.me/meeymirita" target="_blank" rel="noopener" class="about-link mono">
-        <span>@meeymirita</span>
-        <span>→</span>
-      </a>
     </div>
-    <div class="about-photo-wrap">
-      <div class="about-photo-box">
-        <img src="works/images/me.jpg" alt="Автор" class="about-photo-big">
-      </div>
+    <div class="author-photo-wrap">
+      <img src="https://meeymirita-files.storage.yandexcloud.net/site/me.jpg" alt="Автор" class="about-photo-big">
+      <div class="author-watermark" aria-hidden="true">автор</div>
     </div>
   </div>
 </section>
@@ -1560,7 +1504,7 @@
       category: 'frontend',
       title: 'Чистый JS Lab',
       subtitle: 'Vanilla Helpdesk — фундамент без фреймворка',
-      image: 'js/JavaScript.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/js/JavaScript.png',
       desc: 'Чистый JavaScript с нуля — общий фундамент для Vue и TypeScript: var/let/const и hoisting, this и замыкания, прототипы и class, event loop и async/await, DOM без фреймворка, ESM-модули, своя реактивность на Proxy, финальное мини-SPA с явным сравнением с Vue.',
       stack: ['JavaScript ES2022', 'Node.js 24+', 'json-server', 'node:test', 'Docker'],
       note: 'Нужен Docker или Node 24; аккаунтов и ключей нет.',
@@ -1574,7 +1518,7 @@
       category: 'frontend',
       title: 'TypeScript Lab',
       subtitle: 'Warehouse — складской учёт',
-      image: 'works/images/typescript.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/typescript/typescript.png',
       desc: 'Типизация домена складского учёта с нуля: generics, размеченные объединения, mapped/conditional types, CLI на Zod, сквозная типизация API + Vue.',
       stack: ['TypeScript 6', 'Node 24+', 'Zod', 'Vitest'],
       note: 'Нужен Docker (Node 24); аккаунтов и ключей нет.',
@@ -1588,7 +1532,7 @@
       category: 'frontend',
       title: 'Vue Lab',
       subtitle: 'Helpdesk на Vue 3',
-      image: 'works/images/vue.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/vue/vue-anime.png',
       desc: 'Система тикетов на Vue 3 с нуля: реактивность, компоненты, слоты, Pinia, Vue Router с guard-ами, WebSocket, канбан-доска, тесты на Vitest.',
       stack: ['Vue 3.5', 'Vite 7', 'Pinia 2+', 'Vue Router', 'Node'],
       note: 'Нужен Docker (Node 24); бэкенд на NestJS собирается в самой лабе.',
@@ -1602,7 +1546,7 @@
       category: 'frontend',
       title: 'Nuxt Lab',
       subtitle: 'Help Center — SSR, SSG и SPA в одном приложении',
-      image: 'nuxt/Nuxt.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/nuxt/Nuxt.png',
       desc: 'Публичный центр поддержки на Nuxt 4 и TypeScript: файловый роутинг, useFetch и гидрация, Nitro server routes, Drizzle + SQLite, общие Zod-схемы в shared/, сессии и защита страниц, Nuxt Content, routeRules (SSG, SWR, SPA), SEO, тесты и сборка в Docker.',
       stack: ['Nuxt 4', 'TypeScript', 'Nitro', 'Drizzle', 'Nuxt Content'],
       note: 'Нужен Docker (Node 24); образ из 6.4 собирается на полном node:24.',
@@ -1616,7 +1560,7 @@
       category: 'frontend',
       title: 'Angular Lab',
       subtitle: 'RoomBook — бронирование переговорных',
-      image: 'angular/Angular.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/angular/Angular.png',
       desc: 'Внутренний сервис бронирования переговорных на Angular 22: сигналы и OnPush без zone.js, DI и провайдеры, HttpClient, интерцепторы и httpResource, роутер с lazy-загрузкой и guards по ролям, Signal Forms с серверной проверкой слота, RxJS для поиска и живого расписания через SSE, тесты на Vitest и сборка под nginx.',
       stack: ['Angular 22', 'TypeScript', 'Signals', 'Signal Forms', 'RxJS'],
       note: 'Нужен Docker (Node 24); аккаунтов и ключей нет.',
@@ -1630,7 +1574,7 @@
       category: 'frontend',
       title: 'CSS Lab',
       subtitle: 'FrontFest — сайт конференции',
-      image: 'css/css.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/css/css.png',
       desc: 'Современный CSS с нуля на сайте фронтенд-конференции: каскад и @layer, токены, oklch и тёмная тема через light-dark(), Flexbox, Grid и subgrid, адаптив и container queries, :has() и формы, sticky, анимации и view transitions. Разметка готовая — вы пишете только стили, без фреймворков и препроцессоров.',
       stack: ['CSS', '@layer', 'Grid', 'Container Queries', 'oklch'],
       note: 'Нужен Docker (nginx) и браузер с современным CSS.',
@@ -1644,7 +1588,7 @@
       category: 'frontend',
       title: 'Tailwind Lab',
       subtitle: 'Pulse — сервис аналитики',
-      image: 'tailwind/tailwind.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/tailwind/tailwind.png',
       desc: 'Tailwind CSS v4 с нуля на сервисе аналитики «Pulse»: лендинг, дашборд и настройки. Утилиты и шкалы, тема через @theme, варианты и состояния (group, peer, has-*), адаптив и container queries, тёмная тема, формы, @layer components и @apply, сборка на Vite и nginx. Разметку пишете сами.',
       stack: ['Tailwind CSS 4', '@theme', 'Vite', 'Container Queries', 'Dark mode'],
       note: 'Нужен Docker (Node 24, nginx); аккаунтов и ключей нет.',
@@ -1658,7 +1602,7 @@
       category: 'backend',
       title: 'Чистый PHP Lab',
       subtitle: 'Фундамент без фреймворка',
-      image: 'php/php.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/php/php.png',
       desc: 'Чистый PHP 8.4 без фреймворка: strict_types и copy-on-write массивы, суперглобалы, замыкания и генераторы, магические методы — и своими руками роутер, DI-контейнер, PDO-слой, сессии и CSRF.',
       stack: ['PHP 8.4', 'PDO', 'PostgreSQL', 'Composer (PSR-4)'],
       note: 'Нужен Docker (PHP 8.4, PostgreSQL); аккаунтов и ключей нет.',
@@ -1672,7 +1616,7 @@
       category: 'backend',
       title: 'OOP Lab',
       subtitle: 'Coffee Shop API на PHP 8.4',
-      image: 'works/images/php.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/php-coffee/php.png',
       desc: 'ООП на PHP 8.4 с нуля на маленьком API кофейни: 4 принципа ООП, Factory, Decorator, Strategy, Repository, SOLID, наследование vs композиция.',
       stack: ['PHP 8.4', 'Laravel 13', 'PostgreSQL', 'RabbitMQ'],
       note: 'Нужен Docker (PHP 8.4; в шаге 5 ещё RabbitMQ).',
@@ -1686,7 +1630,7 @@
       category: 'backend',
       title: 'Algorithms PHP Lab',
       subtitle: 'CoffeeAlgo — алгоритмы и структуры данных',
-      image: 'algorithms-php/algorithms-php.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/algorithms-php/algorithms-php.png',
       desc: 'Алгоритмы на задачах кофейни, каждое утверждение — замером: сложность без формул, хеш-таблицы, стек и очередь, списки, рекурсия, бинарный поиск и сортировки, деревья, кучи, графы, динамическое программирование, разбор собеседований.',
       stack: ['PHP 8.4', 'SPL', 'PHPUnit', 'Docker'],
       note: 'Нужен Docker (PHP 8.4); база данных не нужна.',
@@ -1700,7 +1644,7 @@
       category: 'backend',
       title: 'NestJS Lab',
       subtitle: 'DI руками, JWT-ротация, real-time',
-      image: 'nestjs/nest.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/nestjs/nest.png',
       desc: 'Helpdesk API собран с нуля слой за слоем: свой мини-DI контейнер, границы модулей и provider scopes, Prisma и транзакции, JWT-ротация refresh-токенов с reuse-detection, RBAC через TicketPolicy, доменные события и WebSocket-шлюз, свой динамический модуль, unit и e2e тесты.',
       stack: ['NestJS 11', 'Prisma 7', 'PostgreSQL 18', 'JWT + argon2', 'Socket.IO'],
       note: 'Нужен Docker (PostgreSQL 18); задания 9.5 без подсказок решаете сами.',
@@ -1714,7 +1658,7 @@
       category: 'backend',
       title: 'GraphQL Lab',
       subtitle: 'CineGraph — каталог фильмов на GraphQL',
-      image: 'graphql/GraphQL.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/graphql/GraphQL.png',
       desc: 'Самостоятельный проект CineGraph с нуля: язык запросов и жизненный цикл запроса, N+1 в резолверах и DataLoader, JWT и права на уровне полей, интерфейсы и юнионы, курсорная пагинация, подписки через Redis, защита от тяжёлых запросов, unit и e2e тесты.',
       stack: ['NestJS + Apollo Server', 'Prisma 7', 'PostgreSQL 18', 'DataLoader', 'Redis'],
       note: 'Нужен Docker (PostgreSQL, Redis) и интернет для клиента 6.3 (graphql-ws с esm.sh); задания 6.6 решаете сами.',
@@ -1728,7 +1672,7 @@
       category: 'backend',
       title: 'Laravel Lab',
       subtitle: 'TaskFlow — таск-трекер',
-      image: 'works/images/laravel.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/laravel/laravel.png',
       desc: 'Laravel 13 «изнутри»: ~30 компонентов illuminate/*, Eloquent-связи, Service Container, Auth/Policy, Observer, очереди, Mailable, кэш, Broadcasting, тесты.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'Redis', 'RabbitMQ', 'Reverb'],
       note: 'Нужен Docker: PostgreSQL, Redis, RabbitMQ, Mailpit и Reverb — несколько контейнеров сразу.',
@@ -1742,7 +1686,7 @@
       category: 'backend',
       title: 'Laravel Performance Lab',
       subtitle: 'CoffeePerf — замеры и оптимизация',
-      image: 'laravel-performance/laravel-performance.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/laravel-performance/laravel-performance.png',
       desc: 'Измерять, а не гадать: Coffee Shop с 1 млн заказов, перцентили и k6, Debugbar и Telescope, профилирование SPX и Blackfire, OPcache и JIT, кеш с тегами и блокировками, Octane + FrankenPHP, бюджет p95 в CI.',
       stack: ['Laravel 13', 'k6', 'SPX', 'OPcache', 'Octane'],
       note: 'Нужен Docker (k6, 1 млн заказов; ноутбук греется). Blackfire (4.5) требует аккаунт, CI-проверка (9.2) — репозиторий на GitHub: проверяете сами.',
@@ -1756,7 +1700,7 @@
       category: 'backend',
       title: 'Inertia Lab',
       subtitle: 'Inkwell — блог-платформа',
-      image: 'inertia/inertia.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/inertia/inertia.png',
       desc: 'Laravel 13 + Inertia 3 + Vue 3 без starter kit: протокол на проводе (объект страницы, XHR-визиты, 303-редиректы), props как публичный API через ресурсы, формы и валидация без 422, SSR и его типичные поломки (hydration mismatch, утечка Pinia между посетителями), роли и Policies без дублирования прав на фронте.',
       stack: ['Laravel 13', 'Inertia 3', 'Vue 3', 'TypeScript', 'Pinia'],
       note: 'Нужен Docker (PHP 8.4, Node 24); задания 6.3 без подсказок решаете сами.',
@@ -1770,7 +1714,7 @@
       category: 'backend',
       title: 'Redis Lab',
       subtitle: 'Кэш, локи, rate limit, Streams',
-      image: 'works/images/redis.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/redis/redis.png',
       desc: 'Redis как кэш, хранилище сессий, примитив синхронизации и брокер событий: cache-aside, distributed lock, rate limiter, Streams, XAUTOCLAIM, Pub/Sub-дашборд.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'Redis 8'],
       note: 'Нужен Docker (Redis 8); задания 3.5 без подсказок решаете сами.',
@@ -1784,7 +1728,7 @@
       category: 'backend',
       title: 'RabbitMQ Lab',
       subtitle: 'Transactional Outbox, воркеры, DLQ',
-      image: 'works/images/rabbitmq.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/rabbitmq/rabbitmq.png',
       desc: 'Асинхронная обработка заказов через очереди: Transactional Outbox, идемпотентный consumer, prefetch, crash-тесты, retry с TTL→DLX, priority queues, fanout.',
       stack: ['Laravel 13', 'PostgreSQL 18', 'RabbitMQ', 'Mailpit'],
       note: 'Нужен Docker (RabbitMQ 4, PostgreSQL 18).',
@@ -1798,7 +1742,7 @@
       category: 'backend',
       title: 'PostgreSQL Lab',
       subtitle: 'Coffee Shop изнутри — база без ORM',
-      image: 'postgresql/PostgreSQL.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/postgresql/PostgreSQL.png',
       desc: 'Что происходит под ORM на миллионе заказов кофейни: JOIN с нуля, EXPLAIN и индексы B-tree/GIN/BRIN под конкретный запрос, статистика, N+1 глазами базы, уровни изоляции и аномалии, блокировки и дедлоки, SKIP LOCKED, MVCC и VACUUM, партиционирование.',
       stack: ['PostgreSQL 18', 'psql', 'pgbench', 'Docker'],
       note: 'Нужен Docker (PostgreSQL 18); сид на 1 млн заказов — около 1 ГБ диска и минута-две.',
@@ -1812,7 +1756,7 @@
       category: 'devops',
       title: 'Docker Lab',
       subtitle: 'Крепкое владение Docker и Bash с нуля',
-      image: 'works/images/docker.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.png',
       desc: 'Docker и Bash с нуля: образы, контейнеры, docker-compose, сети и тома — через практику в терминале.',
       stack: ['Docker', 'Docker Compose', 'Bash'],
       note: 'Нужен Docker и bash; аккаунтов и ключей нет.',
@@ -1826,7 +1770,7 @@
       category: 'devops',
       title: 'Traefik Lab',
       subtitle: 'Reverse proxy, service discovery, TLS',
-      image: 'traefik/traefik.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.png',
       desc: 'Reverse proxy и service discovery для стека из нескольких сервисов без ручной правки конфигов: EntryPoint → Router → Middleware → Service, TLS, canary-деплой.',
       stack: ['Traefik 3', 'Docker Compose', 'Node.js', 'PostgreSQL'],
       note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert.',
@@ -1840,7 +1784,7 @@
       category: 'devops',
       title: 'Kubernetes Lab',
       subtitle: 'От Compose к оркестрации',
-      image: 'kubernetes/kubernetes.png',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.png',
       desc: 'Миграция стека из Traefik-лабы в Kubernetes (kind): Pod и Deployment, Service и DNS, ConfigMap/Secret, Volumes и PVC, readiness/liveness-пробы, Traefik как Ingress-контроллер, HorizontalPodAutoscaler.',
       stack: ['Kubernetes v1.37.0', 'kind v0.33.0', 'kubectl', 'Traefik'],
       note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке.',
@@ -1896,7 +1840,7 @@
         style="--accent:${p.accent}; --accent-soft:${p.accentSoft}; --accent-shadow:${p.accentShadow}; transition-delay:${0.05 * i}s">
         <div class="card-ep"><span>лаба</span><b>${String(i + 1).padStart(2, '0')}</b></div>
         <div class="card-media">
-          <img src="works/images/thumbs/${p.key}.webp" data-full="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async" width="1200" height="1200">
+          <img src="https://meeymirita-files.storage.yandexcloud.net/${p.key}/thumb.webp" data-full="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async" width="1200" height="1200">
           <span class="badge badge-diff" title="Сложность: ${escapeHtml(p.difficulty)}"><span class="stars">${difficultyStars(p.difficulty)}</span>${escapeHtml(p.difficulty)}</span>
         </div>
         <div class="card-body">
@@ -1992,10 +1936,10 @@
 
   // Слайдер скриншотов ------------------------------------------------------
   var aboutScreenshots = [
-    { src: 'docs/screenshots/1-cards.jpg', alt: 'Карточки лаб на главной странице', caption: 'Главная страница: 21 лаба карточками, сгруппированы по фронтенду, бэкенду и инфраструктуре.' },
-    { src: 'docs/screenshots/2-lab-page.jpg', alt: 'Страница лабы', caption: 'Страница лабы — стек, README, ссылка на репозиторий и открытие методички.' },
-    { src: 'docs/screenshots/3-toc.jpg', alt: 'Оглавление методички', caption: 'Оглавление методички: сессии и шаги, прогресс сохраняется прямо в браузере.' },
-    { src: 'docs/screenshots/4-manual.jpg', alt: 'Методичка', caption: 'Сама методичка — код, «Под капотом», тренировки с ответами под спойлером.' }
+    { src: 'https://meeymirita-files.storage.yandexcloud.net/site/screenshots/1-cards.jpg', alt: 'Карточки лаб на главной странице', caption: 'Главная страница: 21 лаба карточками, сгруппированы по фронтенду, бэкенду и инфраструктуре.' },
+    { src: 'https://meeymirita-files.storage.yandexcloud.net/site/screenshots/2-lab-page.jpg', alt: 'Страница лабы', caption: 'Страница лабы — стек, README, ссылка на репозиторий и открытие методички.' },
+    { src: 'https://meeymirita-files.storage.yandexcloud.net/site/screenshots/3-toc.jpg', alt: 'Оглавление методички', caption: 'Оглавление методички: сессии и шаги, прогресс сохраняется прямо в браузере.' },
+    { src: 'https://meeymirita-files.storage.yandexcloud.net/site/screenshots/4-manual.jpg', alt: 'Методичка', caption: 'Сама методичка — код, «Под капотом», тренировки с ответами под спойлером.' }
   ];
   var sliderIndex = 0;
   var sliderTimer = null;
