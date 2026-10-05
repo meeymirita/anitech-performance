@@ -18,6 +18,10 @@
     site/me.jpg             фото автора      ← works/images/me.jpg
     site/screenshots/*.jpg  скрины «О проекте» ← docs/screenshots/*.jpg
 Удаляется всё, что лежит в этих папках (<лаба>/, site/), но не описано выше. Остальное (например old_files/) не трогается.
+
+Страховка: перед каждой загрузкой, которая что-то меняет или удаляет, прежние версии этих файлов копируются в
+old_files/last-sync/<тот же ключ>; предыдущее содержимое этой папки при этом стирается (хранится ровно один шаг назад).
+Вернуть файл — скопировать его из old_files/last-sync/ на прежнее место.
 Лаба = папка с `<папка>/<папка>.html` в корне (подмодуль).
 """
 import hashlib, os, re, sys, urllib.parse, urllib.request, xml.etree.ElementTree as ET
@@ -28,6 +32,7 @@ ENDPOINT = 'https://storage.yandexcloud.net'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
+BACKUP = 'old_files/last-sync/'
 TYPES = {'.html': 'text/html; charset=utf-8', '.md': 'text/markdown; charset=utf-8', '.png': 'image/png',
          '.jpg': 'image/jpeg', '.webp': 'image/webp'}
 
@@ -109,6 +114,16 @@ def main():
         sys.exit('нужен boto3: pip install boto3')
     s3 = boto3.client('s3', endpoint_url=ENDPOINT, region_name='ru-central1',
                       aws_access_key_id=kid, aws_secret_access_key=secret)
+    # страховка: прежние версии изменяемого и удаляемого — в old_files/last-sync/ (прошлая копия стирается)
+    before = [k for k in up if k in remote] + rm
+    if before:
+        stale = [k for k in remote if k.startswith(BACKUP)]
+        for i in range(0, len(stale), 1000):
+            s3.delete_objects(Bucket=BUCKET, Delete={'Objects': [{'Key': k} for k in stale[i:i + 1000]], 'Quiet': True})
+        for k in before:
+            s3.copy_object(Bucket=BUCKET, Key=BACKUP + k, CopySource={'Bucket': BUCKET, 'Key': k},
+                           MetadataDirective='COPY')
+        print(f'копия прежних версий: {len(before)} файлов → {BACKUP}')
     for k in up:
         ext = os.path.splitext(k)[1]
         with open(manifest[k], 'rb') as f:
