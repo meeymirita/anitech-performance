@@ -65,6 +65,8 @@
 
 **Воркер прогресса и CORS (05.10.2026):** методички открываются с `meeymirita-files.storage.yandexcloud.net`, поэтому воркер должен разрешать и этот адрес (список `ORIGINS` в `tools/progress-worker/worker.js` + переменная воркера `EXTRA_ORIGINS` в Cloudflare; копия кода в панели вручную). Симптом, если не так: в методичке «нет связи с Worker», а на `works/progress.html` всё работает.
 
+**Пароль на /mira/ (05.10.2026):** Caddy basic auth, логин `mira`, пароль выбирает пользователь (в репозитории и в `CLAUDE.md` его нет). Ставит/меняет `deploy/protect-mira.sh` на сервере: пишет `/etc/caddy/mira-auth.conf` (хеш) и вставляет `import` в блок anitech в `/etc/caddy/Caddyfile` после строки `root * /var/www/anitech-performance`. **Не перетирать эти правки в Caddyfile.** Исходник `mira/index.html` публичный (репозиторий открытый) — секретов в нём быть не должно. Если пароль на странице стоит, `curl`-проверки `/mira/` без логина дают 401.
+
 ## Правила git
 
 1. **Сначала пушить подмодуль, потом родителя.** Если родитель ссылается на коммит подмодуля, которого нет на GitHub, сборка Pages падает на checkout (`not our ref …`). Так было 26.09 с `works`.
