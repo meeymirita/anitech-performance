@@ -28,7 +28,8 @@ $1 @mira {
 	$USER_NAME $hash
 }
 EOF
-  chmod 640 "$SNIPPET"
+  # Caddy работает под пользователем caddy: файл должен читаться им (проверка от root этого не покажет)
+  if getent group caddy >/dev/null 2>&1; then chgrp caddy "$SNIPPET"; chmod 640 "$SNIPPET"; else chmod 644 "$SNIPPET"; fi
 }
 
 backup="$CADDYFILE.bak-$(date +%Y%m%d-%H%M%S)"
@@ -63,6 +64,12 @@ if ! caddy validate --config "$CADDYFILE" >/dev/null 2>&1; then
   write_snippet basicauth
   caddy validate --config "$CADDYFILE" >/dev/null 2>&1 || { caddy validate --config "$CADDYFILE" 2>&1 | tail -5 >&2; rollback; }
 fi
-systemctl reload caddy
+if ! systemctl reload caddy; then
+  journalctl -u caddy -n 8 --no-pager >&2 || true
+  cp -a "$backup" "$CADDYFILE"
+  if [ "$had_snippet" = 1 ]; then mv "$SNIPPET.prev" "$SNIPPET"; else rm -f "$SNIPPET"; fi
+  systemctl reload caddy || true
+  echo "Caddy не перезагрузился с защитой — всё возвращено как было." >&2; exit 1
+fi
 rm -f "$SNIPPET.prev"
 echo "ГОТОВО: /mira/ закрыта паролем (логин: $USER_NAME). Копия прежнего Caddyfile: $backup"
