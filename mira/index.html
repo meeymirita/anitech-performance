@@ -132,6 +132,7 @@
     <tr><td><code>YC_ACCESS_KEY_ID</code></td><td>GitHub → Settings → Secrets → Actions (репозиторий <code>anitech-performance</code>); по желанию локально в <code>~/.config/anitech/yc.env</code></td><td>Идентификатор статического ключа сервисного аккаунта <code>anitech-object-storage</code></td><td>Yandex Cloud → сервисный аккаунт → «Статические ключи доступа» → создать новый, обновить оба секрета, старый удалить</td></tr>
     <tr><td><code>YC_SECRET_ACCESS_KEY</code></td><td>там же</td><td>Секретная часть того же ключа (показывается один раз при создании)</td><td>Вместе с предыдущим</td></tr>
     <tr><td><code>PASSWORD</code></td><td>Cloudflare → Workers → <code>anitech-progress</code> → Settings → Variables (секрет); и у вас в голове</td><td>Пароль, по которому браузер получает доступ к сохранённому прогрессу</td><td>Изменить секрет в Cloudflare; на устройствах ввести заново в панели ☁</td></tr>
+    <tr><td>SSH-ключ <code>id_anitech</code></td><td>Mac: <code>~/.ssh/id_anitech</code> (секретный, + пароль-фраза); сервер: <code>/root/.ssh/authorized_keys</code> (публичный)</td><td>Вход на сервер</td><td>Создать новый (<code>ssh-keygen -t ed25519</code>), добавить публичную часть на сервер, потом убрать старую строку из <code>authorized_keys</code>. Потеряете ключ — зайти можно только через консоль хостинга</td></tr>
     <tr><td>KV <code>anitech-progress</code></td><td>Cloudflare → Workers → KV (привязка к воркеру)</td><td>Хранилище прогресса (это не ключ, но без привязки воркер не сохраняет)</td><td>—</td></tr>
   </table></div>
   <div class="note warn">Ключи Yandex Cloud, которые когда-либо попадали в переписку, нужно заменить.</div>
@@ -196,7 +197,7 @@ old_files/                  старые выгрузки, скрипт их н�
 
   <h2 id="server">Сервер и домен</h2>
   <ul>
-    <li><b>Сервер:</b> Ubuntu 22.04, <code>45.10.166.23</code> (IPv6 <code>2a03:afc0:9::15c9</code>), заходить по SSH под <code>root</code>.</li>
+    <li><b>Сервер:</b> Ubuntu 22.04, <code>45.10.166.23</code> (IPv6 <code>2a03:afc0:9::15c9</code>). Вход <b>только по SSH-ключу</b>, по паролю сервер не пускает (с 05.10.2026): <code>ssh -i ~/.ssh/id_anitech root@45.10.166.23</code>. Секретный ключ <code>~/.ssh/id_anitech</code> лежит на вашем Mac и защищён паролем-фразой; публичная половина — в <code>/root/.ssh/authorized_keys</code> на сервере. Настройка запрета пароля — файл <code>/etc/ssh/sshd_config.d/00-keyonly.conf</code>.</li>
     <li><b>Домен:</b> <code>anitech.meeymirita.ru</code>, DNS — в Cloudflare (зона <code>meeymirita.ru</code>, куплена у REG.RU, там только делегирование).</li>
     <li><b>Caddy</b> (<code>systemctl status caddy</code>), конфиг <code>/etc/caddy/Caddyfile</code>. Два сайта:
       <ul>
@@ -218,7 +219,7 @@ journalctl -u anitech-deploy.service -n 20 --no-pager
 # выложить прямо сейчас, не ждать минуту
 FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code></pre>
   <p>Перед первой установкой скрипт делает копию старой папки сайта: <code>/var/www/anitech-performance.bak-&lt;дата&gt;</code> (потом её можно удалить).</p>
-  <div class="note warn">Кеш: если перед сервером снова включат проксирование Cloudflare, после выката может понадобиться Caching → Purge Everything. Вход на сервер по паролю под root — слабое место; хорошо бы перейти на SSH-ключ и отключить вход по паролю.</div>
+  <div class="note warn">Кеш: если перед сервером снова включат проксирование Cloudflare, после выката может понадобиться Caching → Purge Everything.</div>
 
   <h2 id="cmd">Команды</h2>
   <pre><code>python3 tools/check-site.py              # проверка целостности сайта (запускать перед коммитом)
