@@ -1,0 +1,8 @@
+[Unit]
+Description=Deploy anitech site (git pull + rsync to Caddy root)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/anitech-src/deploy/deploy-site.sh

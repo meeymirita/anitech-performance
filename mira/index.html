@@ -134,7 +134,7 @@
     <tr><td><code>PASSWORD</code></td><td>Cloudflare → Workers → <code>anitech-progress</code> → Settings → Variables (секрет); и у вас в голове</td><td>Пароль, по которому браузер получает доступ к сохранённому прогрессу</td><td>Изменить секрет в Cloudflare; на устройствах ввести заново в панели ☁</td></tr>
     <tr><td>KV <code>anitech-progress</code></td><td>Cloudflare → Workers → KV (привязка к воркеру)</td><td>Хранилище прогресса (это не ключ, но без привязки воркер не сохраняет)</td><td>—</td></tr>
   </table></div>
-  <div class="note warn">Ключи Yandex Cloud, которые когда-либо попадали в переписку, нужно заменить. Сервер/SSH-доступ сюда пока не записан — см. раздел «Сервер».</div>
+  <div class="note warn">Ключи Yandex Cloud, которые когда-либо попадали в переписку, нужно заменить.</div>
 
   <h2 id="features">Что умеет сайт</h2>
   <h3>Главная (<code>index.html</code>)</h3>
@@ -196,12 +196,29 @@ old_files/                  старые выгрузки, скрипт их н�
 
   <h2 id="server">Сервер и домен</h2>
   <ul>
-    <li><b>Домен:</b> <code>anitech.meeymirita.ru</code>. DNS — в Cloudflare (зона <code>meeymirita.ru</code>); по записи от 04.10: A-записи <code>@</code> и <code>www</code> ведут на отдельный сервер <code>45.10.166.23</code>. Актуальное состояние записей проверять в панели.</li>
-    <li><b>Веб-сервер:</b> Caddy. Отдаёт сайт, сам перенаправляет http на https кодом 308, проксирует два сайта. Редиректов в коде страниц больше нет.</li>
-    <li><b>HTTPS:</b> режим SSL/TLS в Cloudflare — Full, «Always Use HTTPS» включён. Сертификаты продлеваются автоматически.</li>
-    <li><b>Кеш:</b> после выката новой версии Cloudflare может отдавать старую — Caching → Configuration → Purge Everything.</li>
+    <li><b>Сервер:</b> Ubuntu 22.04, <code>45.10.166.23</code> (IPv6 <code>2a03:afc0:9::15c9</code>), заходить по SSH под <code>root</code>.</li>
+    <li><b>Домен:</b> <code>anitech.meeymirita.ru</code>, DNS — в Cloudflare (зона <code>meeymirita.ru</code>, куплена у REG.RU, там только делегирование).</li>
+    <li><b>Caddy</b> (<code>systemctl status caddy</code>), конфиг <code>/etc/caddy/Caddyfile</code>. Два сайта:
+      <ul>
+        <li><code>anitech.meeymirita.ru</code> — раздаёт папку <code>/var/www/anitech-performance</code> (<code>file_server</code>, сжатие zstd/gzip);</li>
+        <li><code>meeymirita.ru</code> — проксирует на <code>127.0.0.1:8080</code> (другой сайт на этом сервере).</li>
+      </ul>
+    </li>
+    <li>HTTPS выпускает и продлевает сам Caddy, http→https (308) он делает сам. Редиректов в коде страниц нет.</li>
   </ul>
-  <div class="note warn"><b>Не записано (дополнить):</b> как именно свежие файлы сайта попадают на сервер после пуша (git pull, rsync или другое), какие два сайта проксирует Caddy, где лежит Caddyfile и как зайти на сервер. Пока этого нет, изменения в репозитории <b>на сайте не появляются сами</b>; бакет при этом обновляется автоматически.</div>
+  <h3>Как сайт обновляется (деплой)</h3>
+  <p>Файлы в <code>deploy/</code>. На сервере лежит клон репозитория <code>/opt/anitech-src</code>; <b>таймер systemd <code>anitech-deploy.timer</code> раз в минуту</b> запускает <code>deploy/deploy-site.sh</code>: подтягивает <code>main</code>, и если версия изменилась — копирует в <code>/var/www/anitech-performance</code> только нужное сайту (<code>index.html</code>, <code>favicon.svg</code>, <code>images/</code>, <code>mira/</code>, <code>works/</code> без больших картинок). Ключи не нужны: репозиторий публичный. После пуша сайт обновится через ~1 минуту.</p>
+  <pre><code># поставить (один раз, на сервере от root)
+curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/install.sh | bash
+
+# посмотреть, когда сработал таймер и что выложено
+systemctl list-timers anitech-deploy.timer
+journalctl -u anitech-deploy.service -n 20 --no-pager
+
+# выложить прямо сейчас, не ждать минуту
+FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code></pre>
+  <p>Перед первой установкой скрипт делает копию старой папки сайта: <code>/var/www/anitech-performance.bak-&lt;дата&gt;</code> (потом её можно удалить).</p>
+  <div class="note warn">Кеш: если перед сервером снова включат проксирование Cloudflare, после выката может понадобиться Caching → Purge Everything. Вход на сервер по паролю под root — слабое место; хорошо бы перейти на SSH-ключ и отключить вход по паролю.</div>
 
   <h2 id="cmd">Команды</h2>
   <pre><code>python3 tools/check-site.py              # проверка целостности сайта (запускать перед коммитом)
@@ -219,7 +236,7 @@ gh run rerun &lt;id&gt;                        # перезапустить уп
     <tr><th>Симптом</th><th>Причина</th><th>Что делать</th></tr>
     <tr><td>Actions упал на checkout, <code>not our ref</code></td><td>Подмодуль не запушен, а родитель уже ссылается на его коммит</td><td>Запушить подмодуль (<code>git push origin HEAD:main</code> внутри него), затем <code>gh run rerun</code></td></tr>
     <tr><td>Картинка или методичка не открывается</td><td>Файла нет в бакете (запуск не прошёл или имя не совпало)</td><td>Посмотреть Actions; локально <code>sync-bucket.py --dry-run</code></td></tr>
-    <tr><td>На сайте старая версия</td><td>Кеш Cloudflare или файлы на сервере не обновились</td><td>Purge Everything в Cloudflare; проверить деплой на сервер (см. «Сервер»)</td></tr>
+    <tr><td>На сайте старая версия</td><td>Таймер деплоя не сработал или кеш браузера</td><td><code>journalctl -u anitech-deploy.service -n 20</code> на сервере; <code>FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code>; Ctrl+Shift+R</td></tr>
     <tr><td>«Не удалось загрузить оглавление»</td><td>Нет <code>works/js/toc.json</code> на сервере или он устарел</td><td><code>python3 tools/build-toc.py</code>, закоммитить; <code>check-site.py</code> ловит устаревший файл</td></tr>
     <tr><td>Прогресс не синхронизируется</td><td>Неверный пароль, адрес не в списке разрешённых воркера, воркер не обновлён</td><td>Проверить панель ☁ и воркер в Cloudflare</td></tr>
     <tr><td>Методичка не открывается после правки</td><td>Невалидный JSON внутри бандла</td><td>Править только через <code>bundle.py</code>; потом <code>check-site.py</code></td></tr>
