@@ -127,6 +127,13 @@ try:
 except Exception as e:
     bad(f'проверка шаблонов методичек: {e}')
 
+# 5d. sitemap.xml, robots.txt, 404.html (tools/build-sitemap.py)
+_n = len(glob.glob('works/*.html')) + 1
+if not os.path.exists('sitemap.xml') or read('sitemap.xml').count('<loc>') != _n:
+    bad('sitemap.xml не соответствует страницам сайта (python3 tools/build-sitemap.py)')
+for _f in ('robots.txt', '404.html'):
+    if not os.path.exists(_f): bad(f'нет {_f}')
+
 # 6. подмодули не опережают origin
 r = subprocess.run(['git', 'submodule', 'foreach', '--quiet', 'b=$(git rev-list --count @{u}..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'], capture_output=True, text=True)
 for line in r.stdout.splitlines(): bad(f'подмодуль опережает origin: {line}')

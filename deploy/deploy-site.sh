@@ -29,6 +29,7 @@ mkdir -p "$WEB"
 # Выкладываем только то, что нужно сайту. Картинки, методички и обложки лаб отдаёт бакет, а не сервер.
 rsync -a --delete --delete-excluded \
   --include=/index.html --include=/favicon.svg \
+  --include=/404.html --include=/robots.txt --include=/sitemap.xml \
   --include=/images/ --include='/images/**' \
   --include=/mira/ --include='/mira/**' \
   --include=/mira-login/ --include='/mira-login/**' \

@@ -1,0 +1,24 @@
+name: Cleanup once (delete old_files/yandex-rename-upload)
+on:
+  workflow_dispatch:
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip install boto3
+      - env:
+          AK: ${{ secrets.YC_ACCESS_KEY_ID }}
+          SK: ${{ secrets.YC_SECRET_ACCESS_KEY }}
+        run: |
+          python3 - <<'PY'
+          import boto3, os
+          s3 = boto3.client('s3', endpoint_url='https://storage.yandexcloud.net', region_name='ru-central1',
+                            aws_access_key_id=os.environ['AK'], aws_secret_access_key=os.environ['SK'])
+          P = 'old_files/yandex-rename-upload/'
+          n = 0
+          for pg in s3.get_paginator('list_objects_v2').paginate(Bucket='meeymirita-files', Prefix=P):
+              ks = [{'Key': o['Key']} for o in pg.get('Contents', [])]
+              if ks:
+                  s3.delete_objects(Bucket='meeymirita-files', Delete={'Objects': ks, 'Quiet': True}); n += len(ks)
+          print('deleted', n)
+          PY

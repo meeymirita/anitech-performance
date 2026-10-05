@@ -1,0 +1,14 @@
+name: Check links
+# Раз в неделю: все внешние ссылки в md, на сайте и в методичках должны открываться (429 считается ОК).
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: python3 tools/audit-links.py

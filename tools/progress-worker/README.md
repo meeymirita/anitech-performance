@@ -29,5 +29,5 @@ Worker хранит копию в KV; клиентский скрипт `works/j
 ## Проверка и обслуживание
 
 - `node tools/progress-worker/test.mjs` — проверки Worker без Cloudflare (пароль, лимит попыток, origin, формат данных).
-- Чужие origin блокируются (список `ORIGINS` в `worker.js`; для тестов можно добавить переменную `EXTRA_ORIGINS`).
+- Чужие origin блокируются (список `ORIGINS` в `worker.js`: сайт `https://anitech.meeymirita.ru` и бакет `https://meeymirita-files.storage.yandexcloud.net` — методички открываются оттуда; ещё адрес можно добавить без правки кода переменной воркера `EXTRA_ORIGINS`, через запятую). После правки `worker.js` вставить код в панель Cloudflare и нажать Deploy — копия не обновляется сама.
 - Сменить пароль: изменить секрет `PASSWORD` в Cloudflare и ввести новый в панели ☁.

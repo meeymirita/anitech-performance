@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /mira/
+Disallow: /mira-login/
+Disallow: /mira-api/
+
+Sitemap: https://anitech.meeymirita.ru/sitemap.xml

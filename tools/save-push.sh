@@ -14,6 +14,10 @@ for d in $(git submodule status | awk '{print $2}'); do
 done
 git submodule foreach --quiet 'git fetch -q origin main; b=$(git rev-list --count origin/main..HEAD 2>/dev/null); [ "${b:-0}" != 0 ] && echo "$name ahead $b"; true'
 python3 tools/check-site.py | tail -1
+# родитель: показать, что уйдёт в коммит, и остановиться на неизвестных (untracked) файлах — их нужно решить вручную (FORCE=1 пропускает проверку)
+UNTR=$(git ls-files --others --exclude-standard)
+if [ -n "$UNTR" ] && [ "$FORCE" != 1 ]; then echo "STOP: untracked-файлы в родителе:"; echo "$UNTR"; echo "добавьте в .gitignore или запустите FORCE=1 bash tools/save-push.sh ..."; exit 1; fi
+git status --short | head -30
 git add -A . && git commit -q -m "$MSG" -m "$TR" && git pull -q --rebase origin main && git push -q origin main && git log --oneline -1
 # бакет: то же делает GitHub Actions после пуша; локально — только если есть ключи
 [ -f ~/.config/anitech/yc.env ] && python3 tools/sync-bucket.py | tail -3

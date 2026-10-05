@@ -79,7 +79,8 @@ h2 {{ margin:36px 0 8px; font-size:20px; }} h3 {{ margin:24px 0 6px; font-size:1
 p {{ margin:6px 0; color:var(--muted); }}
 code {{ font:13px ui-monospace,Menlo,monospace; background:var(--card); border:1px solid var(--hair); padding:0 4px; }}
 hr {{ border:0; border-top:1px solid var(--hair); margin:32px 0; }}
-.tw {{ overflow-x:auto; margin:10px 0; }}
+.tw {{ overflow-x:auto; margin:10px 0; max-width:100%; }}
+html,body {{ overflow-x:hidden; }}  /* широкие таблицы листаются внутри .tw, страница целиком не уезжает (телефон) */
 table {{ border-collapse:collapse; width:100%; font-size:14px; background:var(--card); }}
 th,td {{ text-align:left; vertical-align:top; padding:7px 10px; border:1px solid var(--hair); }}
 th {{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }}
