@@ -67,3 +67,6 @@
 [submodule "algorithms-php"]
 	path = algorithms-php
 	url = https://github.com/meeymirita/algorithms-php-lab.git
+[submodule "caddy"]
+	path = caddy
+	url = https://github.com/meeymirita/caddy-lab.git
