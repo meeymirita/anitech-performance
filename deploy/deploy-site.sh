@@ -15,28 +15,31 @@ if [ -z "${SKIP_GIT:-}" ]; then
   git fetch -q origin main
   git reset -q --hard origin/main
   git submodule sync -q
-  git submodule update -q --init --force works   # из подмодулей сайту нужен только works (страницы-витрины)
+  git submodule update -q --init --force works site-private   # из подмодулей сайту нужны works (страницы-витрины) и site-private (mira, mira-login, 404)
 fi
 
-[ -f "$SRC/index.html" ] && [ -d "$SRC/works/js" ] || { echo "в $SRC нет index.html или works/ — выкладывать нечего" >&2; exit 1; }
+[ -f "$SRC/index.html" ] && [ -d "$SRC/works/js" ] && [ -f "$SRC/site-private/404.html" ] || { echo "в $SRC нет index.html, works/ или site-private/ — выкладывать нечего" >&2; exit 1; }
 
-rev="$(git rev-parse HEAD)-$(git -C works rev-parse HEAD)-$(git hash-object "$SRC/deploy/deploy-site.sh")"   # скрипт в версии: правка фильтра выкладывается сама
+rev="$(git rev-parse HEAD)-$(git -C works rev-parse HEAD)-$(git -C site-private rev-parse HEAD)-$(git hash-object "$SRC/deploy/deploy-site.sh")"   # скрипт в версии: правка фильтра выкладывается сама
 if [ -z "${FORCE:-}" ] && [ -f "$STATE" ] && [ "$(cat "$STATE")" = "$rev" ]; then
   exit 0
 fi
 
 mkdir -p "$WEB"
-# Выкладываем только то, что нужно сайту. Картинки, методички и обложки лаб отдаёт бакет, а не сервер.
-rsync -a --delete --delete-excluded \
+# Собираем готовое дерево в STAGE: файлы сайта + служебные страницы из site-private, потом одним rsync --delete в WEB (без мерцания /mira/).
+STAGE="$(mktemp -d)"; trap 'rm -rf "$STAGE"' EXIT
+# Картинки, методички и обложки лаб отдаёт бакет, а не сервер.
+rsync -a \
   --include=/index.html --include=/favicon.svg \
-  --include=/404.html --include=/robots.txt --include=/sitemap.xml \
+  --include=/robots.txt --include=/sitemap.xml \
   --include=/images/ --include='/images/**' \
-  --include=/mira/ --include='/mira/**' \
-  --include=/mira-login/ --include='/mira-login/**' \
   --exclude=/works/images/ --exclude=/works/.git --exclude='/works/*.md' \
   --include=/works/ --include='/works/**' \
   --exclude='*' \
-  "$SRC"/ "$WEB"/
+  "$SRC"/ "$STAGE"/
+cp -R "$SRC/site-private/mira" "$SRC/site-private/mira-login" "$STAGE"/
+cp "$SRC/site-private/404.html" "$STAGE"/
+rsync -a --delete "$STAGE"/ "$WEB"/
 chmod -R a+rX "$WEB"
 
 echo "$rev" > "$STATE"

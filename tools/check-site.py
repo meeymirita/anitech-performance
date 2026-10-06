@@ -79,7 +79,7 @@ sys.path.insert(0, 'fixes/common/_tools')
 try:
     import bundle
     for p in sorted(glob.glob('*/*.html') + glob.glob('*/docs/*.html')):
-        if p.startswith(('works/', 'fixes/', 'mira/', 'mira-login/')):
+        if p.startswith(('works/', 'fixes/', 'site-private/')):
             continue
         try:
             bundle._check_json(bundle.load(p))
@@ -131,7 +131,7 @@ except Exception as e:
 _n = len(glob.glob('works/*.html'))   # главная + страницы витрины − progress.html (личная, noindex)
 if not os.path.exists('sitemap.xml') or read('sitemap.xml').count('<loc>') != _n:
     bad('sitemap.xml не соответствует страницам сайта (python3 tools/build-sitemap.py)')
-for _f in ('robots.txt', '404.html'):
+for _f in ('robots.txt', 'site-private/404.html', 'site-private/mira/index.html', 'site-private/mira-login/index.html'):
     if not os.path.exists(_f): bad(f'нет {_f}')
 
 # 5e. SEO-теги (tools/build-seo.py): canonical, Open Graph, JSON-LD на главной и страницах лаб

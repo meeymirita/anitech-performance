@@ -99,7 +99,7 @@ for k, (ttl, dsc, index) in SERVICE.items():
     apply(p, ttl, d, blk)
 
 # личные страницы — noindex (mira — уже, форма входа — тоже)
-for p in ('mira-login/index.html',):
+for p in ('site-private/mira-login/index.html',):
     if os.path.exists(p):
         tt = open(p, encoding='utf-8').read()
         if 'name="robots"' not in tt:
