@@ -505,6 +505,9 @@
     .card-subtitle { font-family: 'JetBrains Mono',monospace; font-size: 10px; letter-spacing: .08em; margin: 6px 0 0; color: var(--accent); }
     .card-desc { font-size: 13px; color: var(--text-dim); margin: 14px 0 0; line-height: 1.65; }
 
+    .card-preview { display: block; margin: 8px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-dim); }
+    .card-preview a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .card-preview a:hover { color: var(--accent); }
     .card-note { font-size: 11px; line-height: 1.5; color: var(--text-dim); opacity: .85; margin: 12px 0 0; }
     .card-verify { font-size: 11px; line-height: 1.5; color: var(--text-dim); margin: 8px 0 0; }
     .card-verify b { font-weight: 700; }
@@ -1841,6 +1844,7 @@
       note: 'Заглушка: методичка написана (12 сессий, часть 1 из 2), но ещё не вычитана; запуском проверены только сессии 1–3. Не подключена к сайту. Нужны Go и Docker.',
       difficulty: 'Базовая',
       repo: 'https://github.com/meeymirita/go-start-lab',
+      preview: 'https://meeymirita-files.storage.yandexcloud.net/go-start/go-start.html',
       accent: '#00ADD8', accentSoft: '#00ADD822', accentShadow: 'rgba(0,173,216,.28)'
     },
     {
@@ -1854,6 +1858,7 @@
       note: 'Заглушка: методичка написана (13 сессий, часть 2 из 2), но не вычитана и не проверена запуском; не подключена к сайту. Идёт строго после Go Start; до неё желательно пройти Docker, PostgreSQL, Redis, RabbitMQ и Kubernetes.',
       difficulty: 'Высокая',
       repo: 'https://github.com/meeymirita/go-pro-lab',
+      preview: 'https://meeymirita-files.storage.yandexcloud.net/go-pro/go-pro.html',
       accent: '#0086A8', accentSoft: '#0086A822', accentShadow: 'rgba(0,134,168,.28)'
     }
   ];
@@ -1922,6 +1927,7 @@
           <p class="card-desc">${escapeHtml(p.desc)}</p>
           <div class="chips">${chips}</div>
           ${p.note ? '<p class="card-note">* ' + escapeHtml(p.note) + '</p>' : ''}
+          ${p.preview ? '<p class="card-preview">Предпросмотр методички: <a href="' + p.preview + '" target="_blank" rel="noopener">открыть</a> (не вычитана)</p>' : ''}
           ${verifyHtml(p.key, p.accent)}
           <div class="card-actions">
             ${openHtml}
@@ -2390,7 +2396,7 @@
   }
 
   grid.addEventListener('click', function (e) {
-    if (e.target.closest('.card-actions')) return;
+    if (e.target.closest('.card-actions') || e.target.closest('.card-preview a')) return;
 
     var card = e.target.closest('.card');
     if (!card) return;
@@ -2400,7 +2406,7 @@
 
   grid.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter' && e.key !== ' ') return;
-    if (e.target.closest('.card-actions')) return;
+    if (e.target.closest('.card-actions') || e.target.closest('.card-preview a')) return;
 
     var card = e.target.closest('.card');
     if (!card) return;
