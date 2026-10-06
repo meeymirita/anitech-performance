@@ -18,6 +18,10 @@ import bundle
 
 BUCKET = 'https://meeymirita-files.storage.yandexcloud.net'
 
+# лабы, которые владелец прошла целиком ДО появления прогресса на сайте (отметок в браузере у них нет):
+# страница показывает их на 100% и в разделе «Пройдено». Новые пройденные лабы отмечаются в методичках сами.
+COMPLETED = {'rabbitmq'}
+
 # fixes/common/_tools/prep.py runs its CLI main() on import (no __main__ guard), so we can't
 # just `import prep` — pull its LABS dict (key -> local path) out of the source instead.
 _prep_src = open('fixes/common/_tools/prep.py', encoding='utf-8').read()
@@ -74,7 +78,7 @@ for title, keys in tracks:
     data.append({'title': title, 'labs': [{
         'key': k, 'title': by_key[k]['title'], 'subtitle': by_key[k]['subtitle'], 'difficulty': by_key[k]['difficulty'],
         'accent': by_key[k]['accent'], 'open': by_key[k]['href'], 'page': f'{k}.html',
-        'thumb': f'{BUCKET}/{k}/thumb.webp', 'verified': k in verified, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
+        'thumb': f'{BUCKET}/{k}/thumb.webp', 'verified': k in verified, 'completed': k in COMPLETED, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
     } for k in keys]})
 missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
@@ -151,7 +155,7 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <h1>Все работы и прогресс</h1>
   <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
   <div class="total" id="total"></div>
-  <p class="legend">✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении.</p>
+  <p class="legend">✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении. Лабы, пройденные до появления этой страницы, показаны на 100% по отметке владельца.</p>
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
@@ -169,6 +173,7 @@ function readProgress(lab) {
     done = lab.units.filter(function (k) { return map[k]; }).length;
     secs = saved.tTotal || 0;
   } catch (e) {}
+  if (lab.completed) done = lab.units.length;      // пройдена целиком (список COMPLETED в tools/build-progress.py)
   return { done: done, total: lab.units.length, secs: secs };
 }
 
@@ -190,36 +195,48 @@ function statusBadge(lab, short) {
 }
 function okBadge(short) { return '<span class="ok"><i>✓</i>' + (short ? 'проверена' : 'Полностью вычитана и проверена') + '</span>'; }
 
+function labRow(it, n, fold) {
+  var lab = it.lab, p = it.p, pct = p.total ? Math.round(p.done / p.total * 100) : 0;
+  return '<div class="lab' + (fold[lab.key] ? ' collapsed' : '') + '" data-key="' + lab.key + '" style="--c:' + lab.accent + '">'
+    + '<button type="button" class="fold" title="Свернуть / развернуть" aria-label="Свернуть или развернуть"></button>'
+    + '<span class="num">' + String(n).padStart(2, '0') + '</span>'
+    + '<img class="thumb" src="' + esc(lab.thumb) + '" alt="" width="64" height="64" loading="lazy">'
+    + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + (lab.vstatus !== 'none' ? statusBadge(lab, true) : '') + '</a>'
+    + '<span class="pct">' + pct + '% · ' + p.done + '/' + p.total + '</span>'
+    + '<span class="meta">' + esc(it.dir) + ' · ' + esc(lab.subtitle) + ' · ' + esc(lab.difficulty)
+    + (p.secs ? ' · ' + fmtTime(p.secs) : '') + '<br>'
+    + (lab.vstatus !== 'none' ? statusBadge(lab, false) + (lab.vnote ? ' <span class="note">' + (lab.vstatus === 'full' ? '· * ' : '· не проверено: ') + esc(lab.vnote) + '</span>' : '') + '<br>' : '')
+    + '<a href="' + esc(lab.open) + '">Методичка ↗</a><a href="' + esc(lab.page) + '">Страница лабы</a></span>'
+    + '<div class="bar"><i style="width:' + pct + '%"></i></div>'
+    + '</div>';
+}
+
 function render() {
   var fold = folded();
-  var allDone = 0, allTotal = 0, started = 0, finished = 0, secs = 0, html = '', n = 0;
+  var allDone = 0, allTotal = 0, started = 0, finished = 0, secs = 0, html = '', items = [];
   GROUPS.forEach(function (g) {
-    html += '<h2>' + esc(g.title) + '</h2>';
     g.labs.forEach(function (lab) {
-      n++;
-      var p = readProgress(lab), pct = p.total ? Math.round(p.done / p.total * 100) : 0;
+      var p = readProgress(lab);
+      items.push({ lab: lab, p: p, dir: g.title });
       allDone += p.done; allTotal += p.total; secs += p.secs;
       if (p.done) started++; if (p.total && p.done === p.total) finished++;
-      html += '<div class="lab' + (fold[lab.key] ? ' collapsed' : '') + '" data-key="' + lab.key + '" style="--c:' + lab.accent + '">'
-        + '<button type="button" class="fold" title="Свернуть / развернуть" aria-label="Свернуть или развернуть"></button>'
-        + '<span class="num">' + String(n).padStart(2, '0') + '</span>'
-        + '<img class="thumb" src="' + esc(lab.thumb) + '" alt="" width="64" height="64" loading="lazy">'
-        + '<a class="name" href="' + esc(lab.open) + '"><span class="dot"></span>' + esc(lab.title) + (lab.vstatus !== 'none' ? statusBadge(lab, true) : '') + '</a>'
-        + ''        + '<span class="pct">' + pct + '% · ' + p.done + '/' + p.total + '</span>'
-        + '<span class="meta">' + esc(lab.subtitle) + ' · ' + esc(lab.difficulty)
-        + (p.secs ? ' · ' + fmtTime(p.secs) : '') + '<br>'
-        + (lab.vstatus !== 'none' ? statusBadge(lab, false) + (lab.vnote ? ' <span class="note">' + (lab.vstatus === 'full' ? '· * ' : '· не проверено: ') + esc(lab.vnote) + '</span>' : '') + '<br>' : '')
-        + '<a href="' + esc(lab.open) + '">Методичка ↗</a><a href="' + esc(lab.page) + '">Страница лабы</a></span>'
-        + '<div class="bar"><i style="width:' + pct + '%"></i></div>'
-        + '</div>';
     });
+  });
+  // порядок: сначала то, что в процессе, потом пройденное, потом ещё не начатое (внутри — как на главной)
+  function stage(it) { return it.p.total && it.p.done === it.p.total ? 1 : it.p.done ? 0 : 2; }
+  var n = 0;
+  [[0, 'В процессе'], [1, 'Пройдено'], [2, 'Ещё не начато']].forEach(function (sec) {
+    var part = items.filter(function (it) { return stage(it) === sec[0]; });
+    if (!part.length) return;
+    html += '<h2>' + sec[1] + ' · ' + part.length + '</h2>';
+    part.forEach(function (it) { html += labRow(it, ++n, fold); });
   });
   document.getElementById('list').innerHTML = html;
   var all = allTotal ? Math.round(allDone / allTotal * 100) : 0;
   document.getElementById('total').innerHTML =
     '<div class="total-top"><span>Общий прогресс</span><span>' + all + '%</span></div>'
     + '<div class="bar"><i style="width:' + all + '%"></i></div>'
-    + '<div class="total-note">отмечено ' + allDone + ' из ' + allTotal + ' разделов и шагов · начато лаб: ' + started + ' из ' + n
+    + '<div class="total-note">отмечено ' + allDone + ' из ' + allTotal + ' разделов и шагов · начато лаб: ' + started + ' из ' + items.length
     + ' · пройдено целиком: ' + finished + (secs ? ' · времени в методичках: ' + fmtTime(secs) : '') + '</div>';
 }
 document.addEventListener('click', function (e) {
