@@ -31,6 +31,7 @@
 | `caddy` | caddy-lab | Caddy 2 — Edge: reverse proxy, автоматический HTTPS, xcaddy (13 сессий, Средняя; добавлена и вычитана 05.10, на сайте; проверена частично — см. «Caddy Lab» ниже) |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`), а также `works/changelog.html` (хронология) и `works/progress.html` (все работы и прогресс) |
 | `site-private` | site-private | служебные страницы сайта: `mira/` (шпаргалка), `mira-login/`, `404.html`; деплой кладёт их в корень сайта (с 06.10) |
+| `go-lab-plans` | go-lab-plans (приватный) | два задания на генерацию методичек по Go (с нуля до middle; middle до senior); владелец вставляет их в другой чат; в `.gitmodules` стоит `update = none`, чтобы CI не пытался клонировать приватный репозиторий; не лаба, на сайте нет |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
 
 **Формат методичек (с 02.10.2026):** HTML-«бандл» — текст лежит в сжатом JSON внутри файла (`window.LAB`), обычный grep/sed по нему не работает. Читать и править через `fixes/common/_tools/bundle.py` (`dump` / `grep` / `sub`, из Python — `rewrite`); `prep.py` умеет оба формата.

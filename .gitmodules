@@ -73,3 +73,7 @@
 [submodule "site-private"]
 	path = site-private
 	url = https://github.com/meeymirita/site-private.git
+[submodule "go-lab-plans"]
+	path = go-lab-plans
+	url = https://github.com/meeymirita/go-lab-plans.git
+	update = none
