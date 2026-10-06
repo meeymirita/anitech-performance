@@ -15,7 +15,7 @@ for f in mds:
     t=open(f,encoding='utf-8',errors='ignore').read()
     for u in re.findall(r'https?://[^\s<>"\'`\)\]]+',t): add(u,f)
 # 2. html/js сайта
-for f in ['index.html','mira/index.html','mira-login/index.html']+glob.glob('works/*.html')+glob.glob('works/js/*.js'):
+for f in ['index.html','site-private/mira/index.html','site-private/mira-login/index.html']+glob.glob('works/*.html')+glob.glob('works/js/*.js'):
     t=open(f,encoding='utf-8',errors='ignore').read()
     for u in re.findall(r'https?://[^\s<>"\'`\)\\]+',t): add(u,f)
 # 3. методички
