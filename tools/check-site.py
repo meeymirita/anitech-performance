@@ -43,6 +43,15 @@ m = re.search(r"var ORDER = \[(.*?)\]", anim_js)
 order_keys = re.findall(r"'([^']+)'", m.group(1)) if m else []
 if sorted(order_keys) != keys: bad(f'lab-anime.js ORDER не совпадает с works/*.html: {sorted(set(keys) ^ set(order_keys))}')
 
+# 1а. то, без чего падает tools/sync-bucket.py (06.10.2026 упал на go-start: была методичка, но не было миниатюры и ссылки на обложку)
+idx_covers = dict(re.findall(r"meeymirita-files\.storage\.yandexcloud\.net/([\w-]+)/([^'\"\s]+\.png)", idx))
+for d in sorted(os.listdir('.')):
+    if os.path.isfile(f'{d}/{d}.html') and d not in idx_covers:
+        bad(f'{d}/{d}.html есть, а ссылки на обложку в index.html нет (sync-bucket упадёт): добавьте карточку или заглушку')
+for k in sorted(idx_covers):
+    for need in (f'works/images/thumbs/{k}.webp', f'works/images/{k}.png'):
+        if not os.path.exists(need): bad(f'карточка {k!r} в index.html: нет файла {need} (sync-bucket упадёт)')
+
 # 1б. оглавления для окна «Оглавление» (works/js/toc.json) не отстали от методичек
 if subprocess.run([sys.executable, 'tools/build-toc.py', '--check']).returncode != 0:
     bad('works/js/toc.json устарел или отсутствует — запустите python3 tools/build-toc.py')

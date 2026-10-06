@@ -1829,6 +1829,32 @@
       open: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.html',
       repo: 'https://github.com/meeymirita/kubernetes-lab',
       accent: '#326CE5', accentSoft: '#326CE522', accentShadow: 'rgba(50,108,229,.28)'
+    },
+    {
+      key: 'go-start',
+      category: 'backend',
+      title: 'Go Start Lab',
+      subtitle: 'CoffeeGo — Go с нуля до среднего уровня',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/go-start/go-start.png',
+      desc: 'Go для Laravel/PHP-разработчика, который его никогда не писал: типы и срезы, ошибки как значения, структуры и интерфейсы, пакеты и модули, дженерики, тесты, горутины и каналы, HTTP-сервер, database/sql и pgx, конфигурация, Docker.',
+      stack: ['Go', 'PostgreSQL 18', 'Docker'],
+      note: 'Заглушка: методичка написана (12 сессий, часть 1 из 2), но ещё не вычитана; запуском проверены только сессии 1–3. Не подключена к сайту. Нужны Go и Docker.',
+      difficulty: 'Базовая',
+      repo: 'https://github.com/meeymirita/go-start-lab',
+      accent: '#00ADD8', accentSoft: '#00ADD822', accentShadow: 'rgba(0,173,216,.28)'
+    },
+    {
+      key: 'go-pro',
+      category: 'backend',
+      title: 'Go Pro Lab',
+      subtitle: 'CoffeeGo Platform — Go от среднего уровня до senior',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/go-pro/go-pro.png',
+      desc: 'Продолжение Go Start: рантайм и GC, профилирование, паттерны конкурентности, gRPC и OpenAPI, очереди и Outbox, OpenTelemetry, надёжность, безопасность, свой анализатор кода, Kubernetes и CI/CD; в конце — самостоятельный проект без подсказок.',
+      stack: ['Go', 'gRPC', 'OpenTelemetry', 'Kubernetes'],
+      note: 'Заглушка: методичка написана (13 сессий, часть 2 из 2), но не вычитана и не проверена запуском; не подключена к сайту. Предполагается, что пройдена первая часть — Go Start.',
+      difficulty: 'Высокая',
+      repo: 'https://github.com/meeymirita/go-pro-lab',
+      accent: '#0086A8', accentSoft: '#0086A822', accentShadow: 'rgba(0,134,168,.28)'
     }
   ];
 
@@ -1884,8 +1910,8 @@
     return `
       <article class="card reveal" data-key="${p.key}" tabindex="0" role="link"
         aria-label="Подробнее о ${escapeHtml(p.title)}"
-        style="--accent:${p.accent}; --accent-soft:${p.accentSoft}; --accent-shadow:${p.accentShadow}; transition-delay:${0.05 * i}s">
-        <div class="card-ep"><span>лаба</span><b>${String(i + 1).padStart(2, '0')}</b></div>
+        style="--accent:${p.accent}; --accent-soft:${p.accentSoft}; --accent-shadow:${p.accentShadow}; transition-delay:${0.05 * Math.max(i, 0)}s">
+        <div class="card-ep">${i < 0 ? '<span>скоро</span><b>··</b>' : '<span>лаба</span><b>' + String(i + 1).padStart(2, '0') + '</b>'}</div>
         <div class="card-media">
           <img src="https://meeymirita-files.storage.yandexcloud.net/${p.key}/thumb.webp" data-full="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async" width="1200" height="1200">
           <span class="badge badge-diff" title="Сложность: ${escapeHtml(p.difficulty)}"><span class="stars">${difficultyStars(p.difficulty)}</span>${escapeHtml(p.difficulty)}</span>
@@ -1919,7 +1945,8 @@
     { key: 'backend', label: 'Направление 2', title: 'Бэкенд', color: '#ff2e88', groups: [
       { title: 'Основы: PHP и ООП', keys: ['php', 'php-coffee', 'algorithms-php'] },
       { title: 'Данные, кэш и очереди', keys: ['postgresql', 'redis', 'rabbitmq'] },
-      { title: 'Фреймворки и API', keys: ['laravel', 'laravel-performance', 'inertia', 'nestjs', 'graphql'] }
+      { title: 'Фреймворки и API', keys: ['laravel', 'laravel-performance', 'inertia', 'nestjs', 'graphql'] },
+      { title: 'Go (заглушки: методички в работе)', keys: ['go-start', 'go-pro'] }
     ] },
     { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
       { title: '', keys: ['docker'] },
@@ -1946,7 +1973,7 @@
         <button type="button" class="modal-tab${isActive ? ' is-active' : ''}" data-cat="${cat.key}"
           style="--cat-color:${cat.color}" role="tab" aria-selected="${isActive}">
           <span class="modal-tab-dot"></span>${escapeHtml(cat.title)}
-          <span class="modal-tab-count">${items.length}</span>
+          <span class="modal-tab-count">${items.filter(function (p) { return p.open; }).length}</span>
         </button>
       `;
     }).join('');
@@ -2153,9 +2180,9 @@
           <div class="category-head">
             <span class="category-label mono"><span class="category-dot"></span>${escapeHtml(cat.label)}</span>
             <h3 class="category-title">${escapeHtml(cat.title)}</h3>
-            <span class="category-count mono">${items.length} ${plural(items.length, 'лаба', 'лабы', 'лаб')}</span>
+            <span class="category-count mono">${items.filter(function (p) { return p.open; }).length} ${plural(items.filter(function (p) { return p.open; }).length, 'лаба', 'лабы', 'лаб')}${items.some(function (p) { return !p.open; }) ? ' · ' + items.filter(function (p) { return !p.open; }).length + ' скоро' : ''}</span>
           </div>
-          ${groupsHtml(groupsOf(cat, items), function (p) { n += 1; return cardHtml(p, n - 1); })}
+          ${groupsHtml(groupsOf(cat, items), function (p) { if (p.open) n += 1; return cardHtml(p, p.open ? n - 1 : -1); })}
         </div>
       `;
     }).join('');
@@ -2356,6 +2383,8 @@
   function goToWork(key) {
     var url = 'works/' + key + '.html';
     var p = projects.find(function (x) { return x.key === key; });
+    // заглушка (методички ещё нет, страницы works/<key>.html тоже): открываем README лабы на GitHub
+    if (p && !p.open) { window.open(p.repo, '_blank', 'noopener'); return; }
     if (window.PageLoader && p) PageLoader.go(url, p.title, p.accent);
     else window.location.href = url;
   }

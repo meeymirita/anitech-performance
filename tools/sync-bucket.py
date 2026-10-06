@@ -55,6 +55,14 @@ def build_manifest():
             m[f'{k}/{covers[k]}'] = f'works/images/{k}.png'
         else:
             print(f'! нет ссылки на обложку {k} в index.html — обложка не загружается')
+    # заглушки: карточка есть в index.html (обложка по ссылке на бакет), а методички <ключ>/<ключ>.html ещё нет
+    for k in sorted(set(covers) - set(labs)):
+        m[f'{k}/thumb.webp'] = f'works/images/thumbs/{k}.webp'
+        m[f'{k}/{covers[k]}'] = f'works/images/{k}.png'
+        if os.path.isfile(f'works/images/og/{k}.jpg'):
+            m[f'{k}/og.jpg'] = f'works/images/og/{k}.jpg'
+        if os.path.isfile(f'{k}/README.md'):
+            m[f'{k}/README.md'] = f'{k}/README.md'
     m['site/me.jpg'] = 'works/images/me.jpg'
     for f in sorted(os.listdir('docs/screenshots')):
         m[f'site/screenshots/{f}'] = f'docs/screenshots/{f}'
