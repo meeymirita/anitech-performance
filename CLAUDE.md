@@ -31,7 +31,7 @@
 | `caddy` | caddy-lab | Caddy 2 — Edge: reverse proxy, автоматический HTTPS, xcaddy (13 сессий, Средняя; добавлена и вычитана 05.10, на сайте; проверена частично — см. «Caddy Lab» ниже) |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`), а также `works/changelog.html` (хронология) и `works/progress.html` (все работы и прогресс) |
 | `site-private` | site-private | служебные страницы сайта: `mira/` (шпаргалка), `mira-login/`, `404.html`; деплой кладёт их в корень сайта (с 06.10) |
-| `go-start` | go-start-lab | Go Start — Go с нуля до middle (часть 1 из 2; CoffeeGo; 12 сессий). Пока только `brief.md` — задание на генерацию методички (владелец отдал в другой чат 06.10); методички и кода ещё нет, на сайте и в реестрах нет |
+| `go-start` | go-start-lab | Go Start — Go с нуля до middle (часть 1 из 2; CoffeeGo; 12 сессий). Есть методичка `go-start.html` (пришла из другого чата 06.10; запуском не проверена — Go на Mac не установлен); кода `session-1..12` и `brief.md` в репозитории сейчас нет. Не интегрирована: на сайте и в реестрах нет |
 | `go-pro` | go-pro-lab | Go Pro — Go от middle до senior (часть 2 из 2; CoffeeGo Platform; 13 сессий). Состояние то же: только `brief.md` |
 | `fixes` | **lab-fixes** | находки вычитки по направлениям (`backend/`, `devops/`, `frontend/`, `common/` — см. README) |
 
