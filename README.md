@@ -1,4 +1,4 @@
-# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL
+# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL; Go и Centrifugo — в работе
 
 ![ANITECH PERFORMANCE](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/banner.png)
 
@@ -22,7 +22,9 @@
 
 > **Аудит, вычитка и проверка запуском (24.09–04.10.2026).** Все методички, кроме Caddy Lab (добавлена позже), вычитаны построчно и исправлены, проверены стыки между лабами (DevOps, фронтенд, бэкенд). 03–04.10 каждая лаба прошла «сухой прогон»: собрана по блокам методички во временной папке (Docker, веб — Chromium), результаты сверены с «Ожидаемым результатом», найденные ошибки исправлены. Что и чем проверено, пошагово и со сносками «*» (аккаунт, домен, ключи, «Production Hell» — задания без подсказок) — на странице [«Что чем проверено»](works/verification.html); находки и решения — в [`fixes/`](https://github.com/meeymirita/lab-fixes) (отдельный репозиторий, сабмодуль), хронология — в [«Хронологии»](works/changelog.html). У каждой карточки на главной внизу — сноска «что требуется».
 >
-> **Caddy Lab (22)** — добавлена позже (05.10.2026) и в этот аудит не входит, но в тот же день вычитана и проверена отдельно: 31 находка исправлена, сессии 1–6 и 9–11 запущены локально на Caddy v2.11.7, 7, 8, 12 и 13.5 — в Docker (`fixes/devops/caddy.md`). Не запускались: systemd (13.1), кластер (13.4), Laravel (8.3), публичный домен/Let's Encrypt.
+> **Caddy Lab (21)** — добавлена позже (05.10.2026) и в этот аудит не входит, но в тот же день вычитана и проверена отдельно: 31 находка исправлена, сессии 1–6 и 9–11 запущены локально на Caddy v2.11.7, 7, 8, 12 и 13.5 — в Docker (`fixes/devops/caddy.md`). Не запускались: systemd (13.1), кластер (13.4), Laravel (8.3), публичный домен/Let's Encrypt.
+>
+> **Go Start, Go Pro и Centrifugo (06–08.10.2026)** — заглушки: репозитории и карточки «Методичка скоро» на главной есть, в учебный порядок и реестры сайта они пока не входят. У Go Start и Go Pro методички написаны в другом чате; вычитка и прогон Go Start от 07.10 сделаны другой моделью и **не приняты** (нужно перепроверить), Go Pro не вычитана и не проверена запуском. **Centrifugo (08.10) — методички нет, ничего не проверялось: есть только план.** Подробности — в разделе «В работе» ниже.
 
 | № | Папка | Лаба | Сложность | Репозиторий |
 |---|---|---|---|---|
@@ -49,7 +51,15 @@
 | 21 | [`caddy`](caddy) | Caddy 2 — Edge, reverse proxy с автоматическим HTTPS | Средняя | [caddy-lab](https://github.com/meeymirita/caddy-lab) |
 | 22 | [`kubernetes`](kubernetes) | Kubernetes — от Compose к оркестрации | Средняя–высокая | [kubernetes-lab](https://github.com/meeymirita/kubernetes-lab) |
 
-> Личный прогресс (моя пометка, не часть плана репозитория): ✅ пройдено — RabbitMQ. 🔵 сейчас прохожу — OOP (`php-coffee`).
+> Личный прогресс (моя пометка, не часть плана репозитория): ✅ пройдено — RabbitMQ. 🔵 сейчас прохожу — Caddy Lab (`caddy`): сессии 1–2 пройдены (06–07.10.2026), дальше с сессии 3. OOP (`php-coffee`) — на паузе.
+
+**В работе (заглушки, без номера в витрине):**
+
+| Папка | Лаба | Сложность | Репозиторий | Состояние |
+|---|---|---|---|---|
+| [`go-start`](go-start) | Go Start — CoffeeGo, Go с нуля до middle (12 сессий) | Базовая | [go-start-lab](https://github.com/meeymirita/go-start-lab) | методичка есть; вычитка и прогон от 07.10 сделаны другой моделью и не приняты — перепроверить |
+| [`go-pro`](go-pro) | Go Pro — CoffeeGo Platform, от middle до senior (13 сессий) | Высокая | [go-pro-lab](https://github.com/meeymirita/go-pro-lab) | методичка есть; вычитка не завершена, запуском не проверена |
+| [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) | **методички нет, ничего не проверялось** — только план |
 
 ---
 
@@ -491,6 +501,23 @@
 
 ---
 
+## В работе: Go Start, Go Pro, Centrifugo
+
+Эти три лабы заведены как заглушки (карточка «Методичка скоро» на главной, клик открывает README репозитория). Реестры сайта (`works/js/lab.js`, карта маршрутов, счётчики «N лаб», страницы `works/<ключ>.html`) для них не заводились — это сделает полный чек-лист, когда появятся методички (`fixes/common/_checklist-new-lab.md`).
+
+- **Go Start** (`go-start/`, репозиторий [go-start-lab](https://github.com/meeymirita/go-start-lab)) — Go с нуля до middle на сквозном проекте CoffeeGo: типы и срезы, ошибки как значения, интерфейсы, дженерики, горутины, `net/http`, `database/sql` и pgx, тесты, Docker. 12 сессий. Методичка `go-start.html` написана в другом чате; вычитка и прогон в Docker 07.10 сделаны другой моделью и **владельцем не приняты**. Кода прохождения нет.
+- **Go Pro** (`go-pro/`, [go-pro-lab](https://github.com/meeymirita/go-pro-lab)) — продолжение: CoffeeGo Platform на трёх сервисах, рантайм и GC, профилирование, gRPC, Outbox, OpenTelemetry, Kubernetes, свой анализатор кода. 13 сессий. Идёт строго после Go Start; до неё желательно Docker, PostgreSQL, Redis, RabbitMQ и Kubernetes. Методичка есть, **не вычитана и не проверена запуском**.
+- **Centrifugo** (`centrifugo/`, [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab), добавлена 08.10.2026) — realtime на Centrifugo: каналы и namespaces, `centrifuge-js`, публикация из Laravel, JWT и subscription tokens, proxy, presence и history, recovery, Outbox, тесты, production и нагрузка; сквозной проект Realtime Workspace (Laravel 13 + Centrifugo ≥ 6.9 + Vue, Centrifugo в Docker). По плану [`centrifugo_lab_plan_v4.md`](centrifugo/centrifugo_lab_plan_v4.md): 21 сессия, ~62 ч, сложность средняя–высокая; от других лаб не зависит жёстко, желательны основы Docker, Laravel и Vue. **Методички нет, код не писался, ничего не проверялось** — есть только план.
+
+---
+
+## Возможности сайта
+
+- **Справка при наведении.** На главной при наведении мыши на карточку лабы открывается панель: место в учебном порядке, уровень входа, что нужно знать до старта, цепочка «Сначала пройти» (обязательно / нужны знания / полезно, с причиной), с чем встретишься, «Что можно проходить дальше», подсказка, а также сноска «что требуется» и статус проверки (они перенесены с карточки; на телефоне остаются на ней). Данные — `works/js/prereq.js`, для заглушек зависимости зашиты в `index.html` (предварительные). Только для компьютера с мышью.
+- **Слайд-переход.** При открытии лабы с главной экран «уезжает» в сторону, а страница лабы въезжает; обратно — зеркально. У каждой лабы своё направление (влево/вправо/вверх/вниз, `works/js/slide.js`). Нужны межстраничные View Transitions (Chrome/Edge 126+, Safari 18.2+); в других браузерах остаётся прежняя заставка PageLoader.
+
+---
+
 ## Все работы и прогресс (`works/progress.html`)
 
 Одна страница со ссылками на все лабы и общим прогрессом по каждой: отметки разделов и шагов из методичек (хранятся в `localStorage` браузера) складываются в проценты. Кнопка «Все работы» есть в каждой методичке рядом с поиском и переключателем темы, а пункт «прогресс» — в шапке сайта, на страницах лаб и в хронологии. Рядом — страница [«Что чем проверено»](works/verification.html) (`python3 tools/build-verification.py`, собирается из `fixes/common/_verification.md`). Страница прогресса собирается скриптом `python3 tools/build-progress.py` (запускать заново при добавлении лабы), а ссылка и правка шаблона вставляются в методички через `python3 tools/patch-manuals.py`. Прогресс виден, только когда страница и методички открыты с одного адреса (GitHub Pages или `python3 -m http.server`).
@@ -501,7 +528,7 @@
 
 Отдельный сабмодуль [`works-lab`](https://github.com/meeymirita/works-lab) со стилизованными обзорными страницами каждой лабы (дизайн в стилистике аниме-заставки, тот же, что и у [`index.html`](index.html)): что внутри, стек, куда открыть методичку и репозиторий. Там же лежат превью-картинки лаб (`works/images/`), которые использует и главная страница.
 
-Открыть можно прямо по ссылке `works/<ключ-лабы>.html`, например [`works/rabbitmq.html`](works/rabbitmq.html).
+Открыть можно прямо по ссылке `works/<ключ-лабы>.html`, например [`works/rabbitmq.html`](works/rabbitmq.html). В `<head>` каждой такой страницы подключён `js/slide.js` (слайд-переход).
 
 ---
 

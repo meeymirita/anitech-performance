@@ -26,6 +26,7 @@
   <meta name="yandex-verification" content="b84e0478424029ac" />
   
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="works/js/slide.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Onest:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -1312,6 +1313,53 @@
       .works-count { font-size: 64px; }
       .card { box-shadow: 5px 5px 0 var(--accent); }
     }
+
+    /* всплывающая справка по лабе при наведении на карточку (08.10.2026) */
+    #labpop {
+      position: fixed; z-index: 500; width: 390px; max-width: calc(100vw - 20px); max-height: calc(100vh - 20px); overflow: auto;
+      background: var(--bg-alt); color: var(--text); border: 2px solid var(--paper); box-shadow: 9px 9px 0 var(--pp-accent, var(--pink));
+      padding: 0; opacity: 0; visibility: hidden; transform: translateY(6px);
+      transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
+    }
+    #labpop.on { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    #labpop .pp-top { padding: 14px 18px 12px; border-bottom: 2px dashed var(--line); background: color-mix(in srgb, var(--pp-accent, var(--pink)) 10%, var(--bg-alt)); }
+    #labpop .pp-kick { font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--pp-accent, var(--pink)); }
+    #labpop .pp-title { font: 400 21px/1.15 'Dela Gothic One', sans-serif; text-transform: uppercase; margin: 6px 0 8px; }
+    #labpop .pp-lvl { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 11px; color: var(--text-dim); }
+    #labpop .pp-lvl b { font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; background: var(--pp-accent, var(--pink)); color: var(--ink); }
+    #labpop .pp-body { padding: 14px 18px 18px; }
+    #labpop .pp-head { margin: 0 0 12px; font-size: 14px; font-weight: 700; line-height: 1.4; }
+    #labpop h4 { margin: 14px 0 7px; font: 700 10px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-dimmer); display: flex; gap: 8px; align-items: center; }
+    #labpop h4::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    #labpop ul { margin: 0; padding: 0 0 0 18px; font-size: 12.5px; line-height: 1.55; color: var(--text-dim); }
+    #labpop li { margin: 0 0 3px; }
+    #labpop .pp-seq { display: flex; flex-direction: column; gap: 7px; }
+    #labpop .pp-dep { display: grid; grid-template-columns: 30px 1fr; gap: 9px; align-items: start; font-size: 12px; line-height: 1.4; cursor: pointer; background: none; border: 0; padding: 0; text-align: left; color: inherit; font-family: inherit; }
+    #labpop .pp-dep i { font: normal 400 13px/1 'Dela Gothic One', sans-serif; text-align: center; padding: 4px 0; background: var(--sun); color: var(--ink); }
+    #labpop .pp-dep.need i { background: var(--pink); color: #fff; }
+    #labpop .pp-dep.chain i { background: #7df9ff; color: var(--ink); }
+    #labpop .pp-dep.help i { background: #b69cff; color: var(--ink); }
+    #labpop .pp-dep.need b em { color: var(--pink); }
+    #labpop .pp-dep.know b em { color: var(--sun); }
+    #labpop .pp-dep.chain b em { color: #7df9ff; }
+    #labpop .pp-dep.help b em { color: #b69cff; }
+    #labpop .pp-dep b { display: block; font-weight: 700; }
+    #labpop .pp-dep b em { font: normal 700 9px 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dimmer); margin-left: 6px; }
+    #labpop .pp-dep span { color: var(--text-dimmer); }
+    #labpop .pp-dep:hover b { color: var(--pp-accent, var(--pink)); text-decoration: underline; }
+    #labpop .pp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    #labpop .pp-chips span, #labpop .pp-chips button { font: 500 10px 'JetBrains Mono', monospace; letter-spacing: .04em; padding: 4px 8px; border: 1px solid var(--line); color: var(--text-dim); background: none; }
+    #labpop .pp-chips button { cursor: pointer; color: var(--text); }
+    #labpop .pp-chips button:hover { border-color: var(--pp-accent, var(--pink)); color: var(--pp-accent, var(--pink)); }
+    #labpop .pp-tip { margin: 14px 0 0; padding: 9px 12px; border-left: 3px solid var(--pp-accent, var(--pink)); background: rgba(247,242,245,.05); font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+    #labpop .pp-foot { margin: 12px 0 0; font: 500 10px 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dimmer); }
+    #labpop .pp-notes { margin: 14px 0 0; padding-top: 12px; border-top: 2px dashed var(--line); }
+    #labpop .pp-notes .pp-note { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-dim); }
+    #labpop .pp-notes .card-verify { margin: 8px 0 0; font-size: 12px; }
+    /* где есть справка при наведении, примечание и статус проверки живут в ней, а не на карточке; на телефоне остаются на карточке */
+    @media (hover: hover) and (min-width: 901px) { .card .card-note, .card .card-verify { display: none; } }
+    @media (hover: none), (max-width: 900px) { #labpop { display: none; } }
+    @media (prefers-reduced-motion: reduce) { #labpop { transition: none; } }
   </style>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -1533,6 +1581,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js"></script>
+<script src="works/js/prereq.js"></script>
 <script src="works/js/status.js"></script>
 <script src="works/js/flip-gallery.js"></script>
 
@@ -2418,6 +2467,8 @@
     var p = projects.find(function (x) { return x.key === key; });
     // заглушка (методички ещё нет, страницы works/<key>.html тоже): открываем README лабы на GitHub
     if (p && !p.open) { window.open(p.repo, '_blank', 'noopener'); return; }
+    // слайд-переход (works/js/slide.js): у каждой лабы своё направление
+    if (window.SlideNav && SlideNav.supports(key)) { SlideNav.go(key, url); return; }
     if (window.PageLoader && p) PageLoader.go(url, p.title, p.accent);
     else window.location.href = url;
   }
@@ -2441,6 +2492,130 @@
     e.preventDefault();
     goToWork(card.getAttribute('data-key'));
   });
+
+  // ── всплывающая справка по лабе при наведении (данные — works/js/prereq.js; для заглушек — ниже) ──
+  (function () {
+    var PQ = window.LAB_PREREQ;
+    if (!PQ || !window.matchMedia || !window.matchMedia('(hover: hover) and (min-width: 901px)').matches) return;
+    var ORDER = PQ.order, LABS = PQ.labs, LEVELS = PQ.levels;
+    var STUBS = {
+      'go-start': { level: 'light', headline: 'Go с нуля: методичка в работе', know: [], meet: [],
+        before: [{ key: 'docker', kind: 'help', why: 'контейнеры и Compose в финале лабы' }, { key: 'postgresql', kind: 'help', why: 'REST + PostgreSQL в сквозном проекте' }],
+        tip: 'Заглушка: методичка написана, но ещё не вычитана и не проверена запуском.' },
+      'go-pro': { level: 'heavy', headline: 'Идёт строго после Go Start', know: [], meet: [],
+        before: [{ key: 'go-start', kind: 'need', why: 'продолжает проект CoffeeGo' }, { key: 'docker', kind: 'know', why: 'Compose-стенд во всех сессиях' },
+          { key: 'postgresql', kind: 'know', why: 'сессия 7' }, { key: 'redis', kind: 'know', why: 'сессия 7' }, { key: 'rabbitmq', kind: 'know', why: 'очереди и Outbox' }, { key: 'kubernetes', kind: 'know', why: 'сессия 13' }],
+        tip: 'Заглушка: методичка не вычитана и не проверена запуском.' },
+      'centrifugo': { level: 'solid', headline: 'Standalone-лаба: нужны основы Docker, Laravel и Vue', know: [], meet: [],
+        before: [{ key: 'docker', kind: 'know', why: 'compose up, порты, переменные окружения, логи' }, { key: 'laravel', kind: 'know', why: 'сквозной проект на Laravel 13' }, { key: 'vue', kind: 'help', why: 'клиент на Vue: ref и onMounted' }],
+        tip: 'Заглушка: пока есть только план (21 сессия, ~62 ч), методички нет.' }
+    };
+    var KIND = { need: 'обязательно', know: 'нужны знания', help: 'полезно' };
+    function info(k) { return LABS[k] || STUBS[k]; }
+    function titleOf(k) { var p = projects.find(function (x) { return x.key === k; }); return p ? p.title.replace(/ Lab$/, '') : k; }
+    function befores(k) { return (info(k) && info(k).before) || []; }
+    function chain(k, seen) {
+      seen = seen || {};
+      befores(k).forEach(function (b) { if (b.kind !== 'help' && !seen[b.key]) { seen[b.key] = true; chain(b.key, seen); } });
+      return seen;
+    }
+    function orderKey(k) { var i = ORDER.indexOf(k); return i < 0 ? 999 : i; }
+    function li(arr) { return '<ul>' + arr.map(function (x) { return '<li>' + escapeHtml(x) + '</li>'; }).join('') + '</ul>'; }
+    function dep(k, b, indirect) {
+      var n = ORDER.indexOf(k);
+      return '<button type="button" class="pp-dep ' + (indirect ? 'chain' : b.kind) + '" data-go="' + k + '"><i>' + (n < 0 ? '··' : String(n + 1).padStart(2, '0')) + '</i><div><b>' + escapeHtml(titleOf(k)) +
+        '<em>' + (indirect ? 'через другую лабу' : KIND[b.kind]) + '</em></b><span>' + escapeHtml(indirect ? (b.via || '') : (b.why || '')) + '</span></div></button>';
+    }
+
+    var pop = document.createElement('div');
+    pop.id = 'labpop'; pop.setAttribute('role', 'tooltip');
+    document.body.appendChild(pop);
+    var cur = null, tIn = 0, tOut = 0;
+
+    function fill(k) {
+      var p = projects.find(function (x) { return x.key === k; }), L = info(k);
+      if (!p || !L) return false;
+      var pos = ORDER.indexOf(k) + 1, lvl = LEVELS[L.level];
+      var direct = befores(k), ch = chain(k), directNeed = {};
+      direct.forEach(function (b) { directNeed[b.key] = b; });
+      var seq = Object.keys(ch).sort(function (a, b) { return orderKey(a) - orderKey(b); });
+      var depHtml = '';
+      function via(x) {
+        // кому из лаб цепочки нужна x: берём ближайшую к текущей (с наибольшим местом в порядке)
+        var users = seq.filter(function (y) { return befores(y).some(function (bb) { return bb.key === x && bb.kind !== 'help'; }); })
+          .sort(function (a, b) { return orderKey(b) - orderKey(a); });
+        var y = users[0];
+        if (!y) return 'нужна для лаб, которые идут дальше по цепочке';
+        return 'нужна для «' + titleOf(y) + '»' + (directNeed[y] ? ', а та нужна для этой лабы' : ', дальше по цепочке к этой лабе');
+      }
+      seq.forEach(function (x) { depHtml += dep(x, directNeed[x] || { kind: 'know', via: via(x) }, !directNeed[x]); });
+      direct.filter(function (b) { return b.kind === 'help'; }).forEach(function (b) { depHtml += dep(b.key, b, false); });
+      var after = ORDER.concat(Object.keys(STUBS)).filter(function (x) { return befores(x).some(function (b) { return b.key === k; }); });
+      var h = '<div class="pp-top"><div class="pp-kick">' + (pos ? 'место в учебном порядке: ' + pos + ' из ' + ORDER.length : 'в планах · пока не в учебном порядке') + '</div>' +
+        '<div class="pp-title">' + escapeHtml(p.title) + '</div>' +
+        '<div class="pp-lvl"><b>' + escapeHtml(lvl ? lvl.label : '') + '</b><span>' + escapeHtml(lvl ? lvl.note : '') + '</span></div></div><div class="pp-body">';
+      if (L.headline) h += '<p class="pp-head">' + escapeHtml(L.headline) + '</p>';
+      if (L.know && L.know.length) h += '<h4>Что нужно знать до старта</h4>' + li(L.know);
+      h += '<h4>Сначала пройти</h4>' + (depHtml ? '<div class="pp-seq">' + depHtml + '</div>' : '<p style="margin:0;font-size:12.5px;color:var(--text-dim)">Ничего: можно начинать сразу.</p>');
+      if (L.meet && L.meet.length) h += '<h4>С чем встретишься</h4><div class="pp-chips">' + L.meet.slice(0, 6).map(function (x) { return '<span>' + escapeHtml(x) + '</span>'; }).join('') + (L.meet.length > 6 ? '<span>… ещё ' + (L.meet.length - 6) + '</span>' : '') + '</div>';
+      if (after.length) h += '<h4>Что можно проходить дальше</h4><div class="pp-chips">' + after.map(function (x) { return '<button type="button" data-go="' + x + '">' + escapeHtml(titleOf(x)) + '</button>'; }).join('') + '</div>';
+      if (L.tip) h += '<p class="pp-tip">' + escapeHtml(L.tip) + '</p>';
+      var vh = verifyHtml(p.key, p.accent);
+      if (p.note || vh) h += '<div class="pp-notes">' + (p.note ? '<p class="pp-note">* ' + escapeHtml(p.note) + '</p>' : '') + vh + '</div>';
+      h += '<p class="pp-foot">' + (p.open ? 'Клик по карточке — открыть методичку' : 'Клик по карточке — README на GitHub') + '</p></div>';
+      pop.innerHTML = h;
+      pop.style.setProperty('--pp-accent', p.accent);
+      pop.scrollTop = 0;
+      return true;
+    }
+    function place(card) {
+      var r = card.getBoundingClientRect(), w = pop.offsetWidth, hgt = pop.offsetHeight, gap = 16, x;
+      if (innerWidth - r.right >= w + gap + 8) x = r.right + gap;
+      else if (r.left >= w + gap + 8) x = r.left - w - gap;
+      else x = Math.max(10, Math.min(innerWidth - w - 10, r.left + r.width / 2 - w / 2));
+      var y = Math.max(10, Math.min(innerHeight - hgt - 10, r.top + r.height / 2 - hgt / 2));
+      pop.style.left = x + 'px'; pop.style.top = y + 'px';
+    }
+    function show(card) {
+      clearTimeout(tOut);
+      if (!fill(card.getAttribute('data-key'))) return;
+      cur = card; pop.classList.add('on'); place(card);
+    }
+    function hide() { pop.classList.remove('on'); cur = null; }
+
+    grid.addEventListener('mouseover', function (e) {
+      var card = e.target.closest('.card'); if (!card || card === cur) return;
+      clearTimeout(tIn); clearTimeout(tOut);
+      tIn = setTimeout(function () { show(card); }, cur ? 120 : 380);
+    });
+    grid.addEventListener('mouseout', function (e) {
+      var card = e.target.closest('.card'); if (!card) return;
+      if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+      clearTimeout(tIn);
+      tOut = setTimeout(hide, 220);
+    });
+    grid.addEventListener('click', function () { clearTimeout(tIn); hide(); });
+    grid.addEventListener('focusin', function (e) { var c = e.target.closest('.card'); if (c) show(c); });
+    grid.addEventListener('focusout', function (e) { if (!e.relatedTarget || !e.relatedTarget.closest('.card')) tOut = setTimeout(hide, 220); });
+    pop.addEventListener('mouseenter', function () { clearTimeout(tOut); });
+    pop.addEventListener('mouseleave', function () { tOut = setTimeout(hide, 220); });
+    pop.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-go]'); if (!b) return;
+      var target = grid.querySelector('.card[data-key="' + b.getAttribute('data-go') + '"]');
+      hide();
+      if (target) {
+        target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+        target.classList.remove('is-spotlight'); void target.offsetWidth; target.classList.add('is-spotlight');
+        setTimeout(function () { target.classList.remove('is-spotlight'); }, 2400);
+      }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+    window.addEventListener('scroll', function () {
+      if (!cur) return;
+      var r = cur.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) hide(); else place(cur);
+    }, { passive: true });
+  })();
 
   var progress = document.querySelector('.progress');
 
