@@ -79,3 +79,6 @@
 [submodule "go-pro"]
 	path = go-pro
 	url = https://github.com/meeymirita/go-pro-lab.git
+[submodule "centrifugo"]
+	path = centrifugo
+	url = https://github.com/meeymirita/centrifugo-lab.git
