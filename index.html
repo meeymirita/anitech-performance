@@ -502,6 +502,7 @@
     .badge-diff { top: 12px; left: 12px; }
 
     .card-body { position: relative; z-index: 3; padding: 22px; display: flex; flex-direction: column; flex: 1; transform: translateZ(25px); }
+    .card-stage { display: inline-block; align-self: flex-start; margin: 0 0 12px; padding: 5px 9px; font-family: 'JetBrains Mono',monospace; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border: 1px dashed var(--accent); }
     .card-title { font-family: 'Dela Gothic One',sans-serif; text-transform: uppercase; font-size: 25px; margin: 0; line-height: 1.15; color: var(--text); }
     .card-subtitle { font-family: 'JetBrains Mono',monospace; font-size: 10px; letter-spacing: .08em; margin: 6px 0 0; color: var(--accent); }
     .card-desc { font-size: 13px; color: var(--text-dim); margin: 14px 0 0; line-height: 1.65; }
@@ -1841,6 +1842,7 @@
     },
     {
       key: 'bash',
+      stage: 'Новая работа: пока только минимальный план изучения',
       category: 'devops',
       title: 'Bash Lab',
       subtitle: 'CoffeeOps — shell и bash с нуля',
@@ -1854,13 +1856,14 @@
     },
     {
       key: 'docker',
+      stage: 'Перестройка: готовится большая версия, сейчас — старый короткий план',
       category: 'devops',
       title: 'Docker Lab',
       subtitle: 'Крепкое владение Docker и Bash с нуля',
       image: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.png',
       desc: 'Docker и Bash с нуля: образы, контейнеры, docker-compose, сети и тома — через практику в терминале.',
       stack: ['Docker', 'Docker Compose', 'Bash'],
-      note: 'Нужен Docker и bash; аккаунтов и ключей нет. Готовится большая версия (12 сессий) — план в репозитории.',
+      note: 'Нужен Docker и bash; аккаунтов и ключей нет.',
       difficulty: 'Базовая',
       open: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.html',
       repo: 'https://github.com/meeymirita/docker-lab',
@@ -1868,13 +1871,14 @@
     },
     {
       key: 'traefik',
+      stage: 'Перестройка: готовится большая версия, сейчас — старый короткий план',
       category: 'devops',
       title: 'Traefik Lab',
       subtitle: 'Reverse proxy, service discovery, TLS',
       image: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.png',
       desc: 'Reverse proxy и service discovery для стека из нескольких сервисов без ручной правки конфигов: EntryPoint → Router → Middleware → Service, TLS, canary-деплой.',
       stack: ['Traefik 3', 'Docker Compose', 'Node.js', 'PostgreSQL'],
-      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert. Готовится большая версия (10 сессий) — план в репозитории.',
+      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert.',
       difficulty: 'Низкая–средняя',
       open: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.html',
       repo: 'https://github.com/meeymirita/traefik-lab',
@@ -1896,13 +1900,14 @@
     },
     {
       key: 'kubernetes',
+      stage: 'Перестройка: готовится большая версия, сейчас — старый короткий план',
       category: 'devops',
       title: 'Kubernetes Lab',
       subtitle: 'От Compose к оркестрации',
       image: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.png',
       desc: 'Миграция стека из Traefik-лабы в Kubernetes (kind): Pod и Deployment, Service и DNS, ConfigMap/Secret, Volumes и PVC, readiness/liveness-пробы, Traefik как Ingress-контроллер, HorizontalPodAutoscaler.',
       stack: ['Kubernetes v1.37.0', 'kind v0.33.0', 'kubectl', 'Traefik'],
-      note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке. Готовится большая версия с Helm (13 сессий) — план в репозитории.',
+      note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке.',
       difficulty: 'Средняя–высокая',
       open: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.html',
       repo: 'https://github.com/meeymirita/kubernetes-lab',
@@ -1910,6 +1915,7 @@
     },
     {
       key: 'ansible',
+      stage: 'Новая работа: пока только минимальный план изучения',
       category: 'devops',
       title: 'Ansible Lab',
       subtitle: 'Управление серверами как кодом',
@@ -2023,6 +2029,7 @@
           <span class="badge badge-diff" title="Сложность: ${escapeHtml(p.difficulty)}"><span class="stars">${difficultyStars(p.difficulty)}</span>${escapeHtml(p.difficulty)}</span>
         </div>
         <div class="card-body">
+          ${p.stage ? '<span class="card-stage">' + escapeHtml(p.stage) + '</span>' : ''}
           <h3 class="card-title">${escapeHtml(p.title)}</h3>
           <p class="card-subtitle">${escapeHtml(p.subtitle)}</p>
           <p class="card-desc">${escapeHtml(p.desc)}</p>
