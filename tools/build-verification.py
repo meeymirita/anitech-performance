@@ -27,7 +27,7 @@ def inline(s):
 
 def cell(s):
     s = inline(s.strip())
-    cls = {'✅': 'ok', '🟡': 'part', '⚠️': 'warn', '📖': 'txt', '⬜': 'todo', '🔄': 'part'}
+    cls = {'✅': 'ok', '🟡': 'part', '⚠️': 'warn', '📖': 'txt', '⬜': 'todo', '🆕': 'todo', '🔄': 'part'}
     for k, v in cls.items():
         if s.startswith(k) or s == k:
             return f'<td class="{v}">{s}</td>'

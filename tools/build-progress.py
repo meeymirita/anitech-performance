@@ -23,6 +23,19 @@ BUCKET = 'https://meeymirita-files.storage.yandexcloud.net'
 # (с синхронизацией, 06.10.2026), статическая отметка скрывала бы возможные пропуски.
 COMPLETED = set()
 
+# лабы, которых ещё нет на сайте (нет методички/страницы): показываются отдельным разделом «Новые» со статусом «новая»,
+# в общий прогресс не входят. При появлении методички — убрать отсюда и интегрировать по _checklist-new-lab.md.
+PLANNED = [
+    {'key': 'go-start', 'title': 'Go Start', 'subtitle': 'Go с нуля до middle (CoffeeGo)', 'difficulty': 'Базовая', 'accent': '#00ADD8',
+     'note': 'методичка есть, но не принята и не интегрирована', 'repo': 'go-start-lab'},
+    {'key': 'go-pro', 'title': 'Go Pro', 'subtitle': 'Go от middle до senior (CoffeeGo Platform)', 'difficulty': 'Высокая', 'accent': '#00ADD8',
+     'note': 'методичка есть, но не вычитана и не интегрирована', 'repo': 'go-pro-lab'},
+    {'key': 'ansible', 'title': 'Ansible Lab', 'subtitle': 'Управление серверами как кодом', 'difficulty': 'Средняя', 'accent': '#EE0000',
+     'note': 'только план, методички нет', 'repo': 'ansible-lab'},
+    {'key': 'express', 'title': 'Node.js + Express Lab', 'subtitle': 'Введение в Node и Express — ShareBox (перед TypeScript и NestJS)', 'difficulty': 'Лёгкая–средняя', 'accent': '#68A063',
+     'note': 'только план и ТЗ, методички нет', 'repo': 'express-lab'},
+]
+
 # fixes/common/_tools/prep.py runs its CLI main() on import (no __main__ guard), so we can't
 # just `import prep` — pull its LABS dict (key -> local path) out of the source instead.
 _prep_src = open('fixes/common/_tools/prep.py', encoding='utf-8').read()
@@ -141,6 +154,11 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
 .tools { display:flex; gap:8px; margin:0 0 8px; }
 .tools button { font:inherit; font-size:13px; padding:4px 10px; border:1px solid var(--hair); background:var(--card); color:var(--ink); cursor:pointer; }
 @media (prefers-color-scheme: dark) { .ok { color:#4cc87a; } .ok i { background:#2f9e5a; } }
+.new { display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-weight:700; }
+.new i { padding:0 6px; border-radius:8px; background:var(--accent); color:#fff; font:700 11px/16px sans-serif; font-style:normal; }
+.name .new { margin-left:10px; font-size:12px; }
+.lab.planned { grid-template-columns:32px minmax(0,1fr); }
+.lab.planned .name, .lab.planned .meta { grid-column:2; }
 .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--c); margin-right:8px; }
 @media (max-width:620px) {
   .lab { grid-template-columns:26px 52px minmax(0,1fr); }
@@ -156,13 +174,14 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <h1>Все работы и прогресс</h1>
   <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
   <div class="total" id="total"></div>
-  <p class="legend">✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении.</p>
+  <p class="legend">«новая» — лаба задумана или в работе, на сайте её ещё нет; в общий прогресс не входит. ✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении.</p>
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
 <script src="js/sync.js"></script>
 <script>
 var GROUPS = __DATA__;
+var PLANNED = __PLANNED__;
 
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
@@ -212,6 +231,13 @@ function labRow(it, n, fold) {
     + '</div>';
 }
 
+function plannedRow(p) {
+  return '<div class="lab planned" style="--c:' + p.accent + '"><span class="num"></span>'
+    + '<span class="name"><span class="dot"></span>' + esc(p.title) + '<span class="new"><i>новая</i></span></span>'
+    + '<span class="meta">' + esc(p.subtitle) + ' · ' + esc(p.difficulty) + ' · ' + esc(p.note) + '<br>'
+    + '<a href="https://github.com/meeymirita/' + esc(p.repo) + '">Репозиторий ↗</a></span></div>';
+}
+
 function render() {
   var fold = folded();
   var allDone = 0, allTotal = 0, started = 0, finished = 0, secs = 0, html = '', items = [];
@@ -232,6 +258,10 @@ function render() {
     html += '<h2>' + sec[1] + ' · ' + part.length + '</h2>';
     part.forEach(function (it) { html += labRow(it, ++n, fold); });
   });
+  if (PLANNED.length) {
+    html += '<h2>Новые · ' + PLANNED.length + '</h2>';
+    PLANNED.forEach(function (p) { html += plannedRow(p); });
+  }
   document.getElementById('list').innerHTML = html;
   var all = allTotal ? Math.round(allDone / allTotal * 100) : 0;
   document.getElementById('total').innerHTML =
@@ -255,6 +285,6 @@ window.addEventListener('storage', render);
 </html>
 '''
 
-out = TEMPLATE.replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':')))
+out = TEMPLATE.replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':'))).replace('__PLANNED__', json.dumps(PLANNED, ensure_ascii=False, separators=(',', ':')))
 open('works/progress.html', 'w', encoding='utf-8').write(out)
 print(f'works/progress.html: {sum(len(g["labs"]) for g in data)} лаб, {len(out) // 1024} КБ')
