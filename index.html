@@ -2394,6 +2394,13 @@
   // Layered pinning: every panel pins once it's fully in view (top, or its bottom for panels
   // taller than the screen) and stays put while the next panel slides up over it, shrinking
   // and dimming a little as it gets covered.
+  // раскрытие/сворачивание группы меняет высоту панели: пересчитать закрепление, иначе следующая панель наезжает раньше времени
+  document.addEventListener('toggle', function (e) {
+    if (e.target.classList && e.target.classList.contains('group-fold') && window.ScrollTrigger) {
+      setTimeout(function () { ScrollTrigger.refresh(); }, 50);
+    }
+  }, true);
+
   function initLayeredPanels() {
     if (!gsapReady) return;
 
