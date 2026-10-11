@@ -102,7 +102,7 @@ KEYS = {'Algorithms PHP': 'algorithms-php', 'Laravel Performance': 'laravel-perf
         'Inertia': 'inertia', 'Kubernetes': 'kubernetes', 'Docker': 'docker', 'Traefik': 'traefik', 'Caddy': 'caddy',
         'ООП (php-coffee)': 'php-coffee', 'Чистый PHP': 'php', 'PostgreSQL': 'postgresql', 'Redis': 'redis', 'RabbitMQ': 'rabbitmq',
         'Laravel': 'laravel', 'NestJS': 'nestjs', 'GraphQL': 'graphql', 'JS': 'js', 'TypeScript': 'typescript', 'Vue': 'vue',
-        'Nuxt': 'nuxt', 'Angular': 'angular'}
+        'Nuxt': 'nuxt', 'Angular': 'angular', 'Centrifugo': 'centrifugo'}
 import json
 status = {}
 sec = md.split('## По лабам', 1)[1].split('\n## ', 1)[0]
@@ -114,6 +114,7 @@ for line in sec.split('\n'):
         continue
     name, level, method, _done, todo, detail = c[:6]
     partial = level.startswith('🟡')
+    none = level.startswith('⬜')              # методичка есть, но не вычитана и не запускалась
     rest, own = '', False
     if todo.strip() not in ('—', ''):
         t = todo.strip()
@@ -124,9 +125,9 @@ for line in sec.split('\n'):
         t = re.sub(r'^нужны внешние ресурсы:\s*', '', t)
         rest = t.replace('`', '')
     d = re.search(r'fixes/((?:backend|devops|frontend|common)/[\w.-]+\.md)', detail)
-    status[KEYS[name]] = {'level': 'part' if partial else 'ok',
-                          'head': 'Вычитана, проверена частично' if partial else 'Вычитана и проверена',
-                          'tail': 'не проверено' if partial else ('вам остаётся проверить самим' if own else 'не запускалось'),
+    status[KEYS[name]] = {'level': 'none' if none else ('part' if partial else 'ok'),
+                          'head': 'Не вычитана и не проверена запуском' if none else ('Вычитана, проверена частично' if partial else 'Вычитана и проверена'),
+                          'tail': 'не проверено' if (partial or none) else ('вам остаётся проверить самим' if own else 'не запускалось'),
                           'method': [m for m, k in (('запуск в Docker', 'D'), ('проверка в браузере', 'B')) if k in method.split('+')],
                           'rest': rest, 'detail': FIXES_URL + d.group(1) if d else ''}
 missing = sorted(set(KEYS.values()) - set(status))

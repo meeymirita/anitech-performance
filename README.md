@@ -59,7 +59,7 @@
 |---|---|---|---|---|
 | [`go-start`](go-start) | Go Start — CoffeeGo, Go с нуля до middle (12 сессий) | Базовая | [go-start-lab](https://github.com/meeymirita/go-start-lab) | методичка есть; вычитка и прогон от 07.10 сделаны другой моделью и не приняты — перепроверить |
 | [`go-pro`](go-pro) | Go Pro — CoffeeGo Platform, от middle до senior (13 сессий) | Высокая | [go-pro-lab](https://github.com/meeymirita/go-pro-lab) | методичка есть; вычитка не завершена, запуском не проверена |
-| [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) | **методички нет, ничего не проверялось** — только план |
+| [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) | методичка есть (11.10.2026, из другого чата); **не вычитана и не проверена запуском** |
 
 ---
 
@@ -507,7 +507,7 @@
 
 - **Go Start** (`go-start/`, репозиторий [go-start-lab](https://github.com/meeymirita/go-start-lab)) — Go с нуля до middle на сквозном проекте CoffeeGo: типы и срезы, ошибки как значения, интерфейсы, дженерики, горутины, `net/http`, `database/sql` и pgx, тесты, Docker. 12 сессий. Методичка `go-start.html` написана в другом чате; вычитка и прогон в Docker 07.10 сделаны другой моделью и **владельцем не приняты**. Кода прохождения нет.
 - **Go Pro** (`go-pro/`, [go-pro-lab](https://github.com/meeymirita/go-pro-lab)) — продолжение: CoffeeGo Platform на трёх сервисах, рантайм и GC, профилирование, gRPC, Outbox, OpenTelemetry, Kubernetes, свой анализатор кода. 13 сессий. Идёт строго после Go Start; до неё желательно Docker, PostgreSQL, Redis, RabbitMQ и Kubernetes. Методичка есть, **не вычитана и не проверена запуском**.
-- **Centrifugo** (`centrifugo/`, [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab), добавлена 08.10.2026) — realtime на Centrifugo: каналы и namespaces, `centrifuge-js`, публикация из Laravel, JWT и subscription tokens, proxy, presence и history, recovery, Outbox, тесты, production и нагрузка; сквозной проект Realtime Workspace (Laravel 13 + Centrifugo ≥ 6.9 + Vue, Centrifugo в Docker). По плану [`centrifugo_lab_plan_v4.md`](centrifugo/centrifugo_lab_plan_v4.md): 21 сессия, ~62 ч, сложность средняя–высокая; от других лаб не зависит жёстко, желательны основы Docker, Laravel и Vue. **Методички нет, код не писался, ничего не проверялось** — есть только план.
+- **Centrifugo** (`centrifugo/`, [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab), добавлена 08.10.2026) — realtime на Centrifugo: каналы и namespaces, `centrifuge-js`, публикация из Laravel, JWT и subscription tokens, proxy, presence и history, recovery, Outbox, тесты, production и нагрузка; сквозной проект Realtime Workspace (Laravel 13 + Centrifugo ≥ 6.9 + Vue, Centrifugo в Docker). По плану [`centrifugo_lab_plan_v4.md`](centrifugo/centrifugo_lab_plan_v4.md): 21 сессия, ~62 ч, сложность средняя–высокая; от других лаб не зависит жёстко, желательны основы Docker, Laravel и Vue. Методичка `centrifugo.html` написана в другом чате и встроена 11.10.2026: 21 сессия, 138 шагов; **не вычитана и не проверена запуском**, кода прохождения нет.
 
 ---
 
