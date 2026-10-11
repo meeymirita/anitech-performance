@@ -1,4 +1,4 @@
-# ANITECH PERFORMANCE — обучающая платформа: Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL; Go и Centrifugo — в работе
+# ANITECH PERFORMANCE — обучающая платформа: Bash, Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, JS, Vue, TypeScript, Nuxt, Angular, CSS, Tailwind, NestJS, GraphQL, PostgreSQL; Go и Centrifugo — в работе
 
 ![ANITECH PERFORMANCE](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/banner.png)
 
@@ -59,6 +59,7 @@
 |---|---|---|---|---|
 | [`go-start`](go-start) | Go Start — CoffeeGo, Go с нуля до middle (12 сессий) | Базовая | [go-start-lab](https://github.com/meeymirita/go-start-lab) | методичка есть; вычитка и прогон от 07.10 сделаны другой моделью и не приняты — перепроверить |
 | [`go-pro`](go-pro) | Go Pro — CoffeeGo Platform, от middle до senior (13 сессий) | Высокая | [go-pro-lab](https://github.com/meeymirita/go-pro-lab) | методичка есть; вычитка не завершена, запуском не проверена |
+| [`bash`](bash) | Bash Lab — CoffeeOps, shell и bash с нуля (9 сессий, ~26 ч) | Базовая | [bash-lab](https://github.com/meeymirita/bash-lab) | [методичка](bash/bash.html) есть (11.10.2026, собрана ассистентом; на сайте 24-я лаба); **не вычитана человеком**: все команды выполнены в Docker при сборке, но прохождения не было |
 | [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) | методичка есть (11.10.2026, из другого чата); **не вычитана и не проверена запуском** |
 
 ---

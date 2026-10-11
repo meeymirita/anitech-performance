@@ -102,7 +102,7 @@ KEYS = {'Algorithms PHP': 'algorithms-php', 'Laravel Performance': 'laravel-perf
         'Inertia': 'inertia', 'Kubernetes': 'kubernetes', 'Docker': 'docker', 'Traefik': 'traefik', 'Caddy': 'caddy',
         'ООП (php-coffee)': 'php-coffee', 'Чистый PHP': 'php', 'PostgreSQL': 'postgresql', 'Redis': 'redis', 'RabbitMQ': 'rabbitmq',
         'Laravel': 'laravel', 'NestJS': 'nestjs', 'GraphQL': 'graphql', 'JS': 'js', 'TypeScript': 'typescript', 'Vue': 'vue',
-        'Nuxt': 'nuxt', 'Angular': 'angular', 'Centrifugo': 'centrifugo'}
+        'Nuxt': 'nuxt', 'Angular': 'angular', 'Centrifugo': 'centrifugo', 'Bash': 'bash'}
 import json
 status = {}
 sec = md.split('## По лабам', 1)[1].split('\n## ', 1)[0]
