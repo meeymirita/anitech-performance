@@ -1840,6 +1840,19 @@
       accent: '#4A90D9', accentSoft: '#4A90D922', accentShadow: 'rgba(74,144,217,.28)'
     },
     {
+      key: 'bash',
+      category: 'devops',
+      title: 'Bash Lab',
+      subtitle: 'CoffeeOps — shell и bash с нуля',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/bash/bash.png',
+      desc: 'Командная строка и скрипты на bash с нуля: переменные, аргументы, условия и циклы, функции, потоки и пайпы, массивы, grep/awk/sed; в конце — деплой-скрипт. Каждое слово объясняется, каждый шаг показан.',
+      stack: ['Bash 5', 'Docker', 'grep / awk / sed'],
+      note: 'Не готово: есть только план (9 сессий, ~36 ч), методички пока нет. Самостоятельная работа; идёт первой после Caddy. Скрипты запускаются в контейнере bash:5 (на Mac системный bash 3.2).',
+      difficulty: 'Базовая',
+      repo: 'https://github.com/meeymirita/bash-lab',
+      accent: '#4EAA25', accentSoft: '#4EAA2522', accentShadow: 'rgba(78,170,37,.28)'
+    },
+    {
       key: 'docker',
       category: 'devops',
       title: 'Docker Lab',
@@ -1847,7 +1860,7 @@
       image: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.png',
       desc: 'Docker и Bash с нуля: образы, контейнеры, docker-compose, сети и тома — через практику в терминале.',
       stack: ['Docker', 'Docker Compose', 'Bash'],
-      note: 'Нужен Docker и bash; аккаунтов и ключей нет.',
+      note: 'Нужен Docker и bash; аккаунтов и ключей нет. Готовится большая версия (12 сессий) — план в репозитории.',
       difficulty: 'Базовая',
       open: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.html',
       repo: 'https://github.com/meeymirita/docker-lab',
@@ -1861,7 +1874,7 @@
       image: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.png',
       desc: 'Reverse proxy и service discovery для стека из нескольких сервисов без ручной правки конфигов: EntryPoint → Router → Middleware → Service, TLS, canary-деплой.',
       stack: ['Traefik 3', 'Docker Compose', 'Node.js', 'PostgreSQL'],
-      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert.',
+      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert. Готовится большая версия (10 сессий) — план в репозитории.',
       difficulty: 'Низкая–средняя',
       open: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.html',
       repo: 'https://github.com/meeymirita/traefik-lab',
@@ -1889,11 +1902,24 @@
       image: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.png',
       desc: 'Миграция стека из Traefik-лабы в Kubernetes (kind): Pod и Deployment, Service и DNS, ConfigMap/Secret, Volumes и PVC, readiness/liveness-пробы, Traefik как Ingress-контроллер, HorizontalPodAutoscaler.',
       stack: ['Kubernetes v1.37.0', 'kind v0.33.0', 'kubectl', 'Traefik'],
-      note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке.',
+      note: 'Нужен Docker, kind v0.33 и kubectl; кластер поднимается на ноутбуке. Готовится большая версия с Helm (13 сессий) — план в репозитории.',
       difficulty: 'Средняя–высокая',
       open: 'https://meeymirita-files.storage.yandexcloud.net/kubernetes/kubernetes.html',
       repo: 'https://github.com/meeymirita/kubernetes-lab',
       accent: '#326CE5', accentSoft: '#326CE522', accentShadow: 'rgba(50,108,229,.28)'
+    },
+    {
+      key: 'ansible',
+      category: 'devops',
+      title: 'Ansible Lab',
+      subtitle: 'Управление серверами как кодом',
+      image: 'https://meeymirita-files.storage.yandexcloud.net/ansible/ansible.png',
+      desc: 'Ansible с нуля: inventory и ad-hoc, playbook и идемпотентность, переменные и факты, handlers, шаблоны Jinja2, роли и Galaxy, Vault, Docker через Ansible, обновление кластера без простоя.',
+      stack: ['Ansible', 'YAML / Jinja2', 'Docker', 'SSH'],
+      note: 'Не готово: есть только план (10 сессий, ~40 ч), методички пока нет. Идёт последней в цепочке; можно проходить и самостоятельно. «Серверы» — контейнеры с sshd (на Apple Silicon без VirtualBox).',
+      difficulty: 'Средняя',
+      repo: 'https://github.com/meeymirita/ansible-lab',
+      accent: '#EE0000', accentSoft: '#EE000022', accentShadow: 'rgba(238,0,0,.28)'
     },
     {
       key: 'go-start',
@@ -2031,8 +2057,8 @@
       { title: 'Realtime (заглушка: методичка в работе)', keys: ['centrifugo'] }
     ] },
     { key: 'devops', label: 'Направление 3', title: 'Инфраструктура', color: '#42d392', groups: [
-      { title: '', keys: ['docker'] },
-      { split: 'Прокси и оркестрация', keys: ['traefik', 'caddy', 'kubernetes'] }
+      { title: '', keys: ['bash', 'docker'] },
+      { split: 'Прокси и оркестрация', keys: ['traefik', 'caddy', 'kubernetes', 'ansible'] }
     ] }
   ];
 
@@ -2508,7 +2534,13 @@
         tip: 'Заглушка: методичка не вычитана и не проверена запуском.' },
       'centrifugo': { level: 'solid', headline: 'Standalone-лаба: нужны основы Docker, Laravel и Vue', know: [], meet: [],
         before: [{ key: 'docker', kind: 'know', why: 'compose up, порты, переменные окружения, логи' }, { key: 'laravel', kind: 'know', why: 'сквозной проект на Laravel 13' }, { key: 'vue', kind: 'help', why: 'клиент на Vue: ref и onMounted' }],
-        tip: 'Заглушка: пока есть только план (21 сессия, ~62 ч), методички нет.' }
+        tip: 'Заглушка: пока есть только план (21 сессия, ~62 ч), методички нет.' },
+      'bash': { level: 'light', headline: 'Первая в цепочке: методичка в работе', know: [], meet: [],
+        before: [{ key: 'docker', kind: 'help', why: 'скрипты запускаются в контейнере bash:5 (объясняется в сессии 1)' }],
+        tip: 'Заглушка: пока есть только план (9 сессий, ~36 ч), методички нет.' },
+      'ansible': { level: 'solid', headline: 'Последняя в цепочке: можно и самостоятельно', know: [], meet: [],
+        before: [{ key: 'bash', kind: 'help', why: 'команды и скрипты в терминале' }, { key: 'docker', kind: 'know', why: '«серверы» стенда — контейнеры' }],
+        tip: 'Заглушка: пока есть только план (10 сессий, ~40 ч), методички нет.' }
     };
     var KIND = { need: 'обязательно', know: 'нужны знания', help: 'полезно' };
     function info(k) { return LABS[k] || STUBS[k]; }

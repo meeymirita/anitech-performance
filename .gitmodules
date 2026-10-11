@@ -82,3 +82,9 @@
 [submodule "centrifugo"]
 	path = centrifugo
 	url = https://github.com/meeymirita/centrifugo-lab.git
+[submodule "bash"]
+	path = bash
+	url = https://github.com/meeymirita/bash-lab.git
+[submodule "ansible"]
+	path = ansible
+	url = https://github.com/meeymirita/ansible-lab.git
