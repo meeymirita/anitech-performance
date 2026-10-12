@@ -3,7 +3,7 @@
 """SEO-теги в <head>: title, description, canonical, Open Graph, Twitter, JSON-LD.
 works/<ключ>.html — из LABS (works/js/lab.js); index.html — общий блок. Идемпотентно (блок между маркерами seo:start/seo:end).
 Запуск: python3 tools/build-seo.py   (после новой лабы или смены desc/subtitle/image в lab.js)"""
-import glob, json, os, re, subprocess, html
+import glob, json, os, re, subprocess, html, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 BASE = 'https://anitech.meeymirita.ru'
@@ -11,7 +11,15 @@ src = open('works/js/lab.js', encoding='utf-8').read()
 arr = src[src.index('var LABS = ['):]
 arr = arr[:arr.index('\n];') + 3]
 js = arr + '\nprocess.stdout.write(JSON.stringify(LABS.map(l=>({key:l.key,title:l.title,subtitle:l.subtitle,desc:l.desc,image:l.image,difficulty:l.difficulty,stack:l.stack||[],repo:l.repo,learn:(l.learn||[]).map(x=>({tab:x.tab,title:x.title,text:x.text,points:x.points||[]}))}))))'
-labs = json.loads(subprocess.run(['node', '-e', js], capture_output=True, text=True, check=True).stdout)
+# lab.js превысил лимит длины одного аргумента командной строки (MAX_ARG_STRLEN, ~128 КБ на Linux) —
+# передаём код через временный файл, а не через `node -e <строка>`.
+with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as f:
+    f.write(js)
+    js_path = f.name
+try:
+    labs = json.loads(subprocess.run(['node', js_path], capture_output=True, text=True, check=True).stdout)
+finally:
+    os.unlink(js_path)
 E = lambda s: html.escape(s, quote=True)
 
 def short(s, n=200):

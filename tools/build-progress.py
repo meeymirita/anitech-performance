@@ -32,8 +32,6 @@ PLANNED = [
      'note': 'методичка есть, но не вычитана и не интегрирована', 'repo': 'go-pro-lab'},
     {'key': 'ansible', 'title': 'Ansible Lab', 'subtitle': 'Управление серверами как кодом', 'difficulty': 'Средняя', 'accent': '#EE0000',
      'note': 'только план, методички нет', 'repo': 'ansible-lab'},
-    {'key': 'express', 'title': 'Node.js + Express Lab', 'subtitle': 'Введение в Node и Express — ShareBox (перед TypeScript и NestJS)', 'difficulty': 'Лёгкая–средняя', 'accent': '#68A063',
-     'note': 'только план и ТЗ, методички нет', 'repo': 'express-lab'},
 ]
 
 # fixes/common/_tools/prep.py runs its CLI main() on import (no __main__ guard), so we can't
