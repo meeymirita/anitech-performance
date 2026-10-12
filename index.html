@@ -2732,9 +2732,9 @@
   // row = lane, col = step inside the lane (1-based)
   var routeLanes = [
     { label: 'CSS', sub: 'стили', nodes: ['css', 'tailwind'] },
-    { label: 'JS / TS', sub: 'фронт и Node', nodes: ['js', 'typescript', 'vue', 'nuxt', 'angular'] },
+    { label: 'JS / TS', sub: 'фронт и Node', nodes: ['js', 'vue', 'typescript', 'nuxt', 'angular'] },
     // ответвление от typescript: Node-бэкенд (Express → NestJS → GraphQL), стоит строкой ниже и соединено стрелкой вниз
-    { label: '↳', sub: 'Node-бэкенд', nodes: [null, 'express', 'nestjs', 'graphql'] },
+    { label: '↳', sub: 'Node-бэкенд', nodes: [null, null, 'express', 'nestjs', 'graphql'] },
     { label: 'PHP', sub: 'бэкенд', nodes: ['php', 'php-coffee', 'postgresql', 'laravel', 'inertia', 'rabbitmq', 'redis'] },
     // ответвления: стоят строкой ниже под «родителем» и соединены стрелкой вниз
     { label: '↳', sub: 'ответвления', nodes: [null, 'algorithms-php', null, 'laravel-performance', null, null, 'centrifugo'] },
@@ -2744,7 +2744,8 @@
   // skip: drawn as a dashed arc over the lane, only shown for the tracks that use it
   var routeEdges = [
     ['css', 'tailwind'], ['tailwind', 'js'],
-    ['js', 'typescript'], ['typescript', 'vue'], ['vue', 'nuxt'], ['nuxt', 'angular'],
+    ['js', 'vue'], ['vue', 'typescript'], ['typescript', 'nuxt'], ['nuxt', 'angular'],
+    ['js', 'typescript', { skip: true, tracks: ['node'] }],
     ['typescript', 'express', { down: true }], ['express', 'nestjs'], ['nestjs', 'graphql'],
     ['php', 'php-coffee'], ['php-coffee', 'postgresql'], ['postgresql', 'laravel'], ['laravel', 'inertia'],
     ['php-coffee', 'algorithms-php', { down: true }], ['laravel', 'laravel-performance', { down: true }], ['inertia', 'rabbitmq'], ['rabbitmq', 'redis'], ['redis', 'centrifugo', { down: true }],
@@ -2756,7 +2757,7 @@
       key: 'all', label: 'Весь путь', color: '#f8c8dc',
       title: 'Хочу пройти всё',
       text: 'Docker первым — контейнеры понадобятся почти в каждой следующей лабе. Дальше PHP-ветка целиком, потом JavaScript-ветка с заездом в Node-бэкенд (Express → NestJS → GraphQL), а в конце деплой: Traefik и Caddy — два реверс-прокси с разным подходом, и Kubernetes, когда уже есть что деплоить.',
-      path: ['bash', 'docker', 'php', 'php-coffee', 'algorithms-php', 'postgresql', 'laravel', 'laravel-performance', 'inertia', 'rabbitmq', 'redis', 'centrifugo', 'css', 'tailwind', 'js', 'typescript', 'vue', 'nuxt', 'angular', 'express', 'nestjs', 'graphql', 'traefik', 'caddy', 'kubernetes']
+      path: ['bash', 'docker', 'php', 'php-coffee', 'algorithms-php', 'postgresql', 'laravel', 'laravel-performance', 'inertia', 'rabbitmq', 'redis', 'centrifugo', 'css', 'tailwind', 'js', 'vue', 'typescript', 'nuxt', 'angular', 'express', 'nestjs', 'graphql', 'traefik', 'caddy', 'kubernetes']
     },
     {
       key: 'front', label: 'Фронтенд', color: '#7df9ff',
