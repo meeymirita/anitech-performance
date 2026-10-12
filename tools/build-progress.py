@@ -76,6 +76,9 @@ for row in open('fixes/common/_verification.md', encoding='utf-8'):
 
 # 3. из методичек: slug и ключи разделов — читаем ЛОКАЛЬНУЮ копию (prep.LABS), а не бакет
 # (l['open'] из lab.js — это уже полный URL бакета, его используем только как ссылку, не как путь для чтения)
+# Стандарт содержания лабы (решение владельца 12.10.2026, fixes/common/site.md): минимум 10 сессий,
+# формат — как caddy/caddy.html (без инлайн-стилей, блок links на шаге). Считаем здесь же, из того же L.
+SESSIONS_MIN = 10
 for l in labs:
     local_path = PREP_LABS.get(l['key'])
     if not local_path:
@@ -84,6 +87,11 @@ for l in labs:
     l['slug'] = L['slug']
     l['units'] = [u['key'] for u in L['units']]
     l['href'] = l['open']
+    l['sessions'] = len(L.get('sessions') or [])
+    dumped = json.dumps(L, ensure_ascii=False)
+    inline_style = dumped.count('style=\\"')
+    has_links = '"links"' in dumped
+    l['format'] = 'standard' if inline_style < 100 else ('partial' if has_links else 'rework')
 
 data = []
 for title, keys in tracks:
@@ -91,6 +99,7 @@ for title, keys in tracks:
         'key': k, 'title': by_key[k]['title'], 'subtitle': by_key[k]['subtitle'], 'difficulty': by_key[k]['difficulty'],
         'accent': by_key[k]['accent'], 'open': by_key[k]['href'], 'page': f'{k}.html',
         'thumb': f'{BUCKET}/{k}/thumb.webp', 'verified': k in verified, 'completed': k in COMPLETED, 'vstatus': vstatus.get(k, ('none', ''))[0], 'vnote': vstatus.get(k, ('none', ''))[1], 'storage': 'lab-redesign-v1:' + by_key[k]['slug'], 'units': by_key[k]['units'],
+        'sessions': by_key[k]['sessions'], 'sessionsMin': SESSIONS_MIN, 'format': by_key[k]['format'],
     } for k in keys]})
 missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
@@ -121,7 +130,7 @@ h1 { margin:12px 0 4px; font-size:clamp(28px,5vw,44px); line-height:1.05; letter
 .bar > i { display:block; height:100%; width:0; background:var(--c, var(--accent)); transition:width .4s; }
 .total-note { margin-top:8px; font-size:13px; color:var(--muted); }
 h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-.lab { display:grid; grid-template-columns:32px 64px minmax(0,1fr) minmax(130px,220px); gap:6px 16px; align-items:center; padding:12px 0; border-top:1px solid var(--hair); }
+.lab { display:grid; grid-template-columns:32px 64px minmax(0,1fr) minmax(110px,170px) minmax(130px,160px); gap:6px 16px; align-items:center; padding:12px 0; border-top:1px solid var(--hair); }
 .thumb { grid-column:2; grid-row:1 / span 2; width:64px; height:64px; object-fit:cover; border:1px solid var(--hair); background:var(--track); display:block; }
 .lab:last-child { border-bottom:1px solid var(--hair); }
 .num { font:700 13px ui-monospace,Menlo,monospace; color:var(--muted); }
@@ -133,6 +142,15 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
 .pct { text-align:right; font:700 13px ui-monospace,Menlo,monospace; }
 .lab .bar { grid-column:4; grid-row:2; margin-top:0; }
 .lab .pct { grid-column:4; grid-row:1; }
+.stats { grid-column:5; grid-row:1 / span 2; text-align:right; font-size:12px; line-height:1.6; }
+.stats > span { display:block; }
+.sess-ok { color:var(--muted); }
+.sess-bad { color:#b3261e; font-weight:700; }
+.fmt-ok { color:#1f8a47; font-weight:700; }
+.fmt-partial { color:#c98a00; font-weight:700; }
+.fmt-bad { color:#b3261e; font-weight:700; }
+@media (prefers-color-scheme: dark) { .sess-bad, .fmt-bad { color:#ff8a80; } .fmt-ok { color:#4cc87a; } .fmt-partial { color:#e0ab2e; } }
+.lab.collapsed .stats { display:none; }
 .fold { grid-column:1; grid-row:1; width:28px; height:28px; padding:0; border:1px solid var(--hair); background:var(--card); color:var(--muted); font:700 14px ui-monospace,Menlo,monospace; cursor:pointer; }
 .fold:hover { color:var(--ink); border-color:var(--ink); }
 .fold::before { content:'−'; } .lab.collapsed .fold::before { content:'+'; }
@@ -162,6 +180,8 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   .lab { grid-template-columns:26px 52px minmax(0,1fr); }
   .thumb { width:52px; height:52px; }
   .lab .pct, .lab .bar { grid-column:3; grid-row:auto; text-align:left; }
+  .stats { grid-column:3; grid-row:auto; text-align:left; margin-top:4px; }
+  .stats > span { display:inline; margin-right:10px; }
 }
 </style>
 </head>
@@ -172,7 +192,7 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <h1>Все работы и прогресс</h1>
   <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
   <div class="total" id="total"></div>
-  <p class="legend">«новая» — лаба задумана или в работе, на сайте её ещё нет; в общий прогресс не входит. ✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении.</p>
+  <p class="legend">«новая» — лаба задумана или в работе, на сайте её ещё нет; в общий прогресс не входит. ✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении. Справа: сессий сейчас / не хватает до минимума 10–14 на лабу; формат — «эталон» (как `caddy.html`: без инлайн-стилей, quiz/links/outro на шаге), «частично» или «переделать» (решение владельца 12.10.2026, подробности — `fixes/common/site.md`).</p>
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
 </div>
@@ -213,6 +233,16 @@ function statusBadge(lab, short) {
 }
 function okBadge(short) { return '<span class="ok"><i>✓</i>' + (short ? 'проверена' : 'Полностью вычитана и проверена') + '</span>'; }
 
+function sessBadge(lab) {
+  if (lab.sessions >= lab.sessionsMin) return '<span class="sess-ok">' + lab.sessions + ' сессий · хватает</span>';
+  return '<span class="sess-bad">' + lab.sessions + ' сессий · не хватает ' + (lab.sessionsMin - lab.sessions) + '</span>';
+}
+function fmtBadge(lab) {
+  if (lab.format === 'standard') return '<span class="fmt-ok">формат: эталон</span>';
+  if (lab.format === 'partial') return '<span class="fmt-partial">формат: частично</span>';
+  return '<span class="fmt-bad">формат: переделать</span>';
+}
+
 function labRow(it, n, fold) {
   var lab = it.lab, p = it.p, pct = p.total ? Math.round(p.done / p.total * 100) : 0;
   return '<div class="lab' + (fold[lab.key] ? ' collapsed' : '') + '" data-key="' + lab.key + '" style="--c:' + lab.accent + '">'
@@ -226,6 +256,7 @@ function labRow(it, n, fold) {
     + (lab.vstatus !== 'none' ? statusBadge(lab, false) + (lab.vnote ? ' <span class="note">' + (lab.vstatus === 'full' ? '· * ' : '· не проверено: ') + esc(lab.vnote) + '</span>' : '') + '<br>' : '')
     + '<a href="' + esc(lab.open) + '">Методичка ↗</a><a href="' + esc(lab.page) + '">Страница лабы</a></span>'
     + '<div class="bar"><i style="width:' + pct + '%"></i></div>'
+    + '<span class="stats">' + sessBadge(lab) + fmtBadge(lab) + '</span>'
     + '</div>';
 }
 
