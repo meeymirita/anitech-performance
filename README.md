@@ -46,7 +46,7 @@
 | 16 | [`inertia`](inertia) | Inertia 3 + Laravel + Vue — Inkwell, блог-платформа | Средняя | [inertia-lab](https://github.com/meeymirita/inertia-lab) |
 | 17 | [`nestjs`](nestjs) | NestJS — Helpdesk API с нуля (свой DI, JWT-ротация, WebSocket) | Высокая | [nestjs-lab](https://github.com/meeymirita/nestjs-lab) |
 | 18 | [`graphql`](graphql) | GraphQL — CineGraph, самостоятельный проект (резолверы, DataLoader, Subscriptions) | Высокая | [graphql-lab](https://github.com/meeymirita/graphql-lab) |
-| 19 | [`docker`](docker) | Docker + Bash — крепкое владение с нуля | Базовая по входу, объёмная | [docker-lab](https://github.com/meeymirita/docker-lab) |
+| 19 | [`docker`](docker) | Docker Lab — контейнеры с нуля до релиза (12 сессий, ~44 ч) | Базовая по входу, объёмная | [docker-lab](https://github.com/meeymirita/docker-lab) |
 | 20 | [`traefik`](traefik) | Traefik — reverse proxy, service discovery, TLS | Низкая–средняя | [traefik-lab](https://github.com/meeymirita/traefik-lab) |
 | 21 | [`caddy`](caddy) | Caddy 2 — Edge, reverse proxy с автоматическим HTTPS | Средняя | [caddy-lab](https://github.com/meeymirita/caddy-lab) |
 | 22 | [`kubernetes`](kubernetes) | Kubernetes — от Compose к оркестрации | Средняя–высокая | [kubernetes-lab](https://github.com/meeymirita/kubernetes-lab) |
@@ -439,15 +439,15 @@
 
 ## 19. Docker Lab (`docker/`)
 
-> **Сложность: базовая по входу, но объёмная.** Не требует предыдущих лаб — рассчитана на полных новичков в контейнерах; Bash даётся параллельно, ровно в том объёме, который нужен для entrypoint-скриптов.
+> **Сложность: базовая по входу, но объёмная.** Не требует предыдущих лаб — рассчитана на полных новичков в контейнерах; Bash желателен, но не обязателен. Переписана 13.10.2026 в большой формат (бывшие 3 сессии «Docker + Bash» → 12 сессий).
 
-**О чём:** Docker и Bash разобраны подробно и с нуля — то, на что в Traefik-лабе был выделен всего один вводный раздел. Только сам Docker (образы, контейнеры, Dockerfile, тома, сети, Compose) и Bash как параллельный трек.
+**О чём:** контейнеры, образы, Dockerfile, сети, тома, Compose, registry и CI разобраны с нуля и «каждое слово объяснено»: в начале почти каждого шага — аналогия «Если совсем просто» и схема.
 
-**Стек:** Node.js (Express) + PostgreSQL, всё в Docker / Docker Compose.
+**Стек:** сквозной проект CoffeeShop — nginx + Node.js 24 (Express) + PostgreSQL 18 + Adminer, Docker 29, Compose v5, GitHub Actions.
 
-**Формат:** методичка `docker.html` — методичка готова, прохождение впереди.
+**Формат:** методичка `docker.html` — методичка готова (12 сессий, 77 шагов, ~44 ч); все команды выполнены в Docker при сборке, прохождения человеком не было.
 
-**Что внутри (3 сессии):** разбор Docker с нуля (образ vs контейнер vs Dockerfile), Bash параллельным треком (shebang, переменные, циклы, `set -e -u -o pipefail`), ENTRYPOINT vs CMD, тома и сети, Docker Compose (`depends_on` + healthcheck) — пошаговая сборка маленького Node.js + PostgreSQL проекта, заканчивается явной точкой возврата к Traefik Lab.
+**Что внутри (12 сессий):** азбука и установка → контейнеры и жизненный цикл → образы и слои → Dockerfile полностью → multi-stage, BuildKit, безопасность → сети → тома, права, бэкап PostgreSQL → Compose, части 1 и 2 (+ Production Hell 1) → registry, GHCR, GitHub Actions → итоговый проект, `starter/`, Production Hell 2 → итоговое ТЗ без ответа. Docker Swarm не вошёл. Шаги с GHCR и запуском workflow на GitHub выполняются самостоятельно (аккаунт и токен).
 
 ---
 

@@ -1877,14 +1877,13 @@
     },
     {
       key: 'docker',
-      stage: 'Перестройка: готовится большая версия, сейчас — старый короткий план',
       category: 'devops',
       title: 'Docker Lab',
-      subtitle: 'Крепкое владение Docker и Bash с нуля',
+      subtitle: 'Контейнеры, образы, Compose, registry и CI — от первого docker run до релиза',
       image: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.png',
-      desc: 'Docker и Bash с нуля: образы, контейнеры, docker-compose, сети и тома — через практику в терминале.',
-      stack: ['Docker', 'Docker Compose', 'Bash'],
-      note: 'Нужен Docker и bash; аккаунтов и ключей нет.',
+      desc: 'Docker с нуля до релиза: контейнеры и их жизненный цикл, образы и слои, Dockerfile, multi-stage и безопасность, сети, тома, Compose, registry, GitHub Actions, итоговый стек CoffeeShop.',
+      stack: ['Docker 29', 'Docker Compose', 'GitHub Actions', 'Node.js 24', 'PostgreSQL 18'],
+      note: 'Нужен Docker Desktop; шаги с GHCR и GitHub Actions — со своим аккаунтом GitHub и токеном (самостоятельно).',
       difficulty: 'Базовая',
       open: 'https://meeymirita-files.storage.yandexcloud.net/docker/docker.html',
       repo: 'https://github.com/meeymirita/docker-lab',
@@ -2094,7 +2093,7 @@
   var categoryDescriptions = {
     frontend: 'То, что видит пользователь: сначала стили — современный CSS с нуля и Tailwind поверх него, — потом реактивный UI без фреймворка на чистом JS, потом Vue 3 (компоненты, роутинг, состояние), TypeScript поверх этого — типы, generics, сквозная типизация от API до браузера, и Nuxt — тот же Vue с сервером: SSR, Nitro и режимы рендеринга. И Angular — платформа «всё в коробке»: сигналы, DI, формы и роутер от одной команды.',
     backend: 'Серверная часть: ООП и чистый PHP без фреймворка, Laravel «изнутри», очереди на RabbitMQ и кэш с локами на Redis, NestJS с нуля (DI, Guards, WebSocket), GraphQL — самостоятельный каталог фильмов с резолверами и DataLoader, и PostgreSQL изнутри — то, что происходит под ORM.',
-    devops: 'Инфраструктура вокруг кода: Docker и Bash с нуля, Traefik как reverse proxy, и Kubernetes — миграция того же стека из Compose в настоящий кластер.'
+    devops: 'Инфраструктура вокруг кода: Docker с нуля до релиза, Traefik как reverse proxy, и Kubernetes — миграция того же стека из Compose в настоящий кластер.'
   };
 
   var activeCategoryKey = categories[0].key;
@@ -2781,7 +2780,7 @@
     {
       key: 'devops', label: 'Инфраструктура', color: '#42d392',
       title: 'Хочу в инфраструктуру',
-      text: 'Docker и Bash — база под всё остальное. Дальше два инструмента с одной и той же задачей (reverse proxy, TLS), но разным подходом: Traefik — через Docker-labels и декларативный роутинг, Caddy — один Caddyfile и HTTPS без единой настройки; проходить оба не обязательно, но вместе видно, что у этой задачи нет одного правильного решения. Kubernetes последним — его методичка прямо требует пройденных Docker Lab и Traefik Lab.',
+      text: 'Docker — база под всё остальное (Bash — отдельная лаба, которую полезно пройти раньше). Дальше два инструмента с одной и той же задачей (reverse proxy, TLS), но разным подходом: Traefik — через Docker-labels и декларативный роутинг, Caddy — один Caddyfile и HTTPS без единой настройки; проходить оба не обязательно, но вместе видно, что у этой задачи нет одного правильного решения. Kubernetes последним — его методичка прямо требует пройденных Docker Lab и Traefik Lab.',
       path: ['bash', 'docker', 'traefik', 'caddy', 'kubernetes']
     }
   ];

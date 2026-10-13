@@ -6,6 +6,9 @@
     python3 tools/build-manual.py bash            # собрать, подставив сохранённые результаты запусков
     python3 tools/build-manual.py bash --run      # сначала выполнить блоки «run» в Docker (образ <лаба>-lab) и обновить результаты
     python3 tools/build-manual.py bash --check    # только проверка структуры
+    python3 tools/build-manual.py docker --run --sessions 3,4   # (режим dind) выполнить только эти сессии, не сбрасывая стенд, результаты слить с прежними
+Если рядом с исходниками есть `src/run.json` вида {"dind": true}, блоки выполняются в изолированном Docker-в-Docker (docker:dind):
+свой демон, свои образы и тома — настоящий Docker Mac пользователя не затрагивается; HOME=/work, `localhost` указывает на демон.
 
 Исходники (папка <лаба>/src/):
     00-meta.md   — поля `ключ: значение`, затем строка `---` и текст введения (Markdown)
@@ -62,6 +65,10 @@ def blocks(lines, outs=None, ctx=None):
             while j < len(lines) and not lines[j].startswith('```'):
                 j += 1
             body = '\n'.join(lines[i + 1:j])
+            if lang == 'svg':
+                out.append('<div class="diagram" style="margin:14px 0;overflow-x:auto;text-align:center">%s</div>' % body)
+                i = j + 1
+                continue
             if lang == 'out':
                 if 'auto' in flags and ctx is not None:
                     body = ctx['take']()
@@ -218,13 +225,49 @@ def transcript(body, hidden):
     return '\n'.join(out)
 
 
-def run_all(lab, sessions):
-    """Выполняет блоки `run` всех сессий по порядку в одной рабочей папке; возвращает {(сессия, номер блока): вывод}."""
+DIND_PRELUDE = """exec 2>&1
+export HOME=/work
+cd /work
+mkdir -p /opt/ch; echo 'connect-to = localhost::%(dind)s:' > /opt/ch/.curlrc; export CURL_HOME=/opt/ch
+"""
+
+
+def dind_up(lab, reset):
+    """Поднимает изолированный демон <lab>-dind (docker:dind) с общим томом /work; при reset пересоздаёт всё с нуля."""
+    net, dind, data, work = lab + '-net', lab + '-dind', lab + '-dind-data', lab + '-work'
+    sh = lambda *a, **k: subprocess.run(list(a), capture_output=True, text=True, **k)
+    if reset:
+        sh('docker', 'rm', '-f', dind)
+        sh('docker', 'volume', 'rm', '-f', data, work)
+        sh('docker', 'network', 'rm', net)
+    sh('docker', 'network', 'create', net)
+    if sh('docker', 'inspect', '-f', '{{.State.Running}}', dind).stdout.strip() != 'true':
+        sh('docker', 'rm', '-f', dind)
+        r = sh('docker', 'run', '-d', '--name', dind, '--network', net, '--privileged', '-e', 'DOCKER_TLS_CERTDIR=',
+               '-v', data + ':/var/lib/docker', '-v', work + ':/work', 'docker:dind', '--dns', '1.1.1.1', '--dns', '8.8.8.8')
+        assert r.returncode == 0, r.stderr
+    import time
+    for _ in range(60):
+        if sh('docker', 'exec', dind, 'docker', 'info').returncode == 0:
+            return net, dind, work
+        time.sleep(1)
+    raise SystemExit('демон dind не поднялся')
+
+
+def run_all(lab, sessions, only=None):
+    """Выполняет блоки `run` сессий по порядку в одной рабочей папке; возвращает {(сессия, номер блока): вывод}."""
     image = lab + '-check'
     subprocess.run(['docker', 'build', '-q', '-t', image, os.path.join(ROOT, lab)], check=True, stdout=subprocess.DEVNULL)
-    work = tempfile.mkdtemp(prefix=lab + '-work-')
+    conf_path = os.path.join(ROOT, lab, 'src', 'run.json')
+    conf = json.load(open(conf_path)) if os.path.exists(conf_path) else {}
+    if conf.get('dind'):
+        net, dind, work = dind_up(lab, reset=only is None)
+    else:
+        work = tempfile.mkdtemp(prefix=lab + '-work-')
     res = {}
     for s in sessions:
+        if only and s['n'] not in only:
+            continue
         codes = []
         ctx = {'run': lambda b, h=False: codes.append((b, h)), 'take': lambda: ''}
         for st in s['steps']:
@@ -233,15 +276,21 @@ def run_all(lab, sessions):
                     blocks(st['sec'][key][2], None, ctx)
             for d in st['sec']['deep']:
                 blocks(d[2], None, ctx)
-        script = 'exec 2>&1\ncd /work\n'
+        script = (DIND_PRELUDE % {'dind': dind}) if conf.get('dind') else 'exec 2>&1\ncd /work\n'
         for k, (c, hid) in enumerate(codes):
             script += transcript(c, hid) + '\necho "@@END:%d"\n' % k
-        sp = os.path.join(work, '.s%d.sh' % s['n'])
-        open(sp, 'w', encoding='utf-8').write(script)
-        r = subprocess.run(['docker', 'run', '--rm', '-i', '-v', work + ':/work', image, 'bash', '/work/.s%d.sh' % s['n']],
-                           stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=600)
+        sp_name = '.s%d.sh' % s['n']
+        if conf.get('dind'):
+            subprocess.run(['docker', 'exec', '-i', dind, 'sh', '-c', 'cat > /work/' + sp_name], input=script, text=True, check=True)
+            cmd = ['docker', 'run', '--rm', '-i', '--network', net, '-e', 'DOCKER_HOST=tcp://%s:2375' % dind, '-v', work + ':/work', image, 'bash', '/work/' + sp_name]
+        else:
+            open(os.path.join(work, sp_name), 'w', encoding='utf-8').write(script)
+            cmd = ['docker', 'run', '--rm', '-i', '-v', work + ':/work', image, 'bash', '/work/' + sp_name]
+        r = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=1800)
         txt = r.stdout + r.stderr
         txt = re.sub(r'/work/\.s\d+\.sh: (line \d+: )?', 'bash: ', txt)   # сообщения как в интерактивной оболочке
+        if conf.get('dind'):   # без терминала docker печатает все стадии загрузки слоёв; в терминале остаются только итоговые строки
+            txt = re.sub(r'^[0-9a-f]{12}: (Pulling fs layer|Download complete|Waiting|Verifying Checksum|Downloading|Extracting).*\n', '', txt, flags=re.M)
         chunks = re.split(r'@@END:\d+\n?', txt)
         for k in range(len(codes)):
             res['%d:%d' % (s['n'], k)] = chunks[k].rstrip('\n') if k < len(chunks) else ''
@@ -250,11 +299,16 @@ def run_all(lab, sessions):
 
 
 # ───────────────────────── сборка ─────────────────────────
-def build(lab, run=False, check_only=False):
+def build(lab, run=False, check_only=False, only=None):
     meta, intro, sessions, theory, refs, gloss = parse(lab)
     cache_path = os.path.join(ROOT, lab, 'src', 'outputs.json')
     if run:
-        res = run_all(lab, sessions)
+        res = run_all(lab, sessions, only)
+        if only and os.path.exists(cache_path):
+            old = json.load(open(cache_path, encoding='utf-8'))
+            old = {k: v for k, v in old.items() if int(k.split(':')[0]) not in only}
+            old.update(res)
+            res = old
         os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         json.dump(res, open(cache_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     cache = json.load(open(cache_path, encoding='utf-8')) if os.path.exists(cache_path) else {}
@@ -360,4 +414,7 @@ if __name__ == '__main__':
     a = sys.argv[1:]
     if not a:
         raise SystemExit(__doc__)
-    build(a[0], run='--run' in a, check_only='--check' in a)
+    only = None
+    if '--sessions' in a:
+        only = {int(x) for x in a[a.index('--sessions') + 1].split(',')}
+    build(a[0], run='--run' in a, check_only='--check' in a, only=only)
