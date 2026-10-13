@@ -27,7 +27,7 @@
 | `nestjs` / `graphql` | nestjs-lab / graphql-lab | бэкенд на Node |
 | `laravel` | laravel-lab | Laravel 13 изнутри |
 | `laravel-performance` | laravel-performance-lab | Производительность Laravel — CoffeePerf: k6, SPX, OPcache, кеш, Octane (10 сессий, Базовая; вычитана 04.10; 13.10 переведена в формат Caddy без инлайн-стилей и добавлена сессия 10 — итоговое ТЗ, шаг 10.1 не вычитывался и не проверялся запуском) |
-| `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC |
+| `postgresql` | postgresql-lab | EXPLAIN, индексы, MVCC (10 сессий; 13.10 переведена в формат Caddy, добавлены сессия 7 «роли и RLS», сессия 8 «копии, PITR, репликация» — прогнаны в Docker, сессия 9 — итоговое ТЗ без решения) |
 | `caddy` | caddy-lab | Caddy 2 — Edge: reverse proxy, автоматический HTTPS, xcaddy (13 сессий, Средняя; добавлена и вычитана 05.10, на сайте; проверена запуском, непроверенное — при реальном прохождении, см. «Caddy Lab» ниже) |
 | `works` | works-lab | страницы-витрины лаб (`works/<key>.html` + массив `LABS` в `works/js/lab.js`), а также `works/changelog.html` (хронология) и `works/progress.html` (все работы и прогресс) |
 | `site-private` | site-private | служебные страницы сайта: `mira/` (шпаргалка), `mira-login/`, `404.html`; деплой кладёт их в корень сайта (с 06.10) |
