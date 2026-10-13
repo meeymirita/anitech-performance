@@ -20,7 +20,7 @@
 | `rabbitmq` | rabbitmq-lab | Outbox, воркеры, DLQ |
 | `redis` | redis-lab | кэш, локи, rate limit, Streams |
 | `js` | js-lab | Чистый JS (это лаба, а не скрипты сайта; 10 сессий; 13.10 переведена в формат Caddy, исправлен баг шага 5.2 с `API_URL`, сессия 9 «надёжная асинхронность» прогнана в Docker, сессия 10 — итоговое ТЗ без решения) |
-| `vue` / `typescript` / `nuxt` | vue-lab / typescript-lab / nuxt-lab | фронтенд |
+| `vue` / `typescript` / `nuxt` | vue-lab / typescript-lab / nuxt-lab | фронтенд (nuxt: 10 сессий; 13.10 добавлены сессии 7–9 «реальное время», «i18n», «безопасность» — прогнаны в Docker — и сессия 10 — итоговое ТЗ без решения) |
 | `angular` | angular-lab | Angular 22 — RoomBook (методичка с 26.09, вычитана и исправлена 26.09) |
 | `css` / `tailwind` | css-lab / tailwind-lab | вёрстка: современный CSS, Tailwind v4 (css: 10 сессий, 13.10 добавлены сессии 7–9 «печать и прокрутка», «новые возможности», «производительность и линтер» — прогнаны в Chromium/Docker — и сессия 10 — итоговое ТЗ без решения) |
 | `inertia` | inertia-lab | Inertia 3 — Laravel + Vue без отдельного API (Inkwell) |
