@@ -105,6 +105,98 @@ missing = set(by_key) - {l['key'] for g in data for l in g['labs']}
 if missing:
     sys.exit(f'лабы не вошли ни в одно направление (lab-anime.js TRACKS): {sorted(missing)}')
 
+
+# ───────── вкладка «Порядок и содержание»: порядок, зависимости, сессии, часы ─────────
+# Порядок и зависимости — works/js/prereq.js (ORDER, LABS.before/know/meet), содержание — из самих методичек
+# (сессии, шаги, часы по длительности сессий), для лаб без методички — из плана (<лаба>/<лаба>_lab_plan.md).
+def _scan_block(text, start, open_ch, close_ch):
+    """Возвращает срез от open_ch до парной close_ch с учётом строк в кавычках."""
+    i = text.index(open_ch, start); depth = 0; q = None; j = i
+    while j < len(text):
+        c = text[j]
+        if q:
+            if c == '\\': j += 1
+            elif c == q: q = None
+        elif c in '\'"`': q = c
+        elif c == open_ch: depth += 1
+        elif c == close_ch:
+            depth -= 1
+            if depth == 0: return text[i:j + 1]
+        j += 1
+    raise ValueError('нет парной скобки')
+
+_pre = open('works/js/prereq.js', encoding='utf-8').read()
+_order_js = _scan_block(_pre, _pre.index('var ORDER ='), '[', ']')
+_labs_js = _scan_block(_pre, _pre.index('var LABS ='), '{', '}')
+_lev_js = _scan_block(_pre, _pre.index('var LEVELS ='), '{', '}')
+with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as tf:
+    tf.write('var ORDER=' + _order_js + ';var LABS=' + _labs_js + ';var LEVELS=' + _lev_js
+             + ';process.stdout.write(JSON.stringify({order:ORDER,labs:LABS,levels:LEVELS}));')
+    _pp = tf.name
+try:
+    PRE = json.loads(subprocess.run(['node', _pp], capture_output=True, text=True, check=True).stdout)
+finally:
+    os.unlink(_pp)
+
+def _minutes(txt):
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*(?:[–-]\s*(\d+(?:[.,]\d+)?))?\s*(ч|час|мин)', txt or '')
+    if not m: return 0
+    a = float(m.group(1).replace(',', '.')); b = float(m.group(2).replace(',', '.')) if m.group(2) else a
+    v = (a + b) / 2
+    return v * 60 if m.group(3) in ('ч', 'час') else v
+
+def _norm_h(txt):
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*(?:[–-]\s*(\d+(?:[.,]\d+)?))?\s*(?:ч|час)', txt or '')
+    if not m: return ''
+    a = m.group(1).replace('.', ','); b = (m.group(2) or '').replace('.', ',')
+    return '~' + a + ('–' + b if b else '') + ' ч'
+
+def lab_content(key):
+    path = PREP_LABS.get(key)
+    if not path: return None
+    L, _ = json.JSONDecoder().raw_decode(bundle.load(path)[len('window.LAB='):])
+    um = {u['key']: u for u in L['units']}
+    sess, tot, steps_n = [], 0.0, 0
+    for sx in L.get('sessions') or []:
+        st = [um[x] for x in sx['steps'] if x in um]
+        mins = _minutes(sx.get('dur', '')) or sum(_minutes(u.get('est')) for u in st)
+        tot += mins / 60; steps_n += len(st)
+        sess.append({'n': sx['n'], 't': sx['title'], 'h': _norm_h(sx.get('dur', '')) or ('~%.1f ч' % (mins / 60)).replace('.', ','), 'steps': len(st)})
+    refs = [u['title'] for u in L['units'] if u.get('kind') in ('theory', 'ref')]
+    return {'sessions': sess, 'steps': steps_n, 'hours': round(tot, 1), 'refs': refs}
+
+def plan_content(path):
+    """Ansible: сессии из плана (### Сессия N · Название (~X ч))."""
+    sess, tot = [], 0.0
+    for m in re.finditer(r'^### Сессия (\d+) · (.+?) \(~?(\d+(?:[.,]\d+)?)\s*ч\)', open(path, encoding='utf-8').read(), re.M):
+        h = float(m.group(3).replace(',', '.')); tot += h
+        sess.append({'n': int(m.group(1)), 't': m.group(2), 'h': '~%s ч' % m.group(3), 'steps': 0})
+    return {'sessions': sess, 'steps': 0, 'hours': round(tot, 1), 'refs': []}
+
+_dir_of = {k: t for t, ks in tracks for k in ks}
+_planned_by = {p['key']: p for p in PLANNED}
+ORDERDATA = []
+for k in PRE['order'] + [p['key'] for p in PLANNED]:
+    pl = PRE['labs'].get(k, {})
+    base = by_key.get(k) or _planned_by.get(k) or {}
+    c = lab_content(k) if k != 'ansible' else (plan_content('ansible/ansible_lab_plan.md') if os.path.exists('ansible/ansible_lab_plan.md') else None)
+    c = c or {'sessions': [], 'steps': 0, 'hours': 0, 'refs': []}
+    lev = PRE['levels'].get(pl.get('level'), {})
+    before = []
+    for b in pl.get('before', []):
+        t = (by_key.get(b['key']) or _planned_by.get(b['key']) or {}).get('title', b['key'])
+        before.append({'key': b['key'], 'title': t, 'kind': b['kind'], 'why': b.get('why', '')})
+    ORDERDATA.append({
+        'key': k, 'title': base.get('title') or pl.get('name', k), 'subtitle': base.get('subtitle', ''), 'difficulty': base.get('difficulty', ''),
+        'accent': base.get('accent') or pl.get('accent', '#888'), 'dir': _dir_of.get(k, 'Инфраструктура' if k == 'ansible' else 'Бэкенд'),
+        'level': lev.get('label', ''), 'levelNote': lev.get('note', ''), 'headline': pl.get('headline', ''),
+        'know': pl.get('know', []), 'meet': pl.get('meet', []), 'before': before, 'tip': pl.get('tip', ''),
+        'sessions': c['sessions'], 'steps': c['steps'], 'hours': c['hours'], 'refs': c['refs'],
+        'vstatus': vstatus.get(k, ('none', ''))[0], 'planned': k in _planned_by, 'note': _planned_by.get(k, {}).get('note', ''),
+        'page': f'{k}.html' if k in by_key else '', 'open': by_key[k]['href'] if k in by_key else '',
+        'format': by_key[k]['format'] if k in by_key else '',
+    })
+
 TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -183,6 +275,39 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   .stats { grid-column:3; grid-row:auto; text-align:left; margin-top:4px; }
   .stats > span { display:inline; margin-right:10px; }
 }
+
+.tabs { display:flex; gap:6px; margin:0 0 22px; border-bottom:2px solid var(--ink); }
+.tabs button { font:inherit; font-weight:800; font-size:14px; padding:9px 16px; border:2px solid var(--ink); border-bottom:none; background:var(--card); color:var(--muted); cursor:pointer; margin-bottom:-2px; }
+.tabs button[aria-selected="true"] { background:var(--ink); color:var(--bg); }
+[hidden] { display:none !important; }
+.ord-sum { background:var(--card); border:2px solid var(--ink); padding:16px 20px; margin-bottom:18px; font-size:14px; }
+.ord-sum b { font-size:20px; }
+.ord-sum .row { display:flex; flex-wrap:wrap; gap:6px 22px; }
+.ord-leg { font-size:13px; color:var(--muted); margin:0 0 14px; }
+.chip { display:inline-block; padding:1px 8px; border:1px solid var(--hair); font-size:12px; margin:2px 4px 2px 0; background:var(--card); }
+.chip.need { border-color:#b3261e; color:#b3261e; font-weight:700; } .chip.know { border-color:#c98a00; color:#a06c00; font-weight:700; } .chip.help { color:var(--muted); }
+@media (prefers-color-scheme: dark) { .chip.need { color:#ff8a80; border-color:#ff8a80; } .chip.know { color:#e0ab2e; border-color:#e0ab2e; } }
+details.ord { border-top:1px solid var(--hair); }
+details.ord:last-of-type { border-bottom:1px solid var(--hair); }
+details.ord > summary { display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:4px 14px; align-items:center; padding:12px 0; cursor:pointer; list-style:none; }
+details.ord > summary::-webkit-details-marker { display:none; }
+details.ord > summary:hover .on { color:var(--c); }
+.on { font-weight:800; font-size:17px; }
+.on i { font-style:normal; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--c); margin-right:8px; }
+.ono { font:700 13px ui-monospace,Menlo,monospace; color:var(--muted); }
+.om { grid-column:2; font-size:13px; color:var(--muted); }
+.ot { grid-column:3; grid-row:1 / span 2; text-align:right; font:700 13px ui-monospace,Menlo,monospace; line-height:1.5; }
+.ot small { display:block; color:var(--muted); font-weight:400; }
+.obody { padding:2px 0 18px 48px; font-size:14px; }
+.obody h3 { margin:14px 0 4px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.obody ul { margin:4px 0; padding-left:18px; }
+.obody table { border-collapse:collapse; width:100%; font-size:13px; margin:4px 0; }
+.obody th, .obody td { padding:4px 8px; border-bottom:1px solid var(--hair); text-align:left; vertical-align:top; }
+.obody th { color:var(--muted); font-weight:700; font-size:12px; }
+.obody td.h { white-space:nowrap; font-family:ui-monospace,Menlo,monospace; }
+.obody .lk a { margin-right:14px; }
+.ord-h { margin:26px 0 8px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+@media (max-width:620px) { .obody { padding-left:0; } details.ord > summary { grid-template-columns:28px minmax(0,1fr); } .ot { grid-column:2; grid-row:auto; text-align:left; } }
 </style>
 </head>
 <body>
@@ -190,11 +315,15 @@ h2 { margin:32px 0 10px; font-size:13px; letter-spacing:.12em; text-transform:up
   <a class="back" href="../index.html">← ANITECH PERFORMANCE</a>
   <a class="back" style="float:right" href="verification.html">Что чем проверено →</a>
   <h1>Все работы и прогресс</h1>
-  <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе.</p>
+  <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе. Вкладка «Порядок и содержание» — в каком порядке проходить лабы и что в каждой внутри.</p>
+  <div class="tabs" role="tablist"><button type="button" role="tab" id="tabP" aria-selected="true">Прогресс</button><button type="button" role="tab" id="tabO" aria-selected="false">Порядок и содержание</button></div>
+  <div id="panelP">
   <div class="total" id="total"></div>
   <p class="legend">«новая» — лаба задумана или в работе, на сайте её ещё нет; в общий прогресс не входит. ✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении. Справа: сессий сейчас / не хватает до минимума 10–14 на лабу; формат — «эталон» (как `caddy.html`: без инлайн-стилей, quiz/links/outro на шаге), «частично» или «переделать» (решение владельца 12.10.2026, подробности — `fixes/common/site.md`).</p>
   <div class="tools"><button type="button" id="foldAll">Свернуть все</button><button type="button" id="unfoldAll">Развернуть все</button></div>
   <div id="list"></div>
+  </div>
+  <div id="panelO" hidden></div>
 </div>
 <script src="js/sync.js"></script>
 <script>
@@ -309,11 +438,55 @@ document.getElementById('unfoldAll').onclick = function () { foldAll(false); };
 render();
 window.addEventListener('focus', render);          // вернулись из методички — обновить цифры
 window.addEventListener('storage', render);
+var ORDER = __ORDER__;
+var KIND = { need: 'нужна', know: 'нужно знать', help: 'полезна' };
+function hh(x) { return (Math.round(x * 10) / 10).toString().replace('.', ','); }
+function renderOrder() {
+  var tot = { labs: 0, sess: 0, steps: 0, hours: 0 }, run = 0, html = '', planned = [];
+  ORDER.forEach(function (l) { if (!l.planned || l.key === 'ansible' || l.sessions.length) { } });
+  var live = ORDER.filter(function (l) { return !l.planned; }), plan = ORDER.filter(function (l) { return l.planned; });
+  live.forEach(function (l) { tot.labs++; tot.sess += l.sessions.length; tot.steps += l.steps; tot.hours += l.hours; });
+  html += '<div class="ord-sum"><div class="row"><span><b>' + tot.labs + '</b> лаб на сайте</span><span><b>' + tot.sess + '</b> сессий</span><span><b>' + tot.steps + '</b> шагов</span><span><b>~' + Math.round(tot.hours) + '</b> часов по длительности сессий</span></div>'
+    + '<div class="total-note">Порядок — рекомендуемый (источник: <code>works/js/prereq.js</code>, <code>fixes/common/_order.md</code>): сначала то, на чём стоят остальные. Часы считаются из длительности сессий в методичках; у лаб без прохождения это оценка автора, а не ваше время. Нажмите на строку, чтобы увидеть сессии и зависимости.</div></div>'
+    + '<p class="ord-leg"><span class="chip need">нужна</span> без этой лабы шаги не выполнить · <span class="chip know">нужно знать</span> методичка опирается на её знания · <span class="chip help">полезна</span> можно и без неё</p>';
+  function row(l, n, cum) {
+    var b = '<details class="ord" style="--c:' + l.accent + '"><summary><span class="ono">' + (n ? String(n).padStart(2, '0') : '·') + '</span>'
+      + '<span class="on"><i></i>' + esc(l.title) + '</span>'
+      + '<span class="ot">' + (l.sessions.length ? l.sessions.length + ' сесс · ' + (l.steps ? l.steps + ' шаг · ' : '') + '~' + hh(l.hours) + ' ч' : 'в плане')
+      + (cum != null ? '<small>с начала пути: ~' + Math.round(cum) + ' ч</small>' : '') + '</span>'
+      + '<span class="om">' + esc(l.dir) + (l.level ? ' · вход: ' + esc(l.level) : '') + (l.difficulty ? ' · ' + esc(l.difficulty) : '') + (l.subtitle ? ' · ' + esc(l.subtitle) : '') + '</span></summary><div class="obody">';
+    if (l.headline) b += '<p><b>' + esc(l.headline) + '</b></p>';
+    if (l.note) b += '<p class="note">' + esc(l.note) + '</p>';
+    if (l.before.length) { b += '<h3>Что пройти раньше</h3><p>' + l.before.map(function (x) { return '<span class="chip ' + x.kind + '">' + esc(KIND[x.kind] || x.kind) + ': ' + esc(x.title) + '</span> ' + esc(x.why); }).join('<br>') + '</p>'; }
+    else b += '<h3>Что пройти раньше</h3><p>Ничего: лаба самостоятельная.</p>';
+    if (l.know.length) b += '<h3>Что нужно знать</h3><ul>' + l.know.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    if (l.meet.length) b += '<h3>С чем встретитесь</h3><p>' + l.meet.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') + '</p>';
+    if (l.sessions.length) b += '<h3>Сессии</h3><table><tr><th>№</th><th>Тема</th><th>Время</th>' + (l.steps ? '<th>Шагов</th>' : '') + '</tr>'
+      + l.sessions.map(function (s) { return '<tr><td>' + s.n + '</td><td>' + esc(s.t) + '</td><td class="h">' + esc(s.h) + '</td>' + (l.steps ? '<td>' + s.steps + '</td>' : '') + '</tr>'; }).join('') + '</table>';
+    if (l.refs.length) b += '<h3>Справочные разделы</h3><p>' + l.refs.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') + '</p>';
+    if (l.tip) b += '<h3>Заметка</h3><p>' + esc(l.tip) + '</p>';
+    b += '<p class="lk">' + (l.open ? '<a href="' + esc(l.open) + '">Методичка ↗</a><a href="' + esc(l.page) + '">Страница лабы</a>' : '') + '</p></div></details>';
+    return b;
+  }
+  html += '<div class="ord-h">Путь · ' + live.length + ' лаб</div>';
+  live.forEach(function (l, i) { run += l.hours; html += row(l, i + 1, run); });
+  if (plan.length) { html += '<div class="ord-h">В плане, на сайте нет · ' + plan.length + '</div>'; plan.forEach(function (l) { html += row(l, 0, null); }); }
+  document.getElementById('panelO').innerHTML = html;
+}
+function showTab(o) {
+  document.getElementById('panelP').hidden = o; document.getElementById('panelO').hidden = !o;
+  document.getElementById('tabP').setAttribute('aria-selected', o ? 'false' : 'true'); document.getElementById('tabO').setAttribute('aria-selected', o ? 'true' : 'false');
+  if (o && !document.getElementById('panelO').innerHTML) renderOrder();
+  if (history.replaceState) history.replaceState(null, '', o ? '#order' : location.pathname);
+}
+document.getElementById('tabP').onclick = function () { showTab(false); };
+document.getElementById('tabO').onclick = function () { showTab(true); };
+if (location.hash === '#order') showTab(true);
 </script>
 </body>
 </html>
 '''
 
-out = TEMPLATE.replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':'))).replace('__PLANNED__', json.dumps(PLANNED, ensure_ascii=False, separators=(',', ':')))
+out = TEMPLATE.replace('__ORDER__', json.dumps(ORDERDATA, ensure_ascii=False, separators=(',', ':'))).replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':'))).replace('__PLANNED__', json.dumps(PLANNED, ensure_ascii=False, separators=(',', ':')))
 open('works/progress.html', 'w', encoding='utf-8').write(out)
 print(f'works/progress.html: {sum(len(g["labs"]) for g in data)} лаб, {len(out) // 1024} КБ')
