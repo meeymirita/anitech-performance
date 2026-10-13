@@ -1,4 +1,4 @@
-# ANITECH PERFORMANCE — обучающая платформа: Bash, Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, JS, Vue, TypeScript, Nuxt, Angular, Node.js, Express, NestJS, GraphQL, PostgreSQL; Go и Centrifugo — в работе
+# ANITECH PERFORMANCE — обучающая платформа: Bash, Docker, Traefik, Caddy, Kubernetes, PHP, OOP, алгоритмы, RabbitMQ, Redis, Laravel, Laravel Performance, Inertia, CSS, Tailwind, JS, Vue, TypeScript, Nuxt, Angular, Node.js, Express, NestJS, GraphQL, PostgreSQL, Centrifugo; Go Start, Go Pro и Ansible — в работе
 
 ![ANITECH PERFORMANCE](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/banner.png)
 
@@ -18,13 +18,15 @@
 
 ## Работы
 
-Нумерация совпадает с витриной сайта: сначала фронтенд (1–7), затем бэкенд (8–18), затем инфраструктура (19–22). Учебный порядок прохождения (что за чем идти) — в окне «Что нужно знать до старта» на сайте и в [`fixes/common/_order.md`](fixes/common/_order.md). Зависимости между лабами — лабы переиспользуют друг друга: OOP-лаба даёт фундамент для RabbitMQ и Laravel; «Чистый PHP» встал рядом с OOP, потому что тоже про язык, но без фреймворка (её ссылки на Laravel-лабу — в будущем времени, так как та ещё не пройдена). Kubernetes использует код `api/` из Traefik-лабы (в самой Kubernetes-лабе он тоже приведён целиком) — без пройденной Traefik-лабы не имеет смысла. RabbitMQ стоит пройти до Redis (методичка постоянно сравнивает Streams с брокером) и до Laravel-лабы (она ссылается на обе). «Чистый JS» — общий фундамент для Vue и TypeScript; Vue — до TypeScript (сессия 5 использует Vue). NestJS и GraphQL — самостоятельные проекты, каждый со своим доменом: NestJS не собирает бэкенд Vue-лабы (это отдельное изучение технологии с нуля, домен Helpdesk похож на Vue Lab только по смыслу), а GraphQL не требует прохождения NestJS. Nuxt — после Vue и TypeScript: код из них не берёт, но объясняет только то, что Nuxt добавляет поверх Vue (SSR, Nitro, состояние на сервере, режимы рендеринга). PostgreSQL — тоже самостоятельная: разбирает то, что во всех остальных лабах пряталось за ORM, поэтому её можно проходить в любой момент, но полезнее всего — после одной-двух лаб с Laravel, когда Eloquent уже знаком. Inertia — самостоятельный проект на Laravel + Vue, кода из других лаб не берёт, но предполагает знакомство с обоими (Laravel Lab, Vue Lab); логичнее всего идёт после Laravel-лабы. Алгоритмы на PHP — самостоятельная лаба: нужен только синтаксис PHP, идёт рядом с чистым PHP и ООП. Laravel Performance — после Laravel Lab: на приложении Laravel 13 с миллионом заказов в PostgreSQL измеряет и ускоряет его (k6, профилировщики, OPcache, кеш в Redis, Octane); отдельных лаб-предшественников у неё нет, но нужен базовый Laravel. Docker и Traefik самодостаточны и не завязаны на остальные. Caddy — тоже самостоятельная: свой проект Edge (Node.js-бэкенды и PHP-FPM), решает ту же задачу, что Traefik (reverse proxy, TLS), но другим инструментом и подходом — проходить обе не обязательно, но рядом они показывают разницу решений.
+Нумерация совпадает с витриной сайта (25 лаб): сначала фронтенд (1–7), затем бэкенд (8–20), затем инфраструктура (21–25). Учебный порядок прохождения (что за чем идти) — в окне «Что нужно знать до старта» на сайте и в [`fixes/common/_order.md`](fixes/common/_order.md). Зависимости между лабами — лабы переиспользуют друг друга: OOP-лаба даёт фундамент для RabbitMQ и Laravel; «Чистый PHP» встал рядом с OOP, потому что тоже про язык, но без фреймворка (её ссылки на Laravel-лабу — в будущем времени, так как та ещё не пройдена). Kubernetes использует код `api/` из Traefik-лабы (в самой Kubernetes-лабе он тоже приведён целиком) — без пройденной Traefik-лабы не имеет смысла. RabbitMQ стоит пройти до Redis (методичка постоянно сравнивает Streams с брокером) и до Laravel-лабы (она ссылается на обе). «Чистый JS» — общий фундамент для Vue и TypeScript; Vue — до TypeScript (сессия 5 использует Vue). NestJS и GraphQL — самостоятельные проекты, каждый со своим доменом: NestJS не собирает бэкенд Vue-лабы (это отдельное изучение технологии с нуля, домен Helpdesk похож на Vue Lab только по смыслу), а GraphQL не требует прохождения NestJS. Nuxt — после Vue и TypeScript: код из них не берёт, но объясняет только то, что Nuxt добавляет поверх Vue (SSR, Nitro, состояние на сервере, режимы рендеринга). PostgreSQL — тоже самостоятельная: разбирает то, что во всех остальных лабах пряталось за ORM, поэтому её можно проходить в любой момент, но полезнее всего — после одной-двух лаб с Laravel, когда Eloquent уже знаком. Inertia — самостоятельный проект на Laravel + Vue, кода из других лаб не берёт, но предполагает знакомство с обоими (Laravel Lab, Vue Lab); логичнее всего идёт после Laravel-лабы. Алгоритмы на PHP — самостоятельная лаба: нужен только синтаксис PHP, идёт рядом с чистым PHP и ООП. Laravel Performance — после Laravel Lab: на приложении Laravel 13 с миллионом заказов в PostgreSQL измеряет и ускоряет его (k6, профилировщики, OPcache, кеш в Redis, Octane); отдельных лаб-предшественников у неё нет, но нужен базовый Laravel. Bash, Docker и Traefik самодостаточны и не завязаны на остальные: Bash идёт первой (скрипты нужны всем следующим), Docker — следом (на нём стоят Traefik, Kubernetes и Ansible; в шаге 11.5 Docker-лабы собирается `starter/` — чистая копия сквозного проекта CoffeeShop для лаб-продолжений). Express — самостоятельное введение в Node и Express перед TypeScript и NestJS. Centrifugo — realtime на Laravel + Vue: нужны основы Laravel и Docker. Caddy — тоже самостоятельная: свой проект Edge (Node.js-бэкенды и PHP-FPM), решает ту же задачу, что Traefik (reverse proxy, TLS), но другим инструментом и подходом — проходить обе не обязательно, но рядом они показывают разницу решений.
 
 > **Аудит, вычитка и проверка запуском (24.09–04.10.2026).** Все методички, кроме Caddy Lab (добавлена позже), вычитаны построчно и исправлены, проверены стыки между лабами (DevOps, фронтенд, бэкенд). 03–04.10 каждая лаба прошла «сухой прогон»: собрана по блокам методички во временной папке (Docker, веб — Chromium), результаты сверены с «Ожидаемым результатом», найденные ошибки исправлены. Что и чем проверено, пошагово и со сносками «*» (аккаунт, домен, ключи, «Production Hell» — задания без подсказок) — на странице [«Что чем проверено»](works/verification.html); находки и решения — в [`fixes/`](https://github.com/meeymirita/lab-fixes) (отдельный репозиторий, сабмодуль), хронология — в [«Хронологии»](works/changelog.html). У каждой карточки на главной внизу — сноска «что требуется».
 >
-> **Caddy Lab (21)** — добавлена позже (05.10.2026) и в этот аудит не входит, но в тот же день вычитана и проверена отдельно: 31 находка исправлена, сессии 1–6 и 9–11 запущены локально на Caddy v2.11.7, 7, 8, 12 и 13.5 — в Docker (`fixes/devops/caddy.md`). Не запускались: systemd (13.1), кластер (13.4), Laravel (8.3), публичный домен/Let's Encrypt.
+> **13.10.2026 — стандарт лаб и переписанные лабы.** Принят стандарт: минимум 10 сессий, формат как у Caddy, последняя сессия — итоговое ТЗ без готового ответа. По нему доделаны: Bash, Express, Centrifugo, Laravel Performance, JS, PHP, PostgreSQL, CSS, Nuxt (все по 10+ сессий) и **Docker Lab (переписана в 12 сессий, 77 шагов, со схемами и аналогиями «если совсем просто»)**; Bash, Express, Docker и Centrifugo собраны ассистентом из Markdown-исходников или получены из другого чата — владелец их ещё не проходила. Остальные лабы (меньше 10 сессий) отложены на потом — список в [`fixes/common/_state-log.md`](fixes/common/_state-log.md).
 >
-> **Go Start, Go Pro и Centrifugo (06–08.10.2026)** — заглушки: репозитории и карточки «Методичка скоро» на главной есть, в учебный порядок и реестры сайта они пока не входят. У Go Start и Go Pro методички написаны в другом чате; вычитка и прогон Go Start от 07.10 сделаны другой моделью и **не приняты** (нужно перепроверить), Go Pro не вычитана и не проверена запуском. **Centrifugo (08.10) — методички нет, ничего не проверялось: есть только план.** Подробности — в разделе «В работе» ниже.
+> **Caddy Lab (24)** — добавлена позже (05.10.2026) и в этот аудит не входит, но в тот же день вычитана и проверена отдельно: 31 находка исправлена, сессии 1–6 и 9–11 запущены локально на Caddy v2.11.7, 7, 8, 12 и 13.5 — в Docker (`fixes/devops/caddy.md`). Не запускались: systemd (13.1), кластер (13.4), Laravel (8.3), публичный домен/Let's Encrypt.
+>
+> **Go Start и Go Pro (06–07.10.2026)** — заглушки: репозитории и карточки «Методичка скоро» на главной есть, в учебный порядок и реестры сайта они пока не входят. Методички написаны в другом чате; вычитка и прогон Go Start от 07.10 сделаны другой моделью и **не приняты** (нужно перепроверить), Go Pro не вычитана и не проверена запуском. **Ansible** — только план. Подробности — в разделе «В работе» ниже.
 
 | № | Папка | Лаба | Сложность | Репозиторий |
 |---|---|---|---|---|
@@ -44,12 +46,15 @@
 | 14 | [`laravel`](laravel) | Laravel 13 изнутри — TaskFlow (таск-трекер с ролями) | Высокая | [laravel-lab](https://github.com/meeymirita/laravel-lab) |
 | 15 | [`laravel-performance`](laravel-performance) | Laravel Performance — CoffeePerf (k6, SPX, OPcache, кеш, Octane) | Базовая | [laravel-performance-lab](https://github.com/meeymirita/laravel-performance-lab) |
 | 16 | [`inertia`](inertia) | Inertia 3 + Laravel + Vue — Inkwell, блог-платформа | Средняя | [inertia-lab](https://github.com/meeymirita/inertia-lab) |
-| 17 | [`nestjs`](nestjs) | NestJS — Helpdesk API с нуля (свой DI, JWT-ротация, WebSocket) | Высокая | [nestjs-lab](https://github.com/meeymirita/nestjs-lab) |
-| 18 | [`graphql`](graphql) | GraphQL — CineGraph, самостоятельный проект (резолверы, DataLoader, Subscriptions) | Высокая | [graphql-lab](https://github.com/meeymirita/graphql-lab) |
-| 19 | [`docker`](docker) | Docker Lab — контейнеры с нуля до релиза (12 сессий, ~44 ч) | Базовая по входу, объёмная | [docker-lab](https://github.com/meeymirita/docker-lab) |
-| 20 | [`traefik`](traefik) | Traefik — reverse proxy, service discovery, TLS | Низкая–средняя | [traefik-lab](https://github.com/meeymirita/traefik-lab) |
-| 21 | [`caddy`](caddy) | Caddy 2 — Edge, reverse proxy с автоматическим HTTPS | Средняя | [caddy-lab](https://github.com/meeymirita/caddy-lab) |
-| 22 | [`kubernetes`](kubernetes) | Kubernetes — от Compose к оркестрации | Средняя–высокая | [kubernetes-lab](https://github.com/meeymirita/kubernetes-lab) |
+| 17 | [`express`](express) | Express Lab — ShareBox, Node.js и Express с нуля перед TypeScript и NestJS (11 сессий, ~44 ч) | Низкая–средняя | [express-lab](https://github.com/meeymirita/express-lab) |
+| 18 | [`nestjs`](nestjs) | NestJS — Helpdesk API с нуля (свой DI, JWT-ротация, WebSocket) | Высокая | [nestjs-lab](https://github.com/meeymirita/nestjs-lab) |
+| 19 | [`graphql`](graphql) | GraphQL — CineGraph, самостоятельный проект (резолверы, DataLoader, Subscriptions) | Высокая | [graphql-lab](https://github.com/meeymirita/graphql-lab) |
+| 20 | [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия, ~62 ч) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) |
+| 21 | [`bash`](bash) | Bash Lab — CoffeeOps, shell и bash с нуля (10 сессий, ~28 ч) | Базовая | [bash-lab](https://github.com/meeymirita/bash-lab) |
+| 22 | [`docker`](docker) | Docker Lab — контейнеры с нуля до релиза (12 сессий, ~44 ч) | Базовая по входу, объёмная | [docker-lab](https://github.com/meeymirita/docker-lab) |
+| 23 | [`traefik`](traefik) | Traefik — reverse proxy, service discovery, TLS | Низкая–средняя | [traefik-lab](https://github.com/meeymirita/traefik-lab) |
+| 24 | [`caddy`](caddy) | Caddy 2 — Edge, reverse proxy с автоматическим HTTPS | Средняя | [caddy-lab](https://github.com/meeymirita/caddy-lab) |
+| 25 | [`kubernetes`](kubernetes) | Kubernetes — от Compose к оркестрации | Средняя–высокая | [kubernetes-lab](https://github.com/meeymirita/kubernetes-lab) |
 
 > Личный прогресс (моя пометка, не часть плана репозитория): ✅ пройдено — RabbitMQ. 🔵 сейчас прохожу — Caddy Lab (`caddy`): сессии 1–2 пройдены (06–07.10.2026), дальше с сессии 3. OOP (`php-coffee`) — на паузе.
 
@@ -57,6 +62,11 @@
 
 | Папка | Лаба | Сложность | Репозиторий | Состояние |
 |---|---|---|---|---|
+| [`go-start`](go-start) | Go Start — CoffeeGo, Go с нуля до middle (12 сессий, ~55 ч) | Базовая | [go-start-lab](https://github.com/meeymirita/go-start-lab) | методичка есть; вычитка и прогон от 07.10 сделаны другой моделью и не приняты — перепроверить |
+| [`go-pro`](go-pro) | Go Pro — CoffeeGo Platform, от middle до senior (13 сессий, ~72 ч) | Высокая | [go-pro-lab](https://github.com/meeymirita/go-pro-lab) | методичка есть; вычитка не завершена, запуском не проверена |
+| [`ansible`](ansible) | Ansible Lab — управление серверами как кодом (10 сессий, ~40 ч по плану) | Средняя | [ansible-lab](https://github.com/meeymirita/ansible-lab) | только план `ansible_lab_plan.md`, методички нет |
+
+---|---|---|---|---|
 | [`go-start`](go-start) | Go Start — CoffeeGo, Go с нуля до middle (12 сессий) | Базовая | [go-start-lab](https://github.com/meeymirita/go-start-lab) | методичка есть; вычитка и прогон от 07.10 сделаны другой моделью и не приняты — перепроверить |
 | [`go-pro`](go-pro) | Go Pro — CoffeeGo Platform, от middle до senior (13 сессий) | Высокая | [go-pro-lab](https://github.com/meeymirita/go-pro-lab) | методичка есть; вычитка не завершена, запуском не проверена |
 | [`bash`](bash) | Bash Lab — CoffeeOps, shell и bash с нуля (9 сессий, ~26 ч) | Базовая | [bash-lab](https://github.com/meeymirita/bash-lab) | [методичка](bash/bash.html) есть (11.10.2026, собрана ассистентом; на сайте 24-я лаба); **не вычитана человеком**: все команды выполнены в Docker при сборке, но прохождения не было |
@@ -395,7 +405,21 @@
 
 ---
 
-## 17. NestJS Lab (`nestjs/`)
+## 17. Express Lab — ShareBox (`express/`)
+
+> **Сложность: низкая–средняя.** Проект самостоятельный, других лаб не требует: Node и Express объясняются с нуля. Введение перед TypeScript и NestJS.
+
+**О чём:** Node.js и Express с нуля на сквозном проекте ShareBox — файлообменник со ссылками (до 200 МБ). В конце — таблица «что из этого скрывает NestJS».
+
+**Стек:** Node 24, Express 5, PostgreSQL 18, Prisma 7, `node:test` и supertest, Docker.
+
+**Формат:** методичка [`express.html`](express/express.html) — ✅ написана и вычитана ассистентом 12.10.2026 (13 находок, все исправлены); весь вывод — настоящий прогон в Docker (PostgreSQL для сессий 5–11); владелец лабу ещё не проходила.
+
+**Что внутри (11 сессий, 66 шагов, ~44 ч):** Node и V8, модули, event loop, streams → Express 5: роутер, middleware → ошибки, zod, слои, `.env` → PostgreSQL и Prisma 7 → JWT-аутентификация, ротация refresh → файлы: `multer`, лимиты, path traversal, Range → share-ссылки → админка, rate limit, helmet/cors/pino, graceful shutdown → тесты, Docker, финал. Справка: шпаргалка, справочник ошибок, глоссарий, 38 вопросов на собеседование.
+
+---
+
+## 18. NestJS Lab (`nestjs/`)
 
 > **Сложность: высокая.** Проект полностью самостоятельный — не требует прохождения других лаб. TypeScript-минимум, нужный для Nest, объясняется по ходу в сессии 1. Это полное изучение NestJS с нуля как отдельной технологии: домен Helpdesk похож на Vue Lab только по смыслу, зависимости от неё нет.
 
@@ -418,7 +442,7 @@
 
 ---
 
-## 18. GraphQL Lab (`graphql/`)
+## 19. GraphQL Lab (`graphql/`)
 
 > **Сложность: высокая.** Проект полностью самостоятельный (свой репозиторий `graphql-lab`), ни от одной другой лабы не зависит — домен другой (каталог фильмов, а не Helpdesk). Из знаний пригодятся основы NestJS (модули, DI, декораторы) и TypeScript на уровне «классы, интерфейсы, async/await» — всё остальное объясняется по ходу.
 
@@ -437,7 +461,33 @@
 
 ---
 
-## 19. Docker Lab (`docker/`)
+## 20. Centrifugo Lab — Realtime Workspace (`centrifugo/`)
+
+> **Сложность: средняя–высокая** (решение владельца 08.10.2026). Проект самостоятельный; нужны основы Laravel, Docker и HTTP/JSON.
+
+**О чём:** realtime на [Centrifugo](https://centrifugal.dev): WebSocket-соединения, каналы и namespaces, `centrifuge-js`, публикация из Laravel, JWT и subscription tokens, proxy, presence и history, recovery и reconnect, Outbox, тесты, production (nginx, Redis engine) и нагрузка. Сквозной проект — Realtime Workspace (Laravel + Centrifugo + Vue).
+
+**Стек:** Centrifugo ≥ 6.9, `centrifuge-js` 5.x, Laravel 13 / PHP 8.4, Vue, Redis, PostgreSQL, Docker.
+
+**Формат:** методичка [`centrifugo.html`](centrifugo/centrifugo.html) — получена из другого чата 11.10.2026 (21 сессия, 138 шагов, ~62 ч); на сайте с 11.10; 🟡 **не вычитана и не проверена запуском**, кода прохождения нет. План — [`centrifugo_lab_plan_v4.md`](centrifugo/centrifugo_lab_plan_v4.md).
+
+---
+
+## 21. Bash Lab — CoffeeOps (`bash/`)
+
+> **Сложность: базовая.** Самостоятельная лаба: ничего знать заранее не нужно, Docker объясняется в шаге 1.2. Идёт первой в инфраструктурном треке — скрипты нужны всем следующим лабам.
+
+**О чём:** shell и bash с нуля на проекте CoffeeOps — набор скриптов обслуживания кофейни (заказы, отчёты, бэкап, деплой, тесты). Среда — контейнер из `bash:5` с GNU-утилитами (на macOS системный bash — 3.2).
+
+**Стек:** bash 5.3, shellcheck, jq, GNU coreutils/grep/sed/gawk, Docker.
+
+**Формат:** методичка [`bash.html`](bash/bash.html) — 🟡 собрана ассистентом 11.10.2026 из Markdown-исходников (`bash/src`, генератор `tools/build-manual.py`); все команды выполнены в Docker при сборке, выводы настоящие; не вычитана человеком, прохождения не было.
+
+**Что внутри (10 сессий, 54 шага, ~28 ч):** терминал и оболочка → первый скрипт, кавычки, аргументы → ввод, условия, `case` → циклы, коды завершения, строгий режим, `trap` → функции, `getopts`, `shellcheck` → потоки, конвейеры, `xargs` → массивы и строки → `grep`, `sed`, `awk`, `jq` → `cron`, деплой-скрипт с откатом → итоговое ТЗ (подкоманда `digest`, без ответа).
+
+---
+
+## 22. Docker Lab (`docker/`)
 
 > **Сложность: базовая по входу, но объёмная.** Не требует предыдущих лаб — рассчитана на полных новичков в контейнерах; Bash желателен, но не обязателен. Переписана 13.10.2026 в большой формат (бывшие 3 сессии «Docker + Bash» → 12 сессий).
 
@@ -451,7 +501,7 @@
 
 ---
 
-## 20. Traefik Lab (`traefik/`)
+## 23. Traefik Lab (`traefik/`)
 
 > **Сложность: низкая–средняя** (инфраструктурная, не про код — backend/frontend уже даны готовыми). Нужно перед стартом: Docker Compose на уровне «поднять сервис и почитать логи»; для новичков в контейнерах есть отдельный вводный раздел 0.
 
@@ -470,7 +520,7 @@
 
 ---
 
-## 21. Caddy Lab — Edge (`caddy/`)
+## 24. Caddy Lab — Edge (`caddy/`)
 
 > **Сложность: средняя.** Проект самостоятельный (свой репозиторий `caddy-lab`), кода из других лаб не берёт. Решает ту же задачу, что Traefik Lab (reverse proxy, TLS), но другим инструментом — методичка не требует Traefik Lab как предшественника.
 
@@ -484,7 +534,7 @@
 
 ---
 
-## 22. Kubernetes Lab (`kubernetes/`)
+## 25. Kubernetes Lab (`kubernetes/`)
 
 > **Сложность: средняя–высокая.** Нужны пройденные Docker Lab и Traefik Lab — сюда переносится ровно их стек (API + frontend + PostgreSQL + Adminer), поэтому новый домен не изучается, а сразу нужны настоящие понятия Kubernetes. Нужен код `api/` из Traefik-лабы (Dockerfile, server.js, package.json — в самой Kubernetes-лабе он тоже приведён целиком).
 
@@ -500,16 +550,15 @@
 - **Сессия 3** — Traefik снаружи кластера через IngressRoute CRD; HorizontalPodAutoscaler вместо ручных "x3 реплики"; "Production Hell" — финальный сценарий без подсказок
 
 Раздел 0 — зачем эта лаба и что дальше; разделы 1–8 — теория (Control Plane/Node, Pod, Deployment, Service, ConfigMap/Secret, Volumes, Probes, Traefik как Ingress-контроллер), раздел 9 — три сессии заданий, разделы 10–13 — чек-лист, глоссарий, вопросы для собеседования, что дальше.
-
 ---
 
-## В работе: Go Start, Go Pro, Centrifugo
+## В работе: Go Start, Go Pro, Ansible
 
-Эти три лабы заведены как заглушки (карточка «Методичка скоро» на главной, клик открывает README репозитория). Реестры сайта (`works/js/lab.js`, карта маршрутов, счётчики «N лаб», страницы `works/<ключ>.html`) для них не заводились — это сделает полный чек-лист, когда появятся методички (`fixes/common/_checklist-new-lab.md`).
+Эти лабы заведены как заглушки (карточка «Методичка скоро» на главной, клик открывает README репозитория) либо существуют только как план. Реестры сайта (`works/js/lab.js`, карта маршрутов, счётчики «N лаб», страницы `works/<ключ>.html`) для них не заводились — это сделает полный чек-лист, когда появятся проверенные методички (`fixes/common/_checklist-new-lab.md`). В порядке прохождения они видны на вкладке «Порядок и содержание» страницы [«Все работы и прогресс»](works/progress.html#order) в блоке «в плане».
 
 - **Go Start** (`go-start/`, репозиторий [go-start-lab](https://github.com/meeymirita/go-start-lab)) — Go с нуля до middle на сквозном проекте CoffeeGo: типы и срезы, ошибки как значения, интерфейсы, дженерики, горутины, `net/http`, `database/sql` и pgx, тесты, Docker. 12 сессий. Методичка `go-start.html` написана в другом чате; вычитка и прогон в Docker 07.10 сделаны другой моделью и **владельцем не приняты**. Кода прохождения нет.
 - **Go Pro** (`go-pro/`, [go-pro-lab](https://github.com/meeymirita/go-pro-lab)) — продолжение: CoffeeGo Platform на трёх сервисах, рантайм и GC, профилирование, gRPC, Outbox, OpenTelemetry, Kubernetes, свой анализатор кода. 13 сессий. Идёт строго после Go Start; до неё желательно Docker, PostgreSQL, Redis, RabbitMQ и Kubernetes. Методичка есть, **не вычитана и не проверена запуском**.
-- **Centrifugo** (`centrifugo/`, [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab), добавлена 08.10.2026) — realtime на Centrifugo: каналы и namespaces, `centrifuge-js`, публикация из Laravel, JWT и subscription tokens, proxy, presence и history, recovery, Outbox, тесты, production и нагрузка; сквозной проект Realtime Workspace (Laravel 13 + Centrifugo ≥ 6.9 + Vue, Centrifugo в Docker). По плану [`centrifugo_lab_plan_v4.md`](centrifugo/centrifugo_lab_plan_v4.md): 21 сессия, ~62 ч, сложность средняя–высокая; от других лаб не зависит жёстко, желательны основы Docker, Laravel и Vue. Методичка `centrifugo.html` написана в другом чате и встроена 11.10.2026: 21 сессия, 138 шагов; **не вычитана и не проверена запуском**, кода прохождения нет.
+- **Ansible** (`ansible/`, [ansible-lab](https://github.com/meeymirita/ansible-lab), создана 11.10.2026) — управление серверами как кодом: inventory и ad-hoc, playbook и идемпотентность, переменные и факты, handlers, Jinja2, роли и Galaxy, Vault, Docker через Ansible, кластер и обновление без простоя. 10 сессий, ~40 ч по плану `ansible_lab_plan.md`. Идёт последней в очереди больших DevOps-лаб (Bash → Docker → Traefik → Kubernetes → Ansible, `plan/README.md`). **Методички и кода нет.**
 
 ---
 
@@ -522,7 +571,7 @@
 
 ## Все работы и прогресс (`works/progress.html`)
 
-Одна страница со ссылками на все лабы и общим прогрессом по каждой: отметки разделов и шагов из методичек (хранятся в `localStorage` браузера) складываются в проценты. Кнопка «Все работы» есть в каждой методичке рядом с поиском и переключателем темы, а пункт «прогресс» — в шапке сайта, на страницах лаб и в хронологии. Рядом — страница [«Что чем проверено»](works/verification.html) (`python3 tools/build-verification.py`, собирается из `fixes/common/_verification.md`). Страница прогресса собирается скриптом `python3 tools/build-progress.py` (запускать заново при добавлении лабы), а ссылка и правка шаблона вставляются в методички через `python3 tools/patch-manuals.py`. Прогресс виден, только когда страница и методички открыты с одного адреса (GitHub Pages или `python3 -m http.server`).
+Страница с двумя вкладками. **«Прогресс»** — ссылки на все лабы и общий прогресс по каждой: отметки разделов и шагов из методичек (хранятся в `localStorage` браузера) складываются в проценты. Кнопка «Все работы» есть в каждой методичке рядом с поиском и переключателем темы, а пункт «прогресс» — в шапке сайта, на страницах лаб и в хронологии. Рядом — страница [«Что чем проверено»](works/verification.html) (`python3 tools/build-verification.py`, собирается из `fixes/common/_verification.md`). **«Порядок и содержание»** (`progress.html#order`) — путь из 25 лаб в рекомендуемом порядке с накопленными часами, зависимостями («нужна / нужно знать / полезна»), сессиями и справочными разделами каждой методички, а ещё Go Start, Go Pro и Ansible в блоке «в плане»; порядок и зависимости берутся из `works/js/prereq.js`, сессии и часы — из самих методичек. Страница собирается скриптом `python3 tools/build-progress.py` (запускать заново при добавлении лабы), а ссылка и правка шаблона вставляются в методички через `python3 tools/patch-manuals.py`. Прогресс виден, только когда страница и методички открыты с одного адреса (GitHub Pages или `python3 -m http.server`).
 
 ---
 
