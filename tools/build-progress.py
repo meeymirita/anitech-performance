@@ -566,7 +566,7 @@ function renderTodo() {
     + '<span><b>' + cnt(function (i) { return i.who === 'assistant'; }) + '</b> на ассистенте</span>'
     + '<span><b>' + cnt(function (i) { return i.who === 'both'; }) + '</b> вместе</span>'
     + '<span><b>' + Object.keys(done).filter(function (k) { return all.some(function (i) { return i.id === k; }); }).length + '</b> отмечено у вас</span></div>'
-    + '<p class="td-ctx">Сейчас проходится только Caddy Lab (решение 06.10); остальное — очередь, порядок и темп которой определяет владелец. Список собран 17.10.2026 из журнала состояния, статусов вычитки и проверки, находок по лабам и планов; источник — <code>fixes/common/_todo.json</code>. Галочки хранятся только в этом браузере.</p></div>';
+    + '<p class="td-ctx">Прохождение лаб владелец ведёт сама и в список не входит: от ассистента нужны вычитка, запуск и правки. Сейчас проходится только Caddy Lab (решение 06.10); остальное — очередь, порядок и темп которой определяет владелец. Список собран 17.10.2026 из журнала состояния, статусов вычитки и проверки, находок по лабам и планов; источник — <code>fixes/common/_todo.json</code>. Галочки хранятся только в этом браузере.</p></div>';
   h += '<div class="flt"><div class="frow"><span class="fl">Поиск</span><input type="search" id="tq" placeholder="лаба, слово из описания…" value="' + esc(TF.q) + '"></div>'
     + tChips('Кто', 'who', T_WHO, done) + tChips('Срочность', 'prio', T_PRIO, done) + tChips('Тип', 'cat', T_CAT, done) + tChips('Статус', 'st', T_ST, done)
     + '<div class="frow"><span class="fl">Лаба</span><select id="tlab"><option value="">все</option>'
