@@ -58,6 +58,7 @@
 | Сайт, бакет Yandex, деплой на сервер, `/mira/`, воркер прогресса, домен, картинки в README, статус проверки, генераторы | `fixes/common/_infra.md` |
 | Чек-лист интеграции новой / обновлённой лабы (все реестры) | `fixes/common/_checklist-new-lab.md` |
 | Журнал состояния по датам: что сделано, что осталось | `fixes/common/_state-log.md` |
+| Сквозная проверка методичек (пустые разделы, якоря, ссылки «шаг N.M», дубли, теги) | `python3 fixes/common/_tools/audit_manuals.py [лаба] [--warn]` — после любой массовой правки |
 | Список всего, что осталось сделать (вкладка «Что осталось» на `works/progress.html#todo`) | `fixes/common/_todo.json` — закрыл/добавил дело: поправить файл, затем `tools/build-progress.py` + `tools/build-seo.py` |
 | Допущения «сухих прогонов» (чем мои стенды отличались от студенческих) | `fixes/common/_dryrun-assumptions.md` |
 | Что чем проверено | `fixes/common/_verification.md` (+ `works/verification.html`) |
