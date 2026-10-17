@@ -381,6 +381,7 @@ def build(lab, run=False, check_only=False, only=None):
         gkey = next(u['key'] for u in units if u['title'] == 'Глоссарий')
         g = next(u for u in units if u['key'] == gkey)
         g['gloss'] = gloss
+        g['html'] = ''.join('<div id="g-%d"><b>%s</b> — %s</div>' % (i, html.escape(x['term'], quote=False), x['def']) for i, x in enumerate(gloss))
         g['text'] = ' '.join(x['term'] + ' ' + plain(x['def']) for x in gloss)
 
     toc = '<b style="font-weight:800">Содержание</b>\n<ol style="margin:0 0 14px;padding-left:22px">' + ''.join(
