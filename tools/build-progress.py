@@ -197,6 +197,20 @@ for k in PRE['order'] + [p['key'] for p in PLANNED]:
         'format': by_key[k]['format'] if k in by_key else '',
     })
 
+# ───────── вкладка «Что осталось»: список дел из fixes/common/_todo.json ─────────
+# Источник — вручную ведомый JSON (поля: id, lab, cat, who, prio, st, title, detail, src); при закрытии пункта удалять его
+# из файла (или менять st), затем запускать этот скрипт. Названия лаб берём из реестров; 'all', 'site', 'plan' — служебные.
+TODO = json.load(open('fixes/common/_todo.json', encoding='utf-8'))
+_names = {k: l['title'] for k, l in by_key.items()}
+_names.update({p['key']: p['title'] for p in PLANNED})
+_names.update({'all': 'Все лабы', 'site': 'Сайт и сервер', 'plan': 'План больших лаб'})
+for _it in TODO['items']:
+    if _it['lab'] not in _names:
+        sys.exit(f"fixes/common/_todo.json: неизвестная лаба {_it['lab']!r} в пункте {_it['id']}")
+    _it['labTitle'] = _names[_it['lab']]
+    _it['page'] = f"{_it['lab']}.html" if _it['lab'] in by_key else ''
+TODO['labs'] = [{'key': k, 'title': _names[k]} for k in dict.fromkeys(i['lab'] for i in TODO['items'])]
+
 TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -308,6 +322,39 @@ details.ord > summary:hover .on { color:var(--c); }
 .obody .lk a { margin-right:14px; }
 .ord-h { margin:26px 0 8px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
 @media (max-width:620px) { .obody { padding-left:0; } details.ord > summary { grid-template-columns:28px minmax(0,1fr); } .ot { grid-column:2; grid-row:auto; text-align:left; } }
+
+.td-sum { background:var(--card); border:2px solid var(--ink); padding:16px 20px; margin-bottom:14px; font-size:14px; }
+.td-sum .row { display:flex; flex-wrap:wrap; gap:6px 24px; }
+.td-sum b { font-size:20px; }
+.td-ctx { font-size:13px; color:var(--muted); margin:8px 0 0; }
+.flt { background:var(--card); border:1px solid var(--hair); padding:12px 14px; margin-bottom:16px; display:grid; gap:10px; }
+.flt .frow { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.flt .fl { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); min-width:84px; }
+.flt input[type=search], .flt select { font:inherit; font-size:14px; padding:6px 10px; border:1px solid var(--hair); background:var(--bg); color:var(--ink); min-width:0; }
+.flt input[type=search] { flex:1 1 220px; }
+.fc { font:inherit; font-size:13px; padding:3px 10px; border:1px solid var(--hair); background:var(--bg); color:var(--ink); cursor:pointer; }
+.fc[aria-pressed="true"] { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.fc small { color:inherit; opacity:.65; margin-left:4px; }
+.flt label.chk { font-size:13px; display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
+.flt .fbtn { font:inherit; font-size:13px; padding:4px 10px; border:1px solid var(--hair); background:var(--card); color:var(--ink); cursor:pointer; }
+.td-h { margin:24px 0 6px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.ti { display:grid; grid-template-columns:26px minmax(0,1fr); gap:0 8px; border-top:1px solid var(--hair); padding:8px 0; }
+.ti:last-child { border-bottom:1px solid var(--hair); }
+.ti > input { margin:4px 0 0; width:18px; height:18px; accent-color:#1f8a47; cursor:pointer; }
+.ti details > summary { cursor:pointer; list-style:none; font-weight:700; font-size:15px; line-height:1.35; }
+.ti details > summary::-webkit-details-marker { display:none; }
+.ti details > summary::before { content:'▸'; color:var(--muted); display:inline-block; width:14px; font-size:11px; }
+.ti details[open] > summary::before { content:'▾'; }
+.ti.done summary .tt { text-decoration:line-through; color:var(--muted); font-weight:400; }
+.tchips { margin:3px 0 0 14px; }
+.tchips .chip { font-size:11px; padding:0 7px; }
+.chip.p1 { border-color:#b3261e; color:#b3261e; font-weight:700; } .chip.p2 { border-color:#c98a00; color:#a06c00; font-weight:700; }
+.chip.wait { border-style:dashed; } .chip.later { border-style:dotted; color:var(--muted); }
+.chip.me { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+@media (prefers-color-scheme: dark) { .chip.p1 { color:#ff8a80; border-color:#ff8a80; } .chip.p2 { color:#e0ab2e; border-color:#e0ab2e; } }
+.tbody { margin:6px 0 4px 14px; font-size:14px; color:var(--ink); }
+.tbody .src { display:block; margin-top:4px; font-size:12px; color:var(--muted); }
+.td-empty { padding:30px 0; text-align:center; color:var(--muted); }
 </style>
 </head>
 <body>
@@ -315,8 +362,8 @@ details.ord > summary:hover .on { color:var(--c); }
   <a class="back" href="../index.html">← ANITECH PERFORMANCE</a>
   <a class="back" style="float:right" href="verification.html">Что чем проверено →</a>
   <h1>Все работы и прогресс</h1>
-  <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе. Вкладка «Порядок и содержание» — в каком порядке проходить лабы и что в каждой внутри.</p>
-  <div class="tabs" role="tablist"><button type="button" role="tab" id="tabP" aria-selected="true">Прогресс</button><button type="button" role="tab" id="tabO" aria-selected="false">Порядок и содержание</button></div>
+  <p class="sub">Отмечайте разделы и шаги в методичках — здесь они сложатся в общий прогресс по каждой лабе. Вкладка «Порядок и содержание» — в каком порядке проходить лабы и что в каждой внутри. Вкладка «Что осталось» — всё, что ещё надо сделать по проекту, с фильтрами.</p>
+  <div class="tabs" role="tablist"><button type="button" role="tab" id="tabP" aria-selected="true">Прогресс</button><button type="button" role="tab" id="tabO" aria-selected="false">Порядок и содержание</button><button type="button" role="tab" id="tabT" aria-selected="false">Что осталось</button></div>
   <div id="panelP">
   <div class="total" id="total"></div>
   <p class="legend">«новая» — лаба задумана или в работе, на сайте её ещё нет; в общий прогресс не входит. ✓ — вычитана и проверена полностью. «*» — нужен аккаунт, домен или ключи: такой пункт считается выполненным, его проверяете сами при реальном прохождении. Справа: сессий сейчас / не хватает до минимума 10–14 на лабу; формат — «эталон» (как `caddy.html`: без инлайн-стилей, quiz/links/outro на шаге), «частично» или «переделать» (решение владельца 12.10.2026, подробности — `fixes/common/site.md`).</p>
@@ -324,6 +371,7 @@ details.ord > summary:hover .on { color:var(--c); }
   <div id="list"></div>
   </div>
   <div id="panelO" hidden></div>
+  <div id="panelT" hidden></div>
 </div>
 <script src="js/sync.js"></script>
 <script>
@@ -473,20 +521,111 @@ function renderOrder() {
   if (plan.length) { html += '<div class="ord-h">В плане, на сайте нет · ' + plan.length + '</div>'; plan.forEach(function (l) { html += row(l, 0, null); }); }
   document.getElementById('panelO').innerHTML = html;
 }
-function showTab(o) {
-  document.getElementById('panelP').hidden = o; document.getElementById('panelO').hidden = !o;
-  document.getElementById('tabP').setAttribute('aria-selected', o ? 'false' : 'true'); document.getElementById('tabO').setAttribute('aria-selected', o ? 'true' : 'false');
-  if (o && !document.getElementById('panelO').innerHTML) renderOrder();
-  if (history.replaceState) history.replaceState(null, '', o ? '#order' : location.pathname);
+var TODO = __TODO__;
+var T_CAT = { walk:'Прохождение', content:'Написать / расширить', proofread:'Вычитка', run:'Прогон запуском', format:'Формат Caddy', fix:'Находка в методичке', decide:'Решение владельца', site:'Сайт и сервер', tidy:'Уборка и записи', idea:'Идея' };
+var T_WHO = { owner:'Владелец', assistant:'Ассистент', both:'Вместе' };
+var T_PRIO = { 1:'Сейчас', 2:'Скоро', 3:'Потом', 4:'Мелочь / идея' };
+var T_ST = { open:'Можно делать', wait:'Ждёт решения', later:'Отложено владельцем' };
+var TF = { q:'', who:'', prio:'', cat:'', st:'', lab:'', hideDone:false, group:'prio' };
+var TDONE_KEY = 'anitech-todo-done';
+function tDone() { try { return JSON.parse(localStorage.getItem(TDONE_KEY) || '{}'); } catch (e) { return {}; } }
+function tSetDone(m) { try { localStorage.setItem(TDONE_KEY, JSON.stringify(m)); } catch (e) {} }
+function tMatch(it, skip, done) {
+  if (skip !== 'who' && TF.who && it.who !== TF.who) return false;
+  if (skip !== 'prio' && TF.prio && String(it.prio) !== TF.prio) return false;
+  if (skip !== 'cat' && TF.cat && it.cat !== TF.cat) return false;
+  if (skip !== 'st' && TF.st && it.st !== TF.st) return false;
+  if (skip !== 'lab' && TF.lab && it.lab !== TF.lab) return false;
+  if (TF.hideDone && done[it.id]) return false;
+  if (TF.q) { var hay = (it.title + ' ' + it.detail + ' ' + it.labTitle + ' ' + it.src).toLowerCase(); if (hay.indexOf(TF.q.toLowerCase()) < 0) return false; }
+  return true;
 }
-document.getElementById('tabP').onclick = function () { showTab(false); };
-document.getElementById('tabO').onclick = function () { showTab(true); };
-if (location.hash === '#order') showTab(true);
+function tChips(label, key, dict, done) {
+  var h = '<div class="frow"><span class="fl">' + label + '</span><button type="button" class="fc" data-k="' + key + '" data-v="" aria-pressed="' + (TF[key] === '' ? 'true' : 'false') + '">все</button>';
+  Object.keys(dict).forEach(function (v) {
+    var n = TODO.items.filter(function (it) { return String(it[key]) === v && tMatch(it, key, done); }).length;
+    h += '<button type="button" class="fc" data-k="' + key + '" data-v="' + v + '" aria-pressed="' + (TF[key] === v ? 'true' : 'false') + '">' + esc(dict[v]) + '<small>' + n + '</small></button>';
+  });
+  return h + '</div>';
+}
+function tItem(it, done, open) {
+  return '<div class="ti' + (done[it.id] ? ' done' : '') + '" data-id="' + it.id + '"><input type="checkbox" aria-label="Отметить сделанным"' + (done[it.id] ? ' checked' : '') + '>'
+    + '<details' + (open ? ' open' : '') + '><summary><span class="tt">' + esc(it.title) + '</span>'
+    + '<div class="tchips"><span class="chip">' + esc(it.labTitle) + '</span><span class="chip">' + esc(T_CAT[it.cat] || it.cat) + '</span>'
+    + '<span class="chip' + (it.who === 'owner' ? ' me' : '') + '">' + esc(T_WHO[it.who]) + '</span><span class="chip p' + it.prio + '">' + esc(T_PRIO[it.prio]) + '</span>'
+    + (it.st !== 'open' ? '<span class="chip ' + it.st + '">' + esc(T_ST[it.st]) + '</span>' : '') + '</div></summary>'
+    + '<div class="tbody">' + esc(it.detail) + '<span class="src">Источник: ' + esc(it.src) + (it.page ? ' · <a href="' + esc(it.page) + '">страница лабы</a>' : '') + '</span></div></details></div>';
+}
+var tOpenAll = null;
+function renderTodo() {
+  var done = tDone(), all = TODO.items, vis = all.filter(function (it) { return tMatch(it, '', done); });
+  function cnt(f) { return all.filter(function (it) { return !done[it.id] && f(it); }).length; }
+  var h = '<div class="td-sum"><div class="row"><span><b>' + cnt(function () { return true; }) + '</b> открытых пунктов</span>'
+    + '<span><b>' + cnt(function (i) { return i.prio === 1; }) + '</b> «сейчас»</span>'
+    + '<span><b>' + cnt(function (i) { return i.who === 'owner'; }) + '</b> на владельце</span>'
+    + '<span><b>' + cnt(function (i) { return i.who === 'assistant'; }) + '</b> на ассистенте</span>'
+    + '<span><b>' + cnt(function (i) { return i.who === 'both'; }) + '</b> вместе</span>'
+    + '<span><b>' + Object.keys(done).filter(function (k) { return all.some(function (i) { return i.id === k; }); }).length + '</b> отмечено у вас</span></div>'
+    + '<p class="td-ctx">Сейчас проходится только Caddy Lab (решение 06.10); остальное — очередь, порядок и темп которой определяет владелец. Список собран 17.10.2026 из журнала состояния, статусов вычитки и проверки, находок по лабам и планов; источник — <code>fixes/common/_todo.json</code>. Галочки хранятся только в этом браузере.</p></div>';
+  h += '<div class="flt"><div class="frow"><span class="fl">Поиск</span><input type="search" id="tq" placeholder="лаба, слово из описания…" value="' + esc(TF.q) + '"></div>'
+    + tChips('Кто', 'who', T_WHO, done) + tChips('Срочность', 'prio', T_PRIO, done) + tChips('Тип', 'cat', T_CAT, done) + tChips('Статус', 'st', T_ST, done)
+    + '<div class="frow"><span class="fl">Лаба</span><select id="tlab"><option value="">все</option>'
+    + TODO.labs.map(function (l) { return '<option value="' + l.key + '"' + (TF.lab === l.key ? ' selected' : '') + '>' + esc(l.title) + ' (' + all.filter(function (i) { return i.lab === l.key; }).length + ')</option>'; }).join('')
+    + '</select><span class="fl" style="min-width:0;margin-left:10px">Группировать</span><select id="tgrp">'
+    + [['prio', 'по срочности'], ['lab', 'по лабам'], ['cat', 'по типу'], ['who', 'по исполнителю']].map(function (g) { return '<option value="' + g[0] + '"' + (TF.group === g[0] ? ' selected' : '') + '>' + g[1] + '</option>'; }).join('')
+    + '</select><label class="chk"><input type="checkbox" id="thide"' + (TF.hideDone ? ' checked' : '') + '> скрыть отмеченные</label>'
+    + '<button type="button" class="fbtn" id="tres">Сбросить</button><button type="button" class="fbtn" id="topen">Развернуть все</button><button type="button" class="fbtn" id="tclose">Свернуть все</button></div></div>';
+  h += '<p class="ord-leg">Показано ' + vis.length + ' из ' + all.length + '.</p>';
+  var G = { prio: T_PRIO, cat: T_CAT, who: T_WHO }, groups = [];
+  if (TF.group === 'lab') groups = TODO.labs.map(function (l) { return [l.key, l.title]; });
+  else groups = Object.keys(G[TF.group]).map(function (k) { return [k, G[TF.group][k]]; });
+  var shown = 0;
+  groups.forEach(function (g) {
+    var part = vis.filter(function (it) { return String(it[TF.group]) === String(g[0]); });
+    if (!part.length) return;
+    shown += part.length;
+    h += '<div class="td-h">' + esc(g[1]) + ' · ' + part.length + '</div>';
+    part.forEach(function (it) { h += tItem(it, done, tOpenAll === null ? it.prio === 1 : tOpenAll); });
+  });
+  if (!shown) h += '<div class="td-empty">Под эти фильтры ничего не попало.</div>';
+  var f = document.activeElement && document.activeElement.id === 'tq', pos = f ? document.activeElement.selectionStart : 0;
+  document.getElementById('panelT').innerHTML = h;
+  if (f) { var q = document.getElementById('tq'); q.focus(); q.setSelectionRange(pos, pos); }
+}
+document.addEventListener('click', function (e) {
+  var t = e.target;
+  if (t.classList && t.classList.contains('fc') && t.closest('#panelT')) { TF[t.getAttribute('data-k')] = t.getAttribute('data-v'); renderTodo(); }
+  else if (t.id === 'tres') { TF = { q:'', who:'', prio:'', cat:'', st:'', lab:'', hideDone:false, group:TF.group }; renderTodo(); }
+  else if (t.id === 'topen') { tOpenAll = true; renderTodo(); }
+  else if (t.id === 'tclose') { tOpenAll = false; renderTodo(); }
+});
+document.addEventListener('input', function (e) { if (e.target.id === 'tq') { TF.q = e.target.value; renderTodo(); } });
+document.addEventListener('change', function (e) {
+  var t = e.target;
+  if (t.id === 'tlab') { TF.lab = t.value; renderTodo(); }
+  else if (t.id === 'tgrp') { TF.group = t.value; renderTodo(); }
+  else if (t.id === 'thide') { TF.hideDone = t.checked; renderTodo(); }
+  else if (t.closest && t.closest('.ti') && t.type === 'checkbox') { var m = tDone(), id = t.closest('.ti').getAttribute('data-id'); if (t.checked) m[id] = 1; else delete m[id]; tSetDone(m); renderTodo(); }
+});
+function showTab(w) {
+  var ids = { p:'panelP', o:'panelO', t:'panelT' }, tabs = { p:'tabP', o:'tabO', t:'tabT' };
+  Object.keys(ids).forEach(function (k) {
+    document.getElementById(ids[k]).hidden = k !== w;
+    document.getElementById(tabs[k]).setAttribute('aria-selected', k === w ? 'true' : 'false');
+  });
+  if (w === 'o' && !document.getElementById('panelO').innerHTML) renderOrder();
+  if (w === 't' && !document.getElementById('panelT').innerHTML) renderTodo();
+  if (history.replaceState) history.replaceState(null, '', w === 'o' ? '#order' : w === 't' ? '#todo' : location.pathname);
+}
+document.getElementById('tabP').onclick = function () { showTab('p'); };
+document.getElementById('tabO').onclick = function () { showTab('o'); };
+document.getElementById('tabT').onclick = function () { showTab('t'); };
+if (location.hash === '#order') showTab('o'); else if (location.hash === '#todo') showTab('t');
 </script>
 </body>
 </html>
 '''
 
-out = TEMPLATE.replace('__ORDER__', json.dumps(ORDERDATA, ensure_ascii=False, separators=(',', ':'))).replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':'))).replace('__PLANNED__', json.dumps(PLANNED, ensure_ascii=False, separators=(',', ':')))
+out = TEMPLATE.replace('__ORDER__', json.dumps(ORDERDATA, ensure_ascii=False, separators=(',', ':'))).replace('__DATA__', json.dumps(data, ensure_ascii=False, separators=(',', ':'))).replace('__TODO__', json.dumps(TODO, ensure_ascii=False, separators=(',', ':'))).replace('__PLANNED__', json.dumps(PLANNED, ensure_ascii=False, separators=(',', ':')))
 open('works/progress.html', 'w', encoding='utf-8').write(out)
 print(f'works/progress.html: {sum(len(g["labs"]) for g in data)} лаб, {len(out) // 1024} КБ')
