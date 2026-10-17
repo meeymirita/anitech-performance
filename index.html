@@ -1367,6 +1367,18 @@
     @media (hover: hover) and (min-width: 901px) { .card .card-note, .card .card-verify { display: none; } }
     @media (hover: none), (max-width: 900px) { #labpop { display: none; } }
     @media (prefers-reduced-motion: reduce) { #labpop { transition: none; } }
+    /* плашка «материалы как есть» (как о куки): полоса снизу, закрытие запоминается в localStorage; картинка — images/notice.jpg */
+    .site-notice { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9000; background: rgba(15,12,18,.96); border-top: 1px solid var(--line); padding: 14px 22px; display: flex; align-items: center; gap: 16px; backdrop-filter: blur(8px); }
+    .site-notice[hidden] { display: none; }
+    .site-notice img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex: none; background: #2a2230; }
+    .site-notice p { flex: 1; margin: 0; font-size: 13.5px; color: var(--text-dim); }
+    .site-notice p a { color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(125,249,255,.5); font-weight: 700; }
+    .site-notice .sn-acts { display: flex; gap: 8px; flex: none; }
+    .site-notice .sn-btn { font: 700 13px 'Onest', system-ui, sans-serif; border: 0; cursor: pointer; padding: 10px 16px; border-radius: 999px; text-decoration: none; display: inline-block; white-space: nowrap; }
+    .site-notice .sn-btn.main { background: var(--pink); color: #fff; }
+    .site-notice .sn-btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    body.has-notice { padding-bottom: 84px; }
+    @media (max-width: 640px) { .site-notice { flex-wrap: wrap; padding: 12px 14px; gap: 10px; } .site-notice p { flex: 1 1 calc(100% - 64px); } .site-notice .sn-acts { width: 100%; } .site-notice .sn-btn { flex: 1; text-align: center; } body.has-notice { padding-bottom: 150px; } }
   </style>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -2996,5 +3008,21 @@
 })();
 </script>
 
+<div class="site-notice" id="siteNotice" role="region" aria-label="Уведомление" hidden>
+  <img src="images/notice.jpg" alt="" width="48" height="48">
+  <p>Материалы лабораторных предоставляются «как есть» — без гарантий и поддержки. Вопросы и замечания — в Telegram: <a href="https://t.me/meeymirita" target="_blank" rel="noopener">@meeymirita</a>.</p>
+  <div class="sn-acts"><a class="sn-btn ghost" href="https://t.me/meeymirita" target="_blank" rel="noopener">Написать</a><button type="button" class="sn-btn main" id="siteNoticeOk">Понятно</button></div>
+</div>
+<script>
+(function () {
+  var KEY = 'anitech-notice-ok', box = document.getElementById('siteNotice');
+  try { if (localStorage.getItem(KEY)) return; } catch (e) {}
+  box.hidden = false; document.body.classList.add('has-notice');
+  document.getElementById('siteNoticeOk').onclick = function () {
+    box.hidden = true; document.body.classList.remove('has-notice');
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+  };
+})();
+</script>
 </body>
 </html>
