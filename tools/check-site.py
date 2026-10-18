@@ -110,6 +110,28 @@ if not os.path.exists('works/verification.html') or ('verification-md-hash: ' + 
 if not os.path.exists('works/js/status.js') or ('verification-md-hash: ' + _hl.sha256(_md.encode()).hexdigest()[:16]) not in read('works/js/status.js'):
     bad('works/js/status.js не соответствует fixes/common/_verification.md (python3 tools/build-verification.py)')
 
+# 5b2. данные страницы лабы в works/js/lab.js: у каждой плитки стека есть описание, desc со списком тем, число сессий = методичка
+try:
+    import subprocess as _sp, json as _j, re as _r2, sys as _s2
+    _js = ("const fs=require('fs');const src=fs.readFileSync('works/js/lab.js','utf8');"
+           "const i=src.search(/(const|var|let) LABS = \\[/);const j=src.indexOf('\\n];',i)+3;"
+           "const LABS=new Function(src.slice(i,j)+';return LABS')();"
+           "console.log(JSON.stringify(LABS.map(l=>({k:l.key,st:(l.stack||[]).length,si:(l.stackInfo||[]).length,se:(l.sessions||[]).length,colon:(l.desc||'').includes(':')}))))")
+    _data = _j.loads(_sp.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
+    _s2.path.insert(0, 'fixes/common/_tools')
+    import bundle as _b
+    for x in _data:
+        if x['si'] < x['st']: bad(f"works/js/lab.js [{x['k']}]: плиток стека {x['st']}, а описаний stackInfo {x['si']} — последние плитки на странице лабы пустые")
+        if not x['colon']: bad(f"works/js/lab.js [{x['k']}]: desc без «:» — счётчик «тем внутри» покажет 0")
+        _t = _b.load('%s/%s.html' % (x['k'], x['k']))
+        _m = _r2.search(r'window\.LAB=(.*);\s*$', _t, _r2.S)
+        if _m:
+            _n = len(_j.JSONDecoder().raw_decode(_m.group(1))[0]['sessions'])
+            if _n != x['se']:
+                bad(f"works/js/lab.js [{x['k']}]: сессий в sessions {x['se']}, в методичке {_n}")
+except Exception as e:
+    bad('проверка данных страниц лаб (lab.js) не выполнилась: %s' % e)
+
 # 5c. страница прогресса и правки шаблона методичек (tools/build-progress.py, tools/patch-manuals.py)
 if not os.path.exists('works/progress.html'):
     bad('нет works/progress.html (python3 tools/build-progress.py)')
