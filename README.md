@@ -52,7 +52,7 @@
 | 20 | [`centrifugo`](centrifugo) | Centrifugo — Realtime Workspace (Laravel + Centrifugo + Vue, 21 сессия, ~62 ч) | Средняя–высокая | [centrifugo-lab](https://github.com/meeymirita/centrifugo-lab) |
 | 21 | [`bash`](bash) | Bash Lab — CoffeeOps, shell и bash с нуля (10 сессий, ~28 ч) | Базовая | [bash-lab](https://github.com/meeymirita/bash-lab) |
 | 22 | [`docker`](docker) | Docker Lab — контейнеры с нуля до релиза (12 сессий, ~44 ч) | Базовая по входу, объёмная | [docker-lab](https://github.com/meeymirita/docker-lab) |
-| 23 | [`traefik`](traefik) | Traefik — reverse proxy, service discovery, TLS | Низкая–средняя | [traefik-lab](https://github.com/meeymirita/traefik-lab) |
+| 23 | [`traefik`](traefik) | Traefik — reverse proxy, service discovery, TLS (11 сессий) | Низкая–средняя | [traefik-lab](https://github.com/meeymirita/traefik-lab) |
 | 24 | [`caddy`](caddy) | Caddy 2 — Edge, reverse proxy с автоматическим HTTPS | Средняя | [caddy-lab](https://github.com/meeymirita/caddy-lab) |
 | 25 | [`kubernetes`](kubernetes) | Kubernetes — от Compose к оркестрации | Средняя–высокая | [kubernetes-lab](https://github.com/meeymirita/kubernetes-lab) |
 
@@ -524,18 +524,21 @@
 
 ## 23. Traefik Lab (`traefik/`)
 
-> **Сложность: низкая–средняя** (инфраструктурная, не про код — backend/frontend уже даны готовыми). Нужно перед стартом: Docker Compose на уровне «поднять сервис и почитать логи»; для новичков в контейнерах есть отдельный вводный раздел 0.
+> **Сложность: низкая–средняя** (инфраструктурная, не про код). Перед стартом Docker знать не обязательно: шаг 1.4 объясняет минимум. **Статус: 🟡 переписана 18.10.2026 (11 сессий, 69 шагов, ~43 ч), проверена запуском в Docker, владелец не проходила.**
 
-**О чём:** reverse proxy и service discovery для стека из нескольких сервисов — без ручной правки конфигов при каждом деплое, через Docker-labels.
+**О чём:** reverse proxy, который сам находит контейнеры: маршруты по меткам, middlewares, балансировка и выкатка без простоя, TLS (mkcert, ACME), TCP/UDP, наблюдаемость.
 
-**Стек:** Traefik 3 + Docker Compose (с заметками про Podman) + Node.js API + статический frontend + PostgreSQL + Adminer.
+**Стек:** Traefik v3.7 + Docker Compose + Node.js API + nginx + PostgreSQL 18 + Adminer; mkcert, Pebble (тестовый ACME-сервер), k6, Prometheus, Grafana.
 
-**Формат:** методичка `traefik.html` — не пройдена, ниже план по оглавлению. Есть отдельный раздел 0 "Введение в Docker с нуля" для тех, кто раньше не работал с контейнерами.
+**Формат:** методичка `traefik.html`, собранная из Markdown-исходников (`traefik/src/`); схемы и «Ожидаемые результаты» настоящие (прогон в Docker-в-Docker). Два режима: «с нуля» и «продолжение» Docker-лабы; итоговая папка `starter/` (шаг 10.5) — то, с чего начнётся Kubernetes-лаба.
 
-**Что внутри (3 сессии):**
-- **Сессия 1** — каталоги и `traefik/traefik.yml`; базовый `docker-compose.yml`; первый роутер через labels на тестовом сервисе `whoami`; dashboard Traefik и его защита; заметка про rootless Podman
-- **Сессия 2** — backend API; frontend с path-routing (`StripPrefix`); PostgreSQL + Adminer за прокси; масштабирование API + healthcheck; цепочка middlewares
-- **Сессия 3** — TLS через `mkcert` (локально) и Let's Encrypt (staging); canary-деплой (weighted round robin); "Production Hell" — финальный сценарий без подсказок
+**Что внутри (11 сессий):**
+- **1–2** — азбука прокси, HTTP и TLS; стенд CoffeeShop; установка Traefik, `traefik.yml`, `docker.sock`, первый маршрут, дашборд
+- **3–4** — Docker provider, правила и приоритеты, сети и порты; middlewares (пути, redirect, headers и CORS, compress, basicAuth, chain)
+- **5–6** — rateLimit, retry, circuitBreaker, forwardAuth, нагрузка k6; балансировка, healthcheck, canary, mirroring, blue/green
+- **7–8** — TLS: mkcert, mTLS, TLS options; ACME на Pebble (HTTP-01, TLS-ALPN-01, DNS-01, wildcard), HTTP/3, переезд на сервер
+- **9** — TCP (PostgreSQL) и UDP (DNS), сервис вне Docker, реальный IP клиента, плагин на Go, миграция v2 → v3
+- **10–11** — журнал JSON, Prometheus и Grafana, трассировка, итоговый стек, Production Hell; итоговое ТЗ без ответа
 
 Модель для понимания: `EntryPoint → Router → Middleware → Service` — весь курс выстроен вокруг этой цепочки.
 

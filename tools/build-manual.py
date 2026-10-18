@@ -26,6 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, 'fixes/common/_tools'))
 import bundle  # noqa: E402
 
+CUR = {'lab': ''}
 BASE = 'centrifugo/centrifugo.html'   # любая интегрированная лаба: шаблон у всех одинаковый
 
 
@@ -36,6 +37,7 @@ def inline(s):
     def keep(m):
         codes.append('<code>' + html.escape(m.group(1), quote=False) + '</code>')
         return '\x00%d\x00' % (len(codes) - 1)
+    s = re.sub(r'``\s?(.+?)\s?``', keep, s)   # ``код с `обратными` кавычками внутри``
     s = re.sub(r'`([^`]+)`', keep, s)
     s = html.escape(s, quote=False)
     s = re.sub(r'\[\[([^\]]+)\]\]', r'<kbd>\1</kbd>', s)
@@ -66,6 +68,11 @@ def blocks(lines, outs=None, ctx=None):
                 j += 1
             body = '\n'.join(lines[i + 1:j])
             if lang == 'svg':
+                if body.strip().startswith('@'):   # @имя -> <лаба>/src/schemes/имя.html (готовая схема, см. <лаба>/src/schemes.py)
+                    sp = os.path.join(ROOT, CUR['lab'], 'src', 'schemes', body.strip()[1:] + '.html')
+                    out.append(read(sp) if os.path.exists(sp) else '<!-- scheme-missing: %s -->' % body.strip())
+                    i = j + 1
+                    continue
                 out.append('<div class="diagram" style="margin:14px 0;overflow-x:auto;text-align:center">%s</div>' % body)
                 i = j + 1
                 continue
@@ -228,7 +235,10 @@ def transcript(body, hidden):
 DIND_PRELUDE = """exec 2>&1
 export HOME=/work
 cd /work
-mkdir -p /opt/ch; echo 'connect-to = localhost::%(dind)s:' > /opt/ch/.curlrc; export CURL_HOME=/opt/ch
+mkdir -p /opt/ch; for h in %(hosts)s; do echo "connect-to = $h::%(dind)s:"; done > /opt/ch/.curlrc; export CURL_HOME=/opt/ch
+export TARGET_IP=$(getent hosts %(dind)s | awk '{print $1}')
+{ grep -v localhost /etc/hosts; for h in %(hosts)s; do echo "$TARGET_IP $h"; done; } > /tmp/hosts.new && cat /tmp/hosts.new > /etc/hosts
+if [ -f /work/.local/share/mkcert/rootCA.pem ]; then cp /work/.local/share/mkcert/rootCA.pem /usr/local/share/ca-certificates/mkcert.crt && update-ca-certificates >/dev/null 2>&1; fi
 """
 
 
@@ -254,7 +264,7 @@ def dind_up(lab, reset):
     raise SystemExit('демон dind не поднялся')
 
 
-def run_all(lab, sessions, only=None):
+def run_all(lab, sessions, only=None, save=None):
     """Выполняет блоки `run` сессий по порядку в одной рабочей папке; возвращает {(сессия, номер блока): вывод}."""
     image = lab + '-check'
     subprocess.run(['docker', 'build', '-q', '-t', image, os.path.join(ROOT, lab)], check=True, stdout=subprocess.DEVNULL)
@@ -276,7 +286,7 @@ def run_all(lab, sessions, only=None):
                     blocks(st['sec'][key][2], None, ctx)
             for d in st['sec']['deep']:
                 blocks(d[2], None, ctx)
-        script = (DIND_PRELUDE % {'dind': dind}) if conf.get('dind') else 'exec 2>&1\ncd /work\n'
+        script = (DIND_PRELUDE % {'dind': dind, 'hosts': ' '.join(conf.get('connect_hosts') or ['localhost'])}) if conf.get('dind') else 'exec 2>&1\ncd /work\n'
         for k, (c, hid) in enumerate(codes):
             script += transcript(c, hid) + '\necho "@@END:%d"\n' % k
         sp_name = '.s%d.sh' % s['n']
@@ -291,26 +301,30 @@ def run_all(lab, sessions, only=None):
         txt = re.sub(r'/work/\.s\d+\.sh: (line \d+: )?', 'bash: ', txt)   # сообщения как в интерактивной оболочке
         if conf.get('dind'):   # без терминала docker печатает все стадии загрузки слоёв; в терминале остаются только итоговые строки
             txt = re.sub(r'^[0-9a-f]{12}: (Pulling fs layer|Download complete|Waiting|Verifying Checksum|Downloading|Extracting).*\n', '', txt, flags=re.M)
+        txt = re.sub(r' via %s:\d+' % re.escape(dind), '', txt) if conf.get('dind') else txt   # curl с --connect-to добавляет «via демон:порт»
         chunks = re.split(r'@@END:\d+\n?', txt)
         for k in range(len(codes)):
             res['%d:%d' % (s['n'], k)] = chunks[k].rstrip('\n') if k < len(chunks) else ''
-        print('сессия %d: выполнено блоков %d' % (s['n'], len(codes)))
+        print('сессия %d: выполнено блоков %d' % (s['n'], len(codes)), flush=True)
+        if save:
+            save(res)
     return res
 
 
 # ───────────────────────── сборка ─────────────────────────
 def build(lab, run=False, check_only=False, only=None):
+    CUR['lab'] = lab
     meta, intro, sessions, theory, refs, gloss = parse(lab)
     cache_path = os.path.join(ROOT, lab, 'src', 'outputs.json')
     if run:
-        res = run_all(lab, sessions, only)
-        if only and os.path.exists(cache_path):
-            old = json.load(open(cache_path, encoding='utf-8'))
-            old = {k: v for k, v in old.items() if int(k.split(':')[0]) not in only}
-            old.update(res)
-            res = old
-        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-        json.dump(res, open(cache_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        old0 = json.load(open(cache_path, encoding='utf-8')) if (only and os.path.exists(cache_path)) else {}
+
+        def save(r):
+            m = {k: v for k, v in old0.items() if int(k.split(':')[0]) not in (only or set())}
+            m.update(r)
+            os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+            json.dump(m, open(cache_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        run_all(lab, sessions, only, save)
     cache = json.load(open(cache_path, encoding='utf-8')) if os.path.exists(cache_path) else {}
 
     units, sess_out = [], []
@@ -393,6 +407,7 @@ def build(lab, run=False, check_only=False, only=None):
     # проверка структуры
     keys = {u['key'] for u in units}
     assert len(keys) == len(units), 'повторяются ключи'
+    assert 'scheme-missing' not in json.dumps(units, ensure_ascii=False), 'нет файла схемы: ' + re.findall(r'scheme-missing: (@[\w-]+)', json.dumps(units, ensure_ascii=False))[0]
     for s in sess_out:
         for k in s['steps']:
             assert k in keys

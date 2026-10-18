@@ -7,7 +7,6 @@
   <meta name="description" content="Сборный репозиторий лабораторных работ: PHP, алгоритмы, Laravel, Laravel Performance, Inertia, PostgreSQL, RabbitMQ, Redis, JavaScript, TypeScript, Vue, Nuxt, Angular, Node.js, Express, NestJS, GraphQL, Centrifugo, Bash, Docker, Traefik, Caddy, Kubernetes.">
 <!-- seo:start -->
 <link rel="canonical" href="https://anitech.meeymirita.ru/">
-<meta name="google-site-verification" content="gmPNUAXLfo28woGDW-c9NAMEAXEOm15RIeGPajRfETA" />≈
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ANITECH PERFORMANCE">
 <meta property="og:locale" content="ru_RU">
@@ -1903,14 +1902,13 @@
     },
     {
       key: 'traefik',
-      stage: 'Перестройка: готовится большая версия, сейчас — старый короткий план',
       category: 'devops',
       title: 'Traefik Lab',
       subtitle: 'Reverse proxy, service discovery, TLS',
       image: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.png',
-      desc: 'Reverse proxy и service discovery для стека из нескольких сервисов без ручной правки конфигов: EntryPoint → Router → Middleware → Service, TLS, canary-деплой.',
-      stack: ['Traefik 3', 'Docker Compose', 'Node.js', 'PostgreSQL'],
-      note: 'Нужен Docker; публичный домен — только для Let\'s Encrypt (проверяете сами), локально — mkcert.',
+      desc: 'Reverse proxy, который сам находит контейнеры: маршруты, middleware, балансировка и canary, TLS (mkcert, ACME), TCP/UDP и наблюдаемость на сквозном проекте CoffeeShop — от трёх открытых портов до одного входа.',
+      stack: ['Traefik v3.7', 'Docker Compose', 'Node.js', 'PostgreSQL', 'Prometheus'],
+      note: 'Нужен Docker; реальный домен и токен DNS-провайдера — только для настоящего Let\'s Encrypt (в лабе вместо него тестовый сервер Pebble); mkcert и psql 17+ ставятся по ходу.',
       difficulty: 'Низкая–средняя',
       open: 'https://meeymirita-files.storage.yandexcloud.net/traefik/traefik.html',
       repo: 'https://github.com/meeymirita/traefik-lab',

@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | `bash` (новая) | 9 | ~36 | самостоятельная | [`bash/bash_lab_plan.md`](../bash/bash_lab_plan.md) |
 | `docker` (**готова 13.10.2026**: 12 сессий, 77 шагов; Swarm не вошёл) | 12 | ~44 | самостоятельная; Bash — желательно, но не обязателен | [`docker/docker_lab_plan.md`](../docker/docker_lab_plan.md) |
-| `traefik` (переписывается) | 10 | ~40 | продолжение Docker **или** самостоятельная | [`traefik/traefik_lab_plan.md`](../traefik/traefik_lab_plan.md) |
+| `traefik` (**готова 18.10.2026**: 11 сессий, 69 шагов) | 11 | ~43 | продолжение Docker **или** самостоятельная | [`traefik/traefik_lab_plan.md`](../traefik/traefik_lab_plan.md) |
 | `kubernetes` (переписывается, вместе с Helm) | 13 | ~52 | продолжение Traefik **или** самостоятельная | [`kubernetes/kubernetes_lab_plan.md`](../kubernetes/kubernetes_lab_plan.md) |
 | `ansible` (новая) | 10 | ~40 | продолжение Docker **или** самостоятельная (есть `starter/`); идёт **последней** | [`ansible/ansible_lab_plan.md`](../ansible/ansible_lab_plan.md) |
 
@@ -95,7 +95,7 @@ Caddy (идёт, сессии 4–13) ─▶ Bash ─▶ Docker ─▶ Traefik �
 | **0** | Заготовки репозиториев `bash-lab`, `ansible-lab` и планы во всех пяти папках | **сделано 11.10.2026** |
 | **1** | **Bash**: методичка 9 сессий, среда `bash:5`, сухой прогон всех скриптов в контейнере, вычитка | все скрипты проходят в контейнере; `shellcheck` без замечаний |
 | **2** | **Docker** ✅ 13.10: `docker.html` переписана (12 сессий), прогон в Docker-в-Docker; `starter/` собирается в шаге 11.5 (в репозиторий не кладётся — копируется при написании лабы-продолжения); образ в GHCR — самостоятельно (токен) | `docker compose up` на чистой папке поднимает сайт — проверено |
-| **3** | **Traefik**: переписать `traefik.html` (10 сессий), прогон (включая mkcert, canary; ACME/DNS — «на сухую»), `starter/` | стек CoffeeShop за Traefik, все middleware отработали |
+| **3** | **Traefik** ✅ 18.10: `traefik.html` переписана (11 сессий), прогон в Docker-в-Docker (mkcert, canary, ACME на Pebble); `starter/` собирается в шаге 10.5 (в репозиторий не кладётся) | стек CoffeeShop за Traefik, все middleware отработали |
 | **4** | **Kubernetes + Helm**: переписать `kubernetes.html` (13 сессий), прогон на kind (с Calico для `NetworkPolicy`), umbrella-chart | `helm install` на чистом kind даёт рабочий сайт; `upgrade`/`rollback` проверены |
 | **5** | **Ansible**: методичка 10 сессий, стенд из контейнеров с `sshd`, прогон playbook’ов (в т. ч. `changed=0` на втором запуске), `starter/` | выкатка CoffeeShop на «серверы» воспроизводима с нуля |
 | **6** | Интеграция каждой готовой лабы по `fixes/common/_checklist-new-lab.md` (карточка, реестры, прогресс, SEO), записи в `_order.md`, `_proofread.md`, `_verification.md`, `changelog.html` | `python3 tools/check-site.py` → OK |
