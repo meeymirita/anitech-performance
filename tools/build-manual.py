@@ -6,6 +6,7 @@
     python3 tools/build-manual.py bash            # собрать, подставив сохранённые результаты запусков
     python3 tools/build-manual.py bash --run      # сначала выполнить блоки «run» в Docker (образ <лаба>-lab) и обновить результаты
     python3 tools/build-manual.py bash --check    # только проверка структуры
+    python3 tools/build-manual.py kubernetes --allow-missing   # собрать, даже если у части блоков нет вывода (остаётся пометка «вывод не получен»)
     python3 tools/build-manual.py docker --run --sessions 3,4   # (режим dind) выполнить только эти сессии, не сбрасывая стенд, результаты слить с прежними
 Если рядом с исходниками есть `src/run.json` вида {"dind": true}, блоки выполняются в изолированном Docker-в-Docker (docker:dind):
 свой демон, свои образы и тома — настоящий Docker Mac пользователя не затрагивается; HOME=/work, `localhost` указывает на демон.
@@ -353,7 +354,7 @@ def build(lab, run=False, check_only=False, only=None):
                     ids, state['pending'] = state['pending'], []
                     if not ids:
                         return '(нет вывода)'
-                    return '\n'.join(cache.get(i, '(вывод не получен: запусти сборку с --run)') for i in ids)
+                    return '\n'.join(cache.get(i, '(вывод не получен: этот блок ещё не прогонялся запуском, настоящий вывод появится после прогона)') for i in ids)
                 return {'run': runner, 'take': taker}
             ctx = mk_ctx()
             d = dict(key='step-%s' % st['num'].replace('.', '-'), kind='step', num=st['num'], title=st['title'], short=st['short'],
@@ -414,7 +415,8 @@ def build(lab, run=False, check_only=False, only=None):
     for u in units:
         if u['kind'] == 'step':
             assert u['intro'] and u['quiz'], 'пустой intro или quiz: ' + u['key']
-            assert '(вывод не получен' not in json.dumps(u, ensure_ascii=False), 'нет вывода запусков: ' + u['key']
+            if '--allow-missing' not in sys.argv:
+                assert '(вывод не получен' not in json.dumps(u, ensure_ascii=False), 'нет вывода запусков: ' + u['key']
     print('структура ок: сессий %d, шагов %d, блоков теории/справки %d' % (len(sess_out), sum(1 for u in units if u['kind'] == 'step'), sum(1 for u in units if u['kind'] != 'step')))
     if check_only:
         return
