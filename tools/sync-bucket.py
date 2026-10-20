@@ -13,6 +13,7 @@
 Что лежит в бакете:
     <лаба>/<лаба>.html      методичка        ← <лаба>/<лаба>.html
     <лаба>/README.md        README           ← <лаба>/README.md
+    <лаба>/<имя>.dump       стартовый дамп базы ← <лаба>/starter/<имя>.dump (Prisma Lab: rental-legacy.dump)
     <лаба>/thumb.webp       миниатюра        ← works/images/thumbs/<лаба>.webp
     <лаба>/og.jpg           картинка для превью ссылок (SEO) ← works/images/og/<лаба>.jpg (jpeg 1200 px; `sips -s format jpeg -s formatOptions 65 -Z 1200`)
     <лаба>/<имя>.png        обложка          ← works/images/<лаба>.png (имя — из ссылки `image:` в index.html)
@@ -35,7 +36,7 @@ os.chdir(ROOT)
 
 BACKUP = 'old_files/last-sync/'
 TYPES = {'.html': 'text/html; charset=utf-8', '.md': 'text/markdown; charset=utf-8', '.png': 'image/png',
-         '.jpg': 'image/jpeg', '.webp': 'image/webp'}
+         '.jpg': 'image/jpeg', '.webp': 'image/webp', '.dump': 'application/octet-stream'}
 
 
 def build_manifest():
@@ -48,6 +49,10 @@ def build_manifest():
         m[f'{k}/{k}.html'] = f'{k}/{k}.html'
         if os.path.isfile(f'{k}/README.md'):
             m[f'{k}/README.md'] = f'{k}/README.md'
+        if os.path.isdir(f'{k}/starter'):          # стартовые дампы баз (Prisma Lab): <лаба>/starter/*.dump → <лаба>/<имя>.dump
+            for f in sorted(os.listdir(f'{k}/starter')):
+                if f.endswith('.dump'):
+                    m[f'{k}/{f}'] = f'{k}/starter/{f}'
         m[f'{k}/thumb.webp'] = f'works/images/thumbs/{k}.webp'
         if os.path.isfile(f'works/images/og/{k}.jpg'):
             m[f'{k}/og.jpg'] = f'works/images/og/{k}.jpg'
