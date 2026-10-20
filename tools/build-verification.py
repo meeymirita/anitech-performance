@@ -100,7 +100,7 @@ print('works/verification.html собран, hash', h)
 # ── works/js/status.js: статус каждой лабы для карточки на главной и страницы лабы (единый источник — таблица «По лабам») ──
 KEYS = {'Algorithms PHP': 'algorithms-php', 'Laravel Performance': 'laravel-performance', 'CSS': 'css', 'Tailwind': 'tailwind',
         'Inertia': 'inertia', 'Kubernetes': 'kubernetes', 'Docker': 'docker', 'Traefik': 'traefik', 'Caddy': 'caddy',
-        'ООП (php-coffee)': 'php-coffee', 'Чистый PHP': 'php', 'PostgreSQL': 'postgresql', 'Redis': 'redis', 'RabbitMQ': 'rabbitmq',
+        'ООП (php-coffee)': 'php-coffee', 'Чистый PHP': 'php', 'PostgreSQL': 'postgresql', 'Prisma': 'prisma', 'Redis': 'redis', 'RabbitMQ': 'rabbitmq',
         'Laravel': 'laravel', 'NestJS': 'nestjs', 'GraphQL': 'graphql', 'JS': 'js', 'TypeScript': 'typescript', 'Vue': 'vue',
         'Nuxt': 'nuxt', 'Angular': 'angular', 'Centrifugo': 'centrifugo', 'Bash': 'bash', 'Express': 'express'}
 import json
