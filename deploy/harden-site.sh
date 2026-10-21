@@ -10,7 +10,7 @@ set -euo pipefail
 CADDYFILE="${CADDYFILE:-/etc/caddy/Caddyfile}"
 SNIPPET="${SNIPPET:-/etc/caddy/anitech-hardening.conf}"
 CADDY_BIN="${CADDY_BIN:-caddy}"
-ANCHOR='root * /var/www/anitech-performance'
+ANCHOR='root * /var/sites/anitech_performance'
 
 [ -f "$CADDYFILE" ] || { echo "нет $CADDYFILE" >&2; exit 1; }
 grep -qF "$ANCHOR" "$CADDYFILE" || { echo "в Caddyfile не нашёл строку '$ANCHOR' — вставьте вручную" >&2; exit 1; }

@@ -2,11 +2,11 @@
 # Деплой сайта на сервер: подтянуть репозиторий и выложить в папку, которую раздаёт Caddy.
 # Запускается таймером systemd раз в минуту (deploy/anitech-deploy.timer). Руками: sudo /opt/anitech-src/deploy/deploy-site.sh
 # Страницы /mira/ и /mira-login/ защищены паролем на уровне Caddy (deploy/protect-mira.sh) — здесь только копируются.
-# Меняется только содержимое /var/www/anitech-performance; если ничего не изменилось — выходит сразу.
+# Меняется только содержимое /var/sites/anitech_performance; если ничего не изменилось — выходит сразу.
 set -euo pipefail
 
-SRC="${SRC:-/opt/anitech-src}"                 # клон репозитория
-WEB="${WEB:-/var/www/anitech-performance}"     # root в Caddyfile
+SRC="${SRC:-/opt/anitech-src}"                     # клон репозитория
+WEB="${WEB:-/var/sites/anitech_performance}"       # root в Caddyfile
 STATE="${STATE:-/var/lib/anitech-deploy.rev}"  # какая версия уже выложена
 export GIT_TERMINAL_PROMPT=0
 

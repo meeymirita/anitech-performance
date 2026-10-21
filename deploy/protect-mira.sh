@@ -9,7 +9,7 @@ set -euo pipefail
 CADDYFILE="${CADDYFILE:-/etc/caddy/Caddyfile}"
 SNIPPET="${SNIPPET:-/etc/caddy/mira-auth.conf}"
 CADDY_BIN="${CADDY_BIN:-caddy}"
-ANCHOR='root * /var/www/anitech-performance'
+ANCHOR='root * /var/sites/anitech_performance'
 USER_NAME=mira
 
 [ -f "$CADDYFILE" ] || { echo "нет $CADDYFILE" >&2; exit 1; }

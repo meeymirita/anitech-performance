@@ -6,7 +6,7 @@
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "запустите от root" >&2; exit 1; }
 
-WEB=/var/www/anitech-performance
+WEB=/var/sites/anitech_performance
 SRC=/opt/anitech-src
 REPO=https://github.com/meeymirita/anitech-performance.git
 
