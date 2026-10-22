@@ -84,6 +84,8 @@ def blocks(lines, outs=None, ctx=None):
             else:
                 if 'run' in flags and ctx is not None:
                     ctx['run'](body, 'hidden' in flags)
+                elif ctx is not None and ctx.get('file'):
+                    ctx['file'](lang, body, flags)   # файл (флаг file=путь или путь в первой строке-комментарии) записывается перед следующим блоком run
                 if 'hidden' not in flags:
                     out.append(pre(lang, body))
             i = j + 1
@@ -193,6 +195,10 @@ def parse(lab):
             for ln in body.split('\n'):
                 h = re.match(r'^### (intro|result|why|deep|quiz|outro|links)\s*(.*)$', ln)
                 if h:
+                    if h.group(1) != 'deep' and h.group(1) in sec:   # повторный «### result» продолжает раздел, а не стирает прежний текст
+                        cur = sec[h.group(1)]
+                        cur[2].append('')
+                        continue
                     cur = [h.group(1), h.group(2), []]
                     if h.group(1) == 'deep':
                         sec['deep'].append(cur)
@@ -272,7 +278,7 @@ def run_all(lab, sessions, only=None, save=None):
     conf_path = os.path.join(ROOT, lab, 'src', 'run.json')
     conf = json.load(open(conf_path)) if os.path.exists(conf_path) else {}
     if conf.get('dind'):
-        net, dind, work = dind_up(lab, reset=only is None)
+        net, dind, work = dind_up(lab, reset=only is None or bool(os.environ.get('RESET')))
     else:
         work = tempfile.mkdtemp(prefix=lab + '-work-')
     res = {}
@@ -280,7 +286,49 @@ def run_all(lab, sessions, only=None, save=None):
         if only and s['n'] not in only:
             continue
         codes = []
-        ctx = {'run': lambda b, h=False: codes.append((b, h)), 'take': lambda: ''}
+        pend = []
+
+        def add_file(lang, body, flags, _p=pend):
+            if 'nofile' in flags:   # иллюстрация, а не файл для записи
+                return
+            path = next((f[5:] for f in flags if f.startswith('file=')), None)
+            if not path:
+                m = re.match(r'^(?://|--|#) ?([\w./-]+\.(?:ts|sql|prisma|json|ya?ml|js|mjs|env)|\.env|Dockerfile)\s*$', body.split('\n', 1)[0])
+                path = m.group(1) if m else None   # строка вида «// путь — пояснение» — правка части файла, не весь файл
+            if 'schema' in flags and conf.get('files_root'):   # блок моделей: внести в prisma/schema.prisma (заменив одноимённые)
+                _p.append('node /usr/local/bin/schema-merge.mjs %s/prisma/schema.prisma <<\'__EOF__\'\n%s\n__EOF__\n' % (conf['files_root'], body))
+                return
+            ipath = next((f[5:] for f in flags if f.startswith('into=')), None)   # записать в файл, найденный по маске (папка миграции с меткой времени)
+            if ipath and conf.get('files_root'):
+                _p.append('cat > "$(ls %s/%s)" <<\'__EOF__\'\n%s\n__EOF__\n' % (conf['files_root'], ipath, body))
+                return
+            spl = next((f[7:] for f in flags if f.startswith('splice=')), None)   # вставить блок в файл ПЕРЕД первой строкой, подходящей под регулярку: splice=путь@регулярка
+            if spl and conf.get('files_root'):
+                sp_path, _, sp_re = spl.partition('@')
+                b_ = body.split('\n', 1)[1] if body.lstrip().startswith(('//', '--', '#')) else body
+                _p.append("cat > /tmp/_splice.txt <<'__EOF__'\n%s\n__EOF__\nnode -e 'const fs=require(\"fs\");const [p,re,f]=process.argv.slice(1);let s=fs.readFileSync(p,\"utf8\");const m=new RegExp(re,\"m\").exec(s);if(!m){console.error(\"splice: нет совпадения\");process.exit(1)}const at=s.lastIndexOf(\"\\n\",m.index)+1;s=s.slice(0,at)+fs.readFileSync(f,\"utf8\")+\"\\n\"+s.slice(at);fs.writeFileSync(p,s)' %s/%s '%s' /tmp/_splice.txt\n" % (b_, conf['files_root'], sp_path, sp_re))
+                return
+            tpath = next((f[5:] for f in flags if f.startswith('tail=')), None)   # дописать в конец файла, найденного по маске
+            if tpath and conf.get('files_root'):
+                b_ = body.split('\n', 1)[1] if body.lstrip().startswith(('//', '--', '#')) else body
+                _p.append('cat >> "$(ls %s/%s)" <<\'__EOF__\'\n%s\n__EOF__\n' % (conf['files_root'], tpath, b_))
+                return
+            ppath = next((f[8:] for f in flags if f.startswith('prepend=')), None)   # дописать в начало файла, найденного по маске
+            if ppath and conf.get('files_root'):
+                b_ = body.split('\n', 1)[1] if body.lstrip().startswith(('//', '--', '#')) else body
+                _p.append('__f="$(ls %s/%s)"; cat - "$__f" > "$__f.new" <<\'__EOF__\'\n%s\n__EOF__\nmv "$__f.new" "$__f"\n' % (conf['files_root'], ppath, b_))
+                return
+            apath = next((f[7:] for f in flags if f.startswith('append=')), None)   # дописать в конец файла (первая строка-комментарий отбрасывается)
+            if apath and conf.get('files_root'):
+                b_ = body.split('\n', 1)[1] if body.lstrip().startswith(('//', '--', '#')) else body
+                _p.append('cat >> %s/%s <<\'__EOF__\'\n%s\n__EOF__\n' % (conf['files_root'], apath, b_))
+            if path and conf.get('files_root'):
+                _p.append('mkdir -p "$(dirname %s/%s)"; cat > %s/%s <<\'__EOF__\'\n%s\n__EOF__\n' % (conf['files_root'], path, conf['files_root'], path, body))
+
+        def add_run(b, h=False, _p=pend):
+            codes.append((''.join(_p) + ('' if not _p else ''), b, h))
+            del _p[:]
+        ctx = {'run': add_run, 'take': lambda: '', 'file': add_file}
         for st in s['steps']:
             for key in ('intro', 'result', 'why', 'outro'):
                 if key in st['sec']:
@@ -288,8 +336,11 @@ def run_all(lab, sessions, only=None, save=None):
             for d in st['sec']['deep']:
                 blocks(d[2], None, ctx)
         script = (DIND_PRELUDE % {'dind': dind, 'hosts': ' '.join(conf.get('connect_hosts') or ['localhost'])}) if conf.get('dind') else 'exec 2>&1\ncd /work\n'
-        for k, (c, hid) in enumerate(codes):
-            script += transcript(c, hid) + '\necho "@@END:%d"\n' % k
+        for k_, v_ in (conf.get('env') or {}).items():
+            script += 'export %s=%s\n' % (k_, v_)
+        script += ''.join(l_ + '\n' for l_ in (conf.get('prelude') or []))
+        for k, (pre_, c, hid) in enumerate(codes):
+            script += pre_ + transcript(c, hid) + '\necho "@@END:%d"\n' % k
         sp_name = '.s%d.sh' % s['n']
         if conf.get('dind'):
             subprocess.run(['docker', 'exec', '-i', dind, 'sh', '-c', 'cat > /work/' + sp_name], input=script, text=True, check=True)
