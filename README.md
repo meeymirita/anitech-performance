@@ -136,14 +136,19 @@
 
 **Стек:** TypeScript 6.0 (код проверен и на 5.9) + Node 24+ (LTS) + `tsx` + Vitest + Zod, в финале — Express и Vue 3 + TS. Отдельный репозиторий на npm workspaces: `packages/core`, `cli`, `api`, `web`. Всё в Docker.
 
-**Формат:** методичка `typescript.html` — не пройдена, ниже план по оглавлению. Каждый шаг заканчивается зелёным `npm run typecheck` — это главный критерий готовности.
+**Формат:** методичка `typescript.html` — 10 сессий (сессии 6–10 добавлены 21.10.2026); **статус ✅: проверена запуском и вычитана ассистентом (24.10.2026)**; ниже план по оглавлению. Каждый шаг заканчивается зелёным `npm run typecheck` — это главный критерий готовности.
 
-**Что внутри (5 сессий, порядок строгий):**
+**Что внутри (10 сессий, порядок строгий):**
 - **Сессия 1** — стенд (Docker, workspaces, `tsconfig.base`, `tsx`, Vitest); песочница: аннотации, вывод типов, примитивы/объекты, union и литералы, `type` vs `interface`, функции, `any`/`unknown`/`never`, `strict`, `as const`
 - **Сессия 2** — домен склада: branded IDs, размеченное объединение `Movement`, exhaustive `switch`, `Result` вместо исключений, type predicates, `readonly` — `applyMovement` с тестами, невозможные состояния невыразимы на уровне типов
 - **Сессия 3** — generics и абстракции: `Repository<T>`, `TypedEmitter<Events>`, mapped/conditional/template literal types, `satisfies` — сервис `Warehouse`, собранный из типизированных кубиков
 - **Сессия 4** — CLI: `parseArgs`, команды как union из template literal types, валидация через Zod и `z.infer`, `unknown` в `catch`, `.d.ts` для JS, сборка esbuild — рабочий `wh`: `item:add`, `stock:in/out/transfer/list/low`, `import:csv`
 - **Сессия 5** — сквозная типизация: `ApiContract`, generic-клиент с conditional types, Express + Zod на бэкенде, Vue 3 + TS (`defineProps`/`defineEmits` с generics, типизированный store), `vue-tsc` — один источник типов и в API, и в браузере
+- **Сессия 6** — conditional types и `infer`: голый и обёрнутый параметр, `infer K extends …`, `Filter<T>`, `FilterKey` из template literal, граница строки `--query` — `stock:filter` в CLI
+- **Сессия 7** — стандартные декораторы TS 5 (метод, класс, аксессор), `context.addInitializer`, `Token<T>` и `Container`, `bootstrap()` вместо ручной сборки (в тестах Vitest 5 нужен `unplugin-swc`)
+- **Сессия 8** — тесты на типы: когда `expectTypeOf` на самом деле проверяет, `*.types.test.ts`, регрессия на `MovementOf`, скрипт-аудит `@ts-expect-error`
+- **Сессия 9** — project references: `composite`, `tsc -b`, declaration maps, два условия в `exports`, `paths`, `.tsbuildinfo`, кеш в CI
+- **Сессия 10** — итоговое ТЗ без решения: журнал аудита складских операций
 
 ---
 
@@ -597,7 +602,7 @@
 
 **Формат:** методичка [`kubernetes.html`](kubernetes/kubernetes.html) — 16 сессий, 108 шагов, ~64 ч, 18 схем; в каждой сессии шаг 🔨 «сломать → починить», сессия 8 и 15 — «Production Hell», сессия 16 — итоговое ТЗ без ответа. Собрана из `kubernetes/src/*.md` (`tools/build-manual.py kubernetes`).
 
-**Статус: ⬜ написана 20.10.2026** (19 сессий, 126 шагов, 16 схем); дамп `rental-legacy.dump` (12 МБ) сгенерирован и проверен, [скачивается с сайта](https://meeymirita-files.storage.yandexcloud.net/prisma/rental-legacy.dump); **блоки в Docker не прогонялись** (в «Ожидаемом результате» стоит пометка «вывод не получен»), построчно не вычитана, владелец не проходила.
+**Статус: ⬜ переписана 20.10.2026** (16 сессий, 108 шагов, ~64 ч, 18 схем); **блоки в Docker не прогонялись** (в «Ожидаемом результате» стоит пометка «вывод не получен»), построчно не вычитана, прохождения не было. Вход — `starter/` из шага 10.5 Traefik-лабы.
 
 **Что внутри (16 сессий):**
 - **Сессия 1 · Азбука и окружение** — зачем оркестратор, kind-кластер из трёх узлов, kubectl и helm, проверка starter/
@@ -629,7 +634,7 @@
 
 **Формат:** методичка [`prisma.html`](prisma/prisma.html) — 18 сессий и 19-я итоговая без ответа, ~76 ч. Собрана из `prisma/src/*.md` (`tools/build-manual.py prisma`).
 
-**Статус: ⬜ написана 20.10.2026; блоки методички не запускались (дамп базы сгенерирован и проверен), построчно не вычитана** (в «Ожидаемом результате» стоит пометка «вывод не получен»). План — `prisma/prisma_lab_plan.md`.
+**Статус: ✅ написана 20.10.2026 (19 сессий, 126 шагов, ~76 ч); 22.10.2026 прогнана целиком в Docker (PostgreSQL 18.6, Node 24, Prisma 7.10.1, TypeScript 6.0, Vitest 5): все блоки выполнены по порядку с чистой базы из дампа, 119 блоков «Ожидаемого результата» — настоящий вывод; 24.10.2026 вычитана построчно, все места «сверьтесь» проверены запуском на отдельной базе, проверены PgBouncer 1.26.1 и сборка образа из шага 18.4 (найдена и исправлена ошибка: без `rewriteRelativeImportExtensions` контейнер не стартовал). Не запускался workflow на самом GitHub (внешний ресурс) и Prisma 8 (только справка). Подробности — `fixes/backend/prisma.md`; план — `prisma/prisma_lab_plan.md`.**
 
 ---
 
