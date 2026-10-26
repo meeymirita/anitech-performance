@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Проверка всех внешних ссылок (md, сайт, методички). Код 429 (лимит запросов) считается ОК. Запуск: python3 tools/audit-links.py
+"""Проверка всех внешних ссылок (md, сайт, методички). Коды 429 (лимит запросов) и 403 (защита от ботов) считаются ОК; примеры из методичек (адреса контейнеров, .test/.example, не-ASCII) пропускаются. Запуск: python3 tools/audit-links.py
 (в CI — .github/workflows/links.yml раз в неделю; падает, если есть битые ссылки)"""
 import re,os,sys,json,glob,subprocess,urllib.request,urllib.error,ssl,socket
 from concurrent.futures import ThreadPoolExecutor
@@ -23,7 +23,16 @@ for d in sorted(x for x in os.listdir('.') if os.path.isfile(f'{x}/{x}.html')):
     t=bundle.load(f'{d}/{d}.html')
     for u in re.findall(r'https?://[^\s<>"\'`\)\\]+',t): add(u,f'{d}/{d}.html')
 skip=re.compile(r'(localhost|127\.0\.0\.1|example\.(com|org)|\.localhost|0\.0\.0\.0|\$\{|\{|your-|<)',re.I)
-todo=[u for u in urls if not skip.search(u)]
+# примеры из методичек, а не настоящие ссылки: адреса контейнеров и частных сетей, служебные и несуществующие хосты, не-ASCII, «.test/.example/.invalid»
+def fake(u):
+    if not u.isascii() or '&lt;' in u or '$' in u: return True
+    m=re.match(r'https?://([^/:?#]*)',u); h=(m.group(1) if m else '').lower()
+    if not h or '.' not in h: return True                                  # http://api, http://nginx, http://x
+    if re.fullmatch(r'(10|172|192)\.\d+\.\d+\.\d+|\d+\.\d+\.\d+\.\d+|172\.x\.x\.x',h): return True
+    if re.search(r'\.(test|example|invalid|local|internal)$|^(host\.docker\.internal|example)$|evil|broken|nosuch|fonts\.(googleapis|gstatic)\.com$',h): return True
+    if re.search(r'kubernetes\.default\.svc|token\.actions\.githubusercontent\.com|specs\.apollo\.dev/federation|stefanprodan\.github\.io/podinfo|github\.com/user/repo|/settings/secrets|works-lab/main/images/|Vue_Lab_Helpdesk|anitech\.meeymirita\.ru/works/$',u): return True   # не страницы: API/репозиторий Helm/спека/требуют входа/упоминания в заметках
+    return False
+todo=[u for u in urls if not skip.search(u) and not fake(u)]
 print('уникальных URL:',len(urls),'к проверке:',len(todo),flush=True)
 ctx=ssl.create_default_context()
 def chk(u):
@@ -43,7 +52,7 @@ with ThreadPoolExecutor(12) as ex:
     for i,(u,s) in enumerate(ex.map(chk,todo)):
         res[u]=s
         if i%100==0: print(i,flush=True)
-bad={u:s for u,s in res.items() if not (isinstance(s,int) and (s<400 or s==429)) and not re.search(r'%28|\(',u)}
+bad={u:s for u,s in res.items() if not (isinstance(s,int) and (s<400 or s in (403,429))) and not re.search(r'%28|\(',u)}   # 403 — защита от ботов (npmjs, cloudflare), не поломка
 out={'total':len(todo),'bad':[{'url':u,'status':s,'in':sorted(urls[u])[:4]} for u,s in sorted(bad.items())]}
 for b in out['bad']: print(b['status'],b['url'],'←',', '.join(b['in']))
 print('ГОТОВО. Всего',len(todo),'проблемных',len(bad))
